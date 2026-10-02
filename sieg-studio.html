@@ -1,0 +1,1048 @@
+<!--
+  SIEG Studio · galeria de templates + editor
+  Cole este bloco inteiro em um bloco "HTML personalizado" (Gutenberg) ou no widget "HTML" (Elementor).
+
+  Como funciona a navegação:
+  - Sem parâmetros na URL, mostra a galeria (abas de marca, busca, filtros, recentes, favoritos).
+  - Com ?template=ID, mostra o editor daquele template.
+  - ?marca=institucional|academy|endomarketing abre a galeria já na marca certa.
+
+  Se a galeria e o editor ficarem em páginas diferentes do WordPress, cole o mesmo bloco nas duas
+  e preencha data-editor-url (link da página do editor) e data-gallery-url (link da página da galeria).
+  Deixando vazios, tudo funciona na mesma página.
+
+  data-brandspace-url: página do Brand Space (link "Brand Space" no topo).
+  data-briefing-url: para onde vai o botão "Abrir briefing".
+
+  As apresentações abrem no editor próprio (sieg-studio-apresentacao.html) e o Resumo do All Hands
+  no dele (sieg-studio-allhands.html). No WordPress, troque data-apresentacao-url e data-allhands-url
+  pelos endereços das páginas onde cada editor foi colado.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="sieg-studio" id="sieg-studio" data-editor-url="" data-gallery-url="" data-apresentacao-url="sieg-studio-apresentacao.html" data-allhands-url="sieg-studio-allhands.html" data-brandspace-url="https://marketing.sieg.com/brandspace/" data-briefing-url="https://marketing.sieg.com/brandspace/#solicitar">
+
+  <!-- ============ GALERIA ============ -->
+  <section class="ss-gallery" hidden>
+    <nav class="ss-crumbs" aria-label="Você está em">
+      <a class="ss-crumb-link" href="#">Brand Space</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">SIEG Studio</span>
+    </nav>
+    <p class="ss-lead">Crie e use de forma simples. Escolha a marca, encontre o template e edite. Cada um já diz quando usar.</p>
+    <div class="ss-tabs" role="tablist" aria-label="Direção de marca"></div>
+
+    <h2 class="ss-title"></h2>
+
+    <div class="ss-toolbar">
+      <label class="ss-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7"/><path d="M15.8 15.8 21 21"/></svg>
+        <span class="ss-sr">Buscar templates</span>
+        <input type="search" placeholder="Buscar templates" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="ss-tools">
+        <button type="button" class="ss-tool" data-tool="filtros" aria-pressed="false" aria-expanded="false" aria-controls="ss-filters" aria-label="Filtros" title="Filtros">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 17h18"/><path d="M15 4.5v5M9 14.5v5"/></svg>
+        </button>
+        <button type="button" class="ss-tool" data-tool="recentes" aria-pressed="false" aria-label="Abertos recentemente" title="Abertos recentemente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3 3.5V8h4.5"/><path d="M12 7.5V12l3.2 2"/></svg>
+        </button>
+        <button type="button" class="ss-tool ss-tool-fav" data-tool="favoritos" aria-pressed="false" aria-label="Favoritos" title="Favoritos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-8-4.7-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.7c0 5.9-8 10.6-8 10.6Z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="ss-filters" id="ss-filters" hidden>
+      <div class="ss-filter-group">
+        <span class="ss-filter-name">Tipo</span>
+        <div class="ss-chips" data-filter="tipo"></div>
+      </div>
+      <div class="ss-filter-group">
+        <span class="ss-filter-name">Formato</span>
+        <div class="ss-chips" data-filter="formato"></div>
+      </div>
+    </div>
+
+    <p class="ss-count" aria-live="polite"></p>
+
+    <div class="ss-grid-wrap">
+      <div class="ss-grid"></div>
+      <div class="ss-empty" hidden>
+        <p class="ss-empty-text"></p>
+        <div class="ss-empty-actions">
+          <button type="button" class="ss-empty-btn">Limpar busca e filtros</button>
+          <a class="ss-empty-link ss-briefing-link" href="#">Pedir ao SIEG Media</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ss-request">
+      <div>
+        <h3>Não achou? Solicite ao time do SIEG Media</h3>
+        <p>Conte o que você precisa e o time cria a peça com você.</p>
+      </div>
+      <a class="ss-request-btn ss-briefing-link" href="#">Abrir briefing</a>
+    </div>
+    <p class="ss-version">SIEG Studio · uso interno v1.0 · atualizado out/2026</p>
+  </section>
+
+  <!-- ============ EDITOR ============ -->
+  <section class="ss-editor" hidden>
+    <aside class="ss-panel">
+      <a class="ss-back" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg>
+        Todos os templates
+      </a>
+      <p class="ss-brandlabel"></p>
+      <h2 class="ss-piece-title"></h2>
+      <p class="ss-when"></p>
+
+      <div class="ss-fields">
+        <label class="ss-field"><span>Título:</span><input type="text" data-field="h1" maxlength="70"></label>
+        <label class="ss-field"><span>Subtítulo:</span><input type="text" data-field="h2" maxlength="100"></label>
+        <label class="ss-field"><span>Apoio:</span><input type="text" data-field="h3" maxlength="140"></label>
+      </div>
+
+      <div class="ss-drop" tabindex="0" role="button" aria-label="Inserir imagem na peça">
+        <input type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <div class="ss-drop-empty">
+          <span class="ss-drop-title">Inserir elemento</span>
+          <span class="ss-drop-hint">Arraste uma imagem ou clique para escolher</span>
+        </div>
+        <div class="ss-drop-filled" hidden>
+          <img alt="Imagem inserida na peça">
+          <div class="ss-drop-actions">
+            <button type="button" data-drop="trocar">Trocar</button>
+            <button type="button" data-drop="remover">Remover</button>
+          </div>
+        </div>
+      </div>
+      <p class="ss-drop-error" role="alert" hidden></p>
+
+      <div class="ss-export">
+        <label class="ss-format">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v12M7 12.5l5 5 5-5"/></svg>
+          <span class="ss-sr">Formato do arquivo</span>
+          <select>
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+          </select>
+        </label>
+        <button type="button" class="ss-export-btn">Exportar</button>
+      </div>
+    </aside>
+
+    <div class="ss-stage">
+      <canvas class="ss-canvas" aria-label="Pré-visualização da peça"></canvas>
+    </div>
+
+    <nav class="ss-rail" aria-label="Variações de layout">
+      <div class="ss-variants"></div>
+    </nav>
+  </section>
+
+  <section class="ss-missing" hidden>
+    <h2 class="ss-title">Template não encontrado</h2>
+    <p>Esse template não existe mais ou o link está incompleto.</p>
+    <a class="ss-missing-link" href="#">Ver todos os templates</a>
+  </section>
+</div>
+
+<style>
+.sieg-studio{
+  --ss-bg:#f2f4f8;
+  --ss-ink:#040426;
+  --ss-ink-2:#3a3f4b;
+  --ss-muted:#8a8f99;
+  --ss-accent:#005fe9;
+  --ss-accent-dark:#040426;
+  --ss-accent-soft:#8fb5f4;
+  --ss-glass:linear-gradient(160deg,#f9fafc 0%,#eceff4 52%,#f7f8fa 100%);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:var(--ss-ink);
+  background:var(--ss-bg);
+  padding:clamp(20px,4vw,56px);
+  line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+}
+.sieg-studio *,.sieg-studio *::before,.sieg-studio *::after{box-sizing:border-box}
+.sieg-studio [hidden]{display:none!important}
+.sieg-studio svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sieg-studio button,.sieg-studio input,.sieg-studio select{font:inherit;color:inherit;letter-spacing:normal;text-transform:none;box-shadow:none;margin:0}
+.sieg-studio button{cursor:pointer;border:0;background:none;padding:0;border-radius:0;line-height:1.2}
+.sieg-studio a{text-decoration:none;color:inherit}
+.sieg-studio h2,.sieg-studio p{margin:0}
+.sieg-studio :focus-visible{outline:3px solid var(--ss-accent);outline-offset:3px}
+.sieg-studio .ss-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Galeria ---------- */
+.sieg-studio .ss-crumbs{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ss-ink-2);margin-bottom:10px}
+.sieg-studio .ss-crumbs a{color:var(--ss-ink-2);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;transition:text-decoration-color .15s}
+.sieg-studio .ss-crumbs a:hover{text-decoration-color:currentColor}
+.sieg-studio .ss-crumbs [aria-current]{color:var(--ss-ink);font-weight:600}
+.sieg-studio .ss-lead{font-size:16px;color:var(--ss-ink-2);max-width:60ch;margin-bottom:28px}
+.sieg-studio .ss-tabs{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:36px}
+.sieg-studio .ss-tab{
+  padding:7px 14px;border-radius:999px;font-size:16px;font-weight:400;color:var(--ss-ink);
+  background:linear-gradient(100deg,#e7eaef 0%,#f4f6f9 100%);border:1px solid rgba(255,255,255,.9);
+  transition:background-color .15s,color .15s;
+}
+.sieg-studio .ss-tab:hover{background:#e3e7ee}
+.sieg-studio .ss-tab[aria-selected="true"]{background:var(--ss-accent);color:#fff;border-color:transparent}
+
+.sieg-studio .ss-title{font-size:clamp(30px,3vw,46px);font-weight:500;letter-spacing:-.01em;line-height:1.1;margin-bottom:22px;color:var(--ss-ink)}
+
+.sieg-studio .ss-toolbar{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.sieg-studio .ss-search{
+  display:flex;align-items:center;gap:14px;flex:0 1 600px;min-width:260px;height:56px;
+  padding:0 18px;background:#fff;border-radius:10px;cursor:text;
+}
+.sieg-studio .ss-search svg{width:30px;height:30px;color:var(--ss-accent);flex:none;stroke-width:2.2}
+.sieg-studio .ss-search input{
+  flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;padding:0;
+  font-size:21px;color:var(--ss-ink);
+}
+.sieg-studio .ss-search input::placeholder{color:var(--ss-muted);opacity:1}
+.sieg-studio .ss-search input::-webkit-search-cancel-button{cursor:pointer}
+.sieg-studio .ss-search:focus-within{box-shadow:0 0 0 2px var(--ss-accent)}
+.sieg-studio .ss-tools{display:flex;gap:10px}
+.sieg-studio .ss-tool{width:48px;height:48px;display:grid;place-items:center;border-radius:12px;color:var(--ss-ink);transition:color .15s,background-color .15s}
+.sieg-studio .ss-tool svg{width:32px;height:32px}
+.sieg-studio .ss-tool:hover{background:rgba(0,0,0,.05)}
+.sieg-studio .ss-tool[aria-pressed="true"]{color:var(--ss-accent);background:#fff}
+.sieg-studio .ss-tool-fav[aria-pressed="true"] svg{fill:currentColor}
+
+.sieg-studio .ss-filters{display:flex;flex-wrap:wrap;gap:18px 40px;margin-top:20px;padding:18px 20px;background:#fff;border-radius:12px;max-width:900px}
+.sieg-studio .ss-filter-group{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sieg-studio .ss-filter-name{font-size:14px;color:var(--ss-ink-2);font-weight:600}
+.sieg-studio .ss-chips{display:flex;flex-wrap:wrap;gap:8px}
+.sieg-studio .ss-chip{padding:5px 12px;border-radius:999px;font-size:14px;background:var(--ss-bg);border:1px solid transparent}
+.sieg-studio .ss-chip:hover{border-color:#d5d9e1}
+.sieg-studio .ss-chip[aria-pressed="true"]{background:var(--ss-accent);color:#fff}
+
+.sieg-studio .ss-count{font-size:14px;color:var(--ss-ink-2);margin:34px 0 14px}
+
+.sieg-studio .ss-grid-wrap{position:relative}
+.sieg-studio .ss-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+@media (min-width:900px){
+  .sieg-studio .ss-grid-wrap{max-height:72vh;overflow-y:auto;padding-right:22px;scrollbar-width:thin;scrollbar-color:var(--ss-accent) #dcdfe5}
+  .sieg-studio .ss-grid-wrap::-webkit-scrollbar{width:8px}
+  .sieg-studio .ss-grid-wrap::-webkit-scrollbar-track{background:#dcdfe5;border-radius:8px}
+  .sieg-studio .ss-grid-wrap::-webkit-scrollbar-thumb{background:var(--ss-accent);border-radius:8px}
+}
+@media (max-width:1180px){.sieg-studio .ss-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:820px){.sieg-studio .ss-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
+@media (max-width:480px){.sieg-studio .ss-grid{grid-template-columns:1fr}}
+
+.sieg-studio .ss-card{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:linear-gradient(180deg,var(--c1) 0%,var(--c2) 100%);background-size:cover;background-position:center}
+.sieg-studio .ss-card-link{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;
+  padding:clamp(12px,1.4vw,20px);color:#fff;
+}
+.sieg-studio .ss-card-link::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(30deg,rgba(4,4,38,.5) 0%,rgba(4,4,38,0) 65%);
+  opacity:.55;transition:opacity .2s;
+}
+.sieg-studio .ss-card:hover .ss-card-link::before,.sieg-studio .ss-card-link:focus-visible::before{opacity:1}
+.sieg-studio .ss-card-link:focus-visible{outline:3px solid #fff;outline-offset:-6px}
+.sieg-studio .ss-card-meta,.sieg-studio .ss-card-bottom{position:relative}
+.sieg-studio .ss-card-bottom{display:flex;flex-direction:column;gap:6px}
+.sieg-studio .ss-card-when{font-size:13px;line-height:1.35;opacity:.88;max-width:32ch;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (max-width:1180px) and (min-width:821px){.sieg-studio .ss-card-when{display:none}}
+.sieg-studio .ss-card-meta{font-size:13px;opacity:.92}
+.sieg-studio .ss-card-title{font-size:clamp(17px,1.5vw,23px);line-height:1.2;max-width:14ch}
+.sieg-studio .ss-fav{
+  position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;transition:opacity .15s,background-color .15s;
+}
+.sieg-studio .ss-fav svg{width:19px;height:19px}
+.sieg-studio .ss-card:hover .ss-fav,.sieg-studio .ss-fav:focus-visible,.sieg-studio .ss-fav[aria-pressed="true"]{opacity:1}
+.sieg-studio .ss-fav:hover{background:rgba(255,255,255,.3)}
+.sieg-studio .ss-fav[aria-pressed="true"] svg{fill:currentColor}
+@media (hover:none){.sieg-studio .ss-fav{opacity:1}}
+.sieg-studio .ss-card.is-soon{filter:saturate(.45);opacity:.6}
+.sieg-studio .ss-card.is-soon .ss-card-link{cursor:default}
+.sieg-studio .ss-card.is-soon:hover .ss-card-link::before{opacity:.55}
+.sieg-studio .ss-soon{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--ss-accent-dark);background:rgba(255,255,255,.9)}
+
+.sieg-studio .ss-empty{padding:48px 0;max-width:520px}
+.sieg-studio .ss-empty-text{font-size:18px;color:var(--ss-ink-2);margin-bottom:16px}
+.sieg-studio .ss-empty-btn{padding:9px 16px;border-radius:999px;background:var(--ss-accent);color:#fff;font-size:15px}
+.sieg-studio .ss-empty-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.sieg-studio .ss-empty-link{font-size:15px;color:var(--ss-accent);text-decoration:underline;text-underline-offset:3px}
+.sieg-studio .ss-request{display:flex;align-items:center;justify-content:space-between;gap:20px 32px;flex-wrap:wrap;margin-top:48px;padding:28px 32px;border-radius:18px;background:var(--ss-ink);color:#fff}
+.sieg-studio .ss-request h3{margin:0 0 6px;font-size:clamp(20px,1.8vw,26px);font-weight:600;line-height:1.2;color:#fff}
+.sieg-studio .ss-request p{font-size:15px;color:rgba(255,255,255,.75)}
+.sieg-studio .ss-request-btn{flex:none;padding:11px 20px;border-radius:999px;background:#fff;color:var(--ss-ink);font-size:16px;font-weight:600;transition:background-color .15s}
+.sieg-studio .ss-request-btn:hover{background:#e7ebf3}
+.sieg-studio .ss-version{margin-top:20px;font-size:13px;color:var(--ss-muted)}
+
+/* ---------- Editor ---------- */
+.sieg-studio .ss-editor{
+  display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr) 48px;gap:clamp(24px,3.5vw,60px);
+  min-height:min(820px,88vh);align-items:stretch;
+}
+.sieg-studio .ss-panel{
+  display:flex;flex-direction:column;padding:26px 22px 24px;border-radius:18px;background:var(--ss-glass);
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:inset 0 1px 0 #fff,0 12px 32px rgba(18,28,60,.07);
+}
+.sieg-studio .ss-back{display:inline-flex;align-items:center;gap:4px;font-size:14px;color:var(--ss-ink-2);margin:-6px 0 18px -6px;padding:4px 8px 4px 2px;border-radius:8px;align-self:flex-start}
+.sieg-studio .ss-back svg{width:18px;height:18px}
+.sieg-studio .ss-back:hover{color:var(--ss-accent)}
+.sieg-studio .ss-brandlabel{font-size:15px;color:var(--ss-ink)}
+.sieg-studio .ss-piece-title{font-size:clamp(28px,2.6vw,42px);font-weight:400;line-height:1.12;color:var(--ss-accent);margin:6px 0 10px;letter-spacing:-.01em}
+.sieg-studio .ss-when{font-size:14px;color:var(--ss-ink-2);margin-bottom:30px}
+.sieg-studio .ss-when:empty{margin-bottom:20px}
+
+.sieg-studio .ss-fields{display:flex;flex-direction:column;gap:10px;margin-bottom:40px}
+.sieg-studio .ss-field{
+  display:flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-radius:999px;
+  background:linear-gradient(95deg,#e8eaef 0%,#f6f7f9 60%,#fafbfc 100%);border:1px solid rgba(255,255,255,.95);
+  box-shadow:inset 0 1px 2px rgba(18,28,60,.05);cursor:text;
+}
+.sieg-studio .ss-field span{font-size:15px;color:var(--ss-ink);flex:none}
+.sieg-studio .ss-field input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;padding:0;font-size:15px;color:var(--ss-ink-2)}
+.sieg-studio .ss-field:focus-within{box-shadow:0 0 0 2px var(--ss-accent)}
+
+.sieg-studio .ss-drop{
+  position:relative;min-height:220px;border-radius:14px;border:1px solid #c7cad2;
+  background:radial-gradient(120% 90% at 50% 50%,#f6f7f9 0%,#eceef2 100%);
+  display:grid;place-items:center;text-align:center;cursor:pointer;padding:16px;
+  transition:border-color .15s,background-color .15s;
+}
+.sieg-studio .ss-drop:hover{border-color:var(--ss-accent)}
+.sieg-studio .ss-drop.is-over{border:2px dashed var(--ss-accent);background:#fff}
+.sieg-studio .ss-drop-empty{display:flex;flex-direction:column;gap:6px}
+.sieg-studio .ss-drop-title{font-size:17px;color:var(--ss-ink)}
+.sieg-studio .ss-drop-hint{font-size:13px;color:var(--ss-muted)}
+.sieg-studio .ss-drop-filled{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.sieg-studio .ss-drop-filled img{max-width:100%;max-height:140px;border-radius:8px;object-fit:contain}
+.sieg-studio .ss-drop-actions{display:flex;gap:8px}
+.sieg-studio .ss-drop-actions button{padding:6px 14px;border-radius:999px;font-size:14px;background:#fff;border:1px solid #dde0e6}
+.sieg-studio .ss-drop-actions button:hover{border-color:var(--ss-accent);color:var(--ss-accent)}
+.sieg-studio .ss-drop-error{font-size:13px;color:#b42318;margin-top:8px}
+
+.sieg-studio .ss-export{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:32px}
+.sieg-studio .ss-format{
+  position:relative;display:flex;align-items:center;height:40px;padding:0 10px 0 8px;border-radius:999px;
+  background:linear-gradient(95deg,#e8eaef,#f8f9fb);border:1px solid rgba(255,255,255,.95);
+}
+.sieg-studio .ss-format svg{width:16px;height:16px;color:var(--ss-muted);flex:none}
+.sieg-studio .ss-format select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:transparent;padding:0 4px;font-size:18px;height:100%;cursor:pointer;color:var(--ss-ink)}
+.sieg-studio .ss-format:focus-within{box-shadow:0 0 0 2px var(--ss-accent)}
+.sieg-studio .ss-export-btn{height:40px;padding:0 16px;border-radius:999px;background:var(--ss-accent);color:#fff;font-size:18px;transition:filter .15s}
+.sieg-studio .ss-export-btn:hover{filter:brightness(1.08)}
+
+.sieg-studio .ss-stage{display:grid;place-items:center;min-width:0}
+.sieg-studio .ss-canvas{display:block;width:auto;height:auto;max-width:100%;max-height:min(760px,80vh);border-radius:10px;box-shadow:0 18px 40px rgba(18,28,60,.12);background:#fff}
+
+.sieg-studio .ss-rail{position:relative;border-radius:16px;background:var(--ss-glass);border:1px solid rgba(255,255,255,.95);box-shadow:inset 0 1px 0 #fff,0 12px 32px rgba(18,28,60,.06)}
+.sieg-studio .ss-variants{position:absolute;top:50%;left:-38px;transform:translateY(-50%);display:flex;flex-direction:column;gap:3px}
+.sieg-studio .ss-variant{display:block;width:76px;border-radius:3px;overflow:hidden;transition:box-shadow .15s}
+.sieg-studio .ss-variant canvas{display:block;width:100%;height:auto}
+.sieg-studio .ss-variant:hover{box-shadow:0 0 0 2px #fff}
+.sieg-studio .ss-variant[aria-pressed="true"]{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ss-accent)}
+.sieg-studio .ss-editor.is-portrait .ss-variant{width:52px}
+
+@media (max-width:980px){
+  .sieg-studio .ss-editor{grid-template-columns:minmax(0,1fr);min-height:0}
+  .sieg-studio .ss-editor>*{min-width:0}
+  .sieg-studio .ss-stage{order:-1}
+  .sieg-studio .ss-canvas{max-height:60vh}
+  .sieg-studio .ss-rail{order:-1;padding:12px}
+  .sieg-studio .ss-variants{position:static;transform:none;flex-direction:row;gap:8px;overflow-x:auto;padding:4px}
+  .sieg-studio .ss-variant,.sieg-studio .ss-editor.is-portrait .ss-variant{flex:none;width:88px}
+  .sieg-studio .ss-editor.is-portrait .ss-variant{width:56px}
+  .sieg-studio .ss-drop{min-height:160px}
+  .sieg-studio .ss-piece-title{margin-bottom:24px}
+  .sieg-studio .ss-fields{margin-bottom:24px}
+}
+
+.sieg-studio .ss-missing p{font-size:18px;color:var(--ss-ink-2);margin-bottom:18px}
+.sieg-studio .ss-missing-link{display:inline-block;padding:9px 16px;border-radius:999px;background:var(--ss-accent);color:#fff}
+
+@media (prefers-reduced-motion:reduce){.sieg-studio *{transition:none!important}}
+</style>
+
+<script>
+(function () {
+  var root = document.getElementById('sieg-studio');
+  if (!root || root.dataset.ready) return;
+  root.dataset.ready = '1';
+
+  /* =====================================================================
+     CONFIGURAÇÃO — marcas, formatos e templates
+     Para adicionar um template, copie um item de TEMPLATES e troque os campos.
+     - ativo: true libera o template. Sem ele, o card aparece como "Em breve" e não abre.
+     - thumb (opcional): URL de uma imagem de capa para o card da galeria.
+     - layout: variação que abre selecionada (0 a 4, veja LAYOUTS mais abaixo).
+     - logo (opcional, na marca): URL do logo em PNG/SVG hospedado no MESMO domínio
+       do site. Sem ele, a peça usa o nome da marca escrito em Figtree.
+     ===================================================================== */
+  var MARCAS = [
+    { id: 'institucional', nome: 'SIEG Institucional', rotulo: 'Institucional', cor: '#005fe9', escura: '#040426', clara: '#e8f0fd', suave: '#8fb5f4', logo: '' },
+    { id: 'academy',       nome: 'SIEG Academy',       rotulo: 'Academy',       cor: '#0093e9', escura: '#03263f', clara: '#e5f4fd', suave: '#8fd0f5', logo: '' },
+    { id: 'endomarketing', nome: 'SIEG Endomarketing', rotulo: 'Endomarketing', cor: '#6f2abe', escura: '#22093f', clara: '#f1e9fa', suave: '#c3a2e8', logo: '' }
+  ];
+
+  var FORMATOS = {
+    '16:9': [1920, 1080],
+    '1:1': [1080, 1080],
+    '4:5': [1080, 1350],
+    '9:16': [1080, 1920],
+    'A4 paisagem': [3508, 2480],
+    'A4 retrato': [2480, 3508]
+  };
+
+  var TEMPLATES = [
+    // SIEG Institucional
+    { id: 'inst-apresentacao-modelo-1', quando: 'Reuniões com clientes, parceiros e eventos externos.', pagina: 'apresentacao', marca: 'institucional', titulo: 'Apresentação modelo 1', tipo: 'Digital', formato: '16:9', layout: 0, ativo: true, tags: 'apresentação slide capa reunião',
+      textos: { h1: 'Título da apresentação', h2: 'Subtítulo ou área responsável', h3: 'Mês e ano' } },
+    { id: 'inst-atualizacoes-produto', quando: 'Anunciar novidades da plataforma para clientes.', marca: 'institucional', titulo: 'Atualizações de produto', tipo: 'Digital', formato: '16:9', layout: 0, tags: 'novidades lançamento release funcionalidade',
+      textos: { h1: 'Novidades da plataforma', h2: 'O que mudou neste mês', h3: 'Veja todos os detalhes na central de ajuda.' } },
+    { id: 'inst-post-linkedin', quando: 'Conteúdo institucional no feed da SIEG.', marca: 'institucional', titulo: 'Post para LinkedIn', tipo: 'Digital', formato: '1:1', layout: 3, tags: 'rede social post feed',
+      textos: { h1: 'Tecnologia fiscal para contadores', h2: 'Automatize o que toma seu tempo', h3: 'Conheça as soluções SIEG.' } },
+    { id: 'inst-story', quando: 'Avisos rápidos e chamadas nos stories.', marca: 'institucional', titulo: 'Story institucional', tipo: 'Digital', formato: '9:16', layout: 2, tags: 'instagram story vertical',
+      textos: { h1: 'Estamos com você no fechamento', h2: 'Conte com a SIEG', h3: 'Arraste para cima e saiba mais.' } },
+    { id: 'inst-capa-apresentacao', quando: 'Abrir decks que não usam o modelo completo.', marca: 'institucional', titulo: 'Capa de apresentação', tipo: 'Digital', formato: '16:9', layout: 4, tags: 'slide reunião apresentação capa',
+      textos: { h1: 'Título da apresentação', h2: 'Área responsável', h3: 'Mês e ano' } },
+    { id: 'inst-comunicado-cliente', quando: 'Avisar clientes sobre manutenção, mudanças e prazos.', marca: 'institucional', titulo: 'Comunicado ao cliente', tipo: 'Digital', formato: '4:5', layout: 1, tags: 'aviso cliente comunicado manutenção',
+      textos: { h1: 'Aviso importante', h2: 'Manutenção programada no sábado', h3: 'O sistema ficará indisponível das 8h às 12h.' } },
+    { id: 'inst-webinar', quando: 'Divulgar lives e webinars abertos ao público.', marca: 'institucional', titulo: 'Convite para webinar', tipo: 'Digital', formato: '16:9', layout: 0, tags: 'evento live webinar convite',
+      textos: { h1: 'Webinar: reforma tributária na prática', h2: 'Quinta, 20h, ao vivo', h3: 'Inscrições gratuitas pelo link da bio.' } },
+    { id: 'inst-case', quando: 'Mostrar resultados e depoimentos de clientes.', marca: 'institucional', titulo: 'Case de cliente', tipo: 'Digital', formato: '1:1', layout: 2, tags: 'depoimento case sucesso cliente',
+      textos: { h1: '“Ganhamos horas no fechamento”', h2: 'Nome do cliente, Escritório', h3: 'Leia o case completo no blog.' } },
+    { id: 'inst-cartaz-evento', quando: 'Sinalização impressa em feiras e eventos.', marca: 'institucional', titulo: 'Cartaz de evento', tipo: 'Impresso', formato: 'A4 retrato', layout: 1, tags: 'evento feira cartaz impressão',
+      textos: { h1: 'SIEG no evento', h2: 'Visite nosso estande', h3: 'Data, local e horário' } },
+
+    // SIEG Academy
+    { id: 'acad-apresentacao-modelo-1', quando: 'Aulas, trilhas e treinamentos do SIEG Academy.', pagina: 'apresentacao', marca: 'academy', titulo: 'Apresentação modelo 1', tipo: 'Digital', formato: '16:9', layout: 0, ativo: true, tags: 'apresentação slide capa aula',
+      textos: { h1: 'Título da apresentação', h2: 'Nome do curso ou módulo', h3: 'Nome do instrutor' } },
+    { id: 'acad-capa-aula', quando: 'Abertura de aulas gravadas ou ao vivo.', marca: 'academy', titulo: 'Capa de aula', tipo: 'Digital', formato: '16:9', layout: 4, tags: 'aula curso capa módulo',
+      textos: { h1: 'Módulo 1: primeiros passos', h2: 'Aula 01', h3: 'Nome do instrutor' } },
+    { id: 'acad-thumb-video', quando: 'Capa de vídeos no YouTube e na plataforma de cursos.', marca: 'academy', titulo: 'Thumbnail de vídeo', tipo: 'Digital', formato: '16:9', layout: 2, tags: 'youtube vídeo thumbnail miniatura',
+      textos: { h1: 'Como emitir sua primeira nota', h2: 'Passo a passo em 5 minutos', h3: '' } },
+    { id: 'acad-chamada-curso', quando: 'Divulgar cursos com inscrições abertas.', marca: 'academy', titulo: 'Chamada para curso', tipo: 'Digital', formato: '1:1', layout: 0, tags: 'curso inscrição divulgação',
+      textos: { h1: 'Novo curso no SIEG Academy', h2: 'Inscrições abertas', h3: 'Vagas limitadas. Garanta a sua.' } },
+    { id: 'acad-story-inscricao', quando: 'Reforçar prazos de inscrição nos stories.', marca: 'academy', titulo: 'Story de inscrição', tipo: 'Digital', formato: '9:16', layout: 3, tags: 'story instagram inscrição vertical',
+      textos: { h1: 'Última semana para se inscrever', h2: 'Curso de obrigações acessórias', h3: 'Link nos stories.' } },
+    { id: 'acad-dica-rapida', quando: 'Conteúdo curto e útil para o feed.', marca: 'academy', titulo: 'Dica rápida', tipo: 'Digital', formato: '4:5', layout: 1, tags: 'dica conteúdo carrossel feed',
+      textos: { h1: 'Dica da semana', h2: 'Use filtros salvos para ganhar tempo', h3: 'Salve este post para consultar depois.' } },
+    { id: 'acad-agenda-lives', quando: 'Calendário mensal de lives.', marca: 'academy', titulo: 'Agenda de lives', tipo: 'Digital', formato: '16:9', layout: 3, tags: 'agenda live calendário programação',
+      textos: { h1: 'Agenda de lives do mês', h2: 'Toda terça, às 19h', h3: 'Acompanhe pelo canal do SIEG Academy.' } },
+    { id: 'acad-certificado', quando: 'Certificar alunos ao concluir um curso.', marca: 'academy', titulo: 'Certificado', tipo: 'Impresso', formato: 'A4 paisagem', layout: 1, tags: 'certificado conclusão curso impressão',
+      textos: { h1: 'Certificado de conclusão', h2: 'Nome do aluno', h3: 'Concluiu o curso com carga horária de 8 horas.' } },
+
+    // SIEG Endomarketing
+    { id: 'endo-resumo-allhands', quando: 'Divulgar a pauta do All Hands com horários e palestrantes.', pagina: 'allhands', marca: 'endomarketing', titulo: 'Resumo do All Hands', tipo: 'Digital', formato: 'Vertical', layout: 0, ativo: true, tags: 'all hands allhands pauta agenda reunião geral palestrantes',
+      textos: { h1: '', h2: '', h3: '' } },
+    { id: 'endo-apresentacao-modelo-1', quando: 'Reuniões internas, comunicados e campanhas para o time.', pagina: 'apresentacao', marca: 'endomarketing', titulo: 'Apresentação modelo 1', tipo: 'Digital', formato: '16:9', layout: 0, ativo: true, tags: 'apresentação slide capa interno',
+      textos: { h1: 'Título da apresentação', h2: 'Área responsável', h3: 'Mês e ano' } },
+    { id: 'endo-atualizacoes-produto', quando: 'Contar ao time o que o produto lançou.', marca: 'endomarketing', titulo: 'Atualizações de produto', tipo: 'Digital', formato: '16:9', layout: 0, tags: 'novidades time interno produto',
+      textos: { h1: 'O que o produto lançou', h2: 'Resumo para o time', h3: 'Dúvidas? Chame o time de Produto.' } },
+    { id: 'endo-aniversariantes', quando: 'Celebrar os aniversariantes do mês.', marca: 'endomarketing', titulo: 'Aniversariantes do mês', tipo: 'Digital', formato: '16:9', layout: 1, tags: 'aniversário parabéns mês pessoas',
+      textos: { h1: 'Aniversariantes de outubro', h2: 'Parabéns a quem faz a SIEG acontecer', h3: 'Nomes e datas aqui' } },
+    { id: 'endo-boas-vindas', quando: 'Apresentar quem acabou de chegar.', marca: 'endomarketing', titulo: 'Boas-vindas', tipo: 'Digital', formato: '1:1', layout: 1, tags: 'novo colaborador boas-vindas onboarding',
+      textos: { h1: 'Boas-vindas, Nome!', h2: 'Área / Departamento', h3: 'Que bom ter você com a gente.' } },
+    { id: 'endo-comunicado', quando: 'Avisos oficiais para todo o time.', marca: 'endomarketing', titulo: 'Comunicado interno', tipo: 'Digital', formato: '16:9', layout: 4, tags: 'aviso comunicado interno rh',
+      textos: { h1: 'Comunicado', h2: 'Assunto do comunicado', h3: 'Detalhes em uma frase curta.' } },
+    { id: 'endo-fundo-teams', quando: 'Fundo de tela para reuniões em vídeo.', marca: 'endomarketing', titulo: 'Fundo para Teams', tipo: 'Digital', formato: '16:9', layout: 2, tags: 'teams fundo reunião videochamada',
+      textos: { h1: '', h2: '', h3: '' } },
+    { id: 'endo-campanha', quando: 'Engajar o time em campanhas e ações.', marca: 'endomarketing', titulo: 'Campanha interna', tipo: 'Digital', formato: '9:16', layout: 3, tags: 'campanha engajamento story',
+      textos: { h1: 'Nome da campanha', h2: 'Participe até sexta', h3: 'Mais informações com Gente e Cultura.' } },
+    { id: 'endo-reconhecimento', quando: 'Destacar pessoas e conquistas.', marca: 'endomarketing', titulo: 'Reconhecimento', tipo: 'Digital', formato: '4:5', layout: 0, tags: 'destaque reconhecimento parabéns',
+      textos: { h1: 'Destaque do mês', h2: 'Nome da pessoa', h3: 'Obrigado pela dedicação.' } },
+    { id: 'endo-mural', quando: 'Comunicação impressa no escritório.', marca: 'endomarketing', titulo: 'Cartaz para mural', tipo: 'Impresso', formato: 'A4 retrato', layout: 4, tags: 'mural cartaz escritório impressão',
+      textos: { h1: 'Título do cartaz', h2: 'Chamada principal', h3: 'Informação complementar' } }
+  ];
+
+  var LAYOUTS = ['Texto e imagem', 'Centralizado', 'Imagem de fundo', 'Faixa lateral', 'Só texto'];
+
+  /* ===================================================================== */
+
+  var $ = function (s, el) { return (el || root).querySelector(s); };
+  var $$ = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
+  var marcaPor = function (id) { return MARCAS.filter(function (m) { return m.id === id; })[0]; };
+  var templatePor = function (id) { return TEMPLATES.filter(function (t) { return t.id === id; })[0]; };
+  var norm = function (s) { return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+
+  function ler(chave) { try { return JSON.parse(localStorage.getItem(chave)) || []; } catch (e) { return []; } }
+  function salvar(chave, v) { try { localStorage.setItem(chave, JSON.stringify(v)); } catch (e) {} }
+
+  function aplicarCores(m) {
+    root.style.setProperty('--ss-accent', m.cor);
+    root.style.setProperty('--ss-accent-dark', m.escura);
+    root.style.setProperty('--ss-accent-soft', m.suave);
+  }
+
+  var base = location.pathname;
+  function urlEditor(t) {
+    if (t.pagina === 'apresentacao') {
+      var ap = root.dataset.apresentacaoUrl || 'sieg-studio-apresentacao.html';
+      return ap + (ap.indexOf('?') >= 0 ? '&' : '?') + 'marca=' + encodeURIComponent(t.marca);
+    }
+    if (t.pagina === 'allhands') return root.dataset.allhandsUrl || 'sieg-studio-allhands.html';
+    return (root.dataset.editorUrl || base) + '?template=' + encodeURIComponent(t.id);
+  }
+  function urlGaleria(marcaId) { return (root.dataset.galleryUrl || base) + (marcaId ? '?marca=' + encodeURIComponent(marcaId) : ''); }
+
+  // Pré-carrega logos (se configurados)
+  MARCAS.forEach(function (m) {
+    if (!m.logo) return;
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function () { m._logo = img; };
+    img.src = m.logo;
+  });
+
+  /* ============================ GALERIA ============================ */
+  function iniciarGaleria(marcaInicial) {
+    var st = {
+      marca: marcaPor(marcaInicial) ? marcaInicial : MARCAS[0].id,
+      q: '', tipo: 'Todos', formato: 'Todos', modo: 'todos'
+    };
+    var sec = $('.ss-gallery');
+    sec.hidden = false;
+    $('.ss-crumb-link').href = root.dataset.brandspaceUrl || 'https://marketing.sieg.com/brandspace/';
+    $$('.ss-briefing-link').forEach(function (a) { a.href = root.dataset.briefingUrl || 'https://marketing.sieg.com/brandspace/#solicitar'; });
+
+    var tabs = $('.ss-tabs');
+    tabs.innerHTML = MARCAS.map(function (m) {
+      return '<button type="button" role="tab" class="ss-tab" data-marca="' + m.id + '">' + esc(m.nome) + '</button>';
+    }).join('');
+
+    tabs.addEventListener('click', function (e) {
+      var b = e.target.closest('.ss-tab');
+      if (b) trocarMarca(b.dataset.marca);
+    });
+    tabs.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var i = MARCAS.findIndex(function (m) { return m.id === st.marca; });
+      i = (i + (e.key === 'ArrowRight' ? 1 : -1) + MARCAS.length) % MARCAS.length;
+      trocarMarca(MARCAS[i].id);
+      $('.ss-tab[data-marca="' + MARCAS[i].id + '"]').focus();
+      e.preventDefault();
+    });
+
+    function trocarMarca(id) {
+      st.marca = id;
+      st.formato = 'Todos';
+      try { history.replaceState(null, '', urlGaleria(id)); } catch (e) {}
+      montarChips();
+      render();
+    }
+
+    var busca = $('.ss-search input');
+    busca.addEventListener('input', function () { st.q = busca.value; render(); });
+
+    $('.ss-tools').addEventListener('click', function (e) {
+      var b = e.target.closest('.ss-tool');
+      if (!b) return;
+      var tool = b.dataset.tool;
+      if (tool === 'filtros') {
+        var f = $('.ss-filters');
+        f.hidden = !f.hidden;
+        b.setAttribute('aria-pressed', String(!f.hidden));
+        b.setAttribute('aria-expanded', String(!f.hidden));
+        return;
+      }
+      st.modo = st.modo === tool ? 'todos' : tool;
+      render();
+    });
+
+    function montarChips() {
+      var doMarca = TEMPLATES.filter(function (t) { return t.marca === st.marca; });
+      var tipos = ['Todos'].concat(uniq(doMarca.map(function (t) { return t.tipo; })));
+      var formatos = ['Todos'].concat(uniq(doMarca.map(function (t) { return t.formato; })));
+      if (tipos.indexOf(st.tipo) < 0) st.tipo = 'Todos';
+      chips($('.ss-chips[data-filter="tipo"]'), tipos, 'tipo');
+      chips($('.ss-chips[data-filter="formato"]'), formatos, 'formato');
+    }
+    function chips(el, lista, chave) {
+      el.innerHTML = lista.map(function (v) {
+        return '<button type="button" class="ss-chip" data-v="' + esc(v) + '" aria-pressed="' + (st[chave] === v) + '">' + esc(v) + '</button>';
+      }).join('');
+      el.onclick = function (e) {
+        var c = e.target.closest('.ss-chip');
+        if (!c) return;
+        st[chave] = c.dataset.v;
+        $$('.ss-chip', el).forEach(function (x) { x.setAttribute('aria-pressed', String(x === c)); });
+        render();
+      };
+    }
+    function uniq(a) { return a.filter(function (v, i) { return a.indexOf(v) === i; }); }
+
+    var grid = $('.ss-grid');
+    grid.addEventListener('click', function (e) {
+      var b = e.target.closest('.ss-fav');
+      if (!b) return;
+      var favs = ler('ss-favoritos');
+      var id = b.dataset.id;
+      var i = favs.indexOf(id);
+      if (i >= 0) favs.splice(i, 1); else favs.push(id);
+      salvar('ss-favoritos', favs);
+      if (st.modo === 'favoritos') render();
+      else b.setAttribute('aria-pressed', String(i < 0));
+    });
+
+    $('.ss-empty-btn').addEventListener('click', function () {
+      st.q = ''; busca.value = ''; st.tipo = 'Todos'; st.formato = 'Todos'; st.modo = 'todos';
+      montarChips(); render(); busca.focus();
+    });
+
+    function render() {
+      var m = marcaPor(st.marca);
+      aplicarCores(m);
+      $$('.ss-tab').forEach(function (t) {
+        var sel = t.dataset.marca === st.marca;
+        t.setAttribute('aria-selected', String(sel));
+        t.tabIndex = sel ? 0 : -1;
+      });
+      $('.ss-title', sec).textContent = m.nome;
+      $$('.ss-tool').forEach(function (b) {
+        if (b.dataset.tool !== 'filtros') b.setAttribute('aria-pressed', String(st.modo === b.dataset.tool));
+      });
+
+      var favs = ler('ss-favoritos');
+      var recentes = ler('ss-recentes');
+      var lista = TEMPLATES.filter(function (t) { return t.marca === st.marca; });
+      if (st.modo === 'favoritos') lista = lista.filter(function (t) { return favs.indexOf(t.id) >= 0; });
+      if (st.modo === 'recentes') {
+        lista = lista.filter(function (t) { return recentes.indexOf(t.id) >= 0; })
+          .sort(function (a, b) { return recentes.indexOf(a.id) - recentes.indexOf(b.id); });
+      }
+      if (st.modo !== 'recentes') lista = lista.filter(function (t) { return t.ativo; }).concat(lista.filter(function (t) { return !t.ativo; }));
+      var q = norm(st.q.trim());
+      if (q) lista = lista.filter(function (t) { return norm([t.titulo, t.quando, t.tags, t.tipo, t.formato].join(' ')).indexOf(q) >= 0; });
+      if (st.tipo !== 'Todos') lista = lista.filter(function (t) { return t.tipo === st.tipo; });
+      if (st.formato !== 'Todos') lista = lista.filter(function (t) { return t.formato === st.formato; });
+
+      var n = lista.length;
+      var rotulo = st.modo === 'favoritos' ? (n === 1 ? '1 favorito' : n + ' favoritos')
+        : st.modo === 'recentes' ? (n === 1 ? '1 aberto recentemente' : n + ' abertos recentemente')
+        : (n === 1 ? '1 template' : n + ' templates');
+      var nAtivos = lista.filter(function (t) { return t.ativo; }).length;
+      if (st.modo === 'todos' && n) rotulo += ', ' + (nAtivos === 1 ? '1 disponível agora' : nAtivos + ' disponíveis agora');
+      $('.ss-count').textContent = rotulo;
+
+      grid.innerHTML = lista.map(function (t) {
+        var fav = favs.indexOf(t.id) >= 0;
+        var bg = t.thumb ? 'background-image:url(' + esc(t.thumb) + ');' : '';
+        if (!t.ativo) {
+          return '<article class="ss-card is-soon" style="--c1:' + m.cor + ';--c2:' + mistura(m.cor, '#ffffff', .3) + ';' + bg + '">' +
+            '<div class="ss-card-link" aria-disabled="true">' +
+              '<span class="ss-card-meta">' + esc(t.tipo) + ' • ' + esc(t.formato) + '</span>' +
+              '<span class="ss-card-bottom"><span class="ss-card-title">' + esc(t.titulo) + '</span>' +
+              (t.quando ? '<span class="ss-card-when">' + esc(t.quando) + '</span>' : '') + '</span>' +
+            '</div>' +
+            '<span class="ss-soon">Em breve</span></article>';
+        }
+        return '<article class="ss-card" style="--c1:' + m.cor + ';--c2:' + mistura(m.cor, '#ffffff', .3) + ';' + bg + '">' +
+          '<a class="ss-card-link" href="' + esc(urlEditor(t)) + '">' +
+            '<span class="ss-card-meta">' + esc(t.tipo) + ' • ' + esc(t.formato) + '</span>' +
+            '<span class="ss-card-bottom"><span class="ss-card-title">' + esc(t.titulo) + '</span>' +
+            (t.quando ? '<span class="ss-card-when">' + esc(t.quando) + '</span>' : '') + '</span>' +
+          '</a>' +
+          '<button type="button" class="ss-fav" data-id="' + t.id + '" aria-pressed="' + fav + '" aria-label="Favoritar ' + esc(t.titulo) + '">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3s-8-4.7-8-10.6A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 8 2.7c0 5.9-8 10.6-8 10.6Z"/></svg>' +
+          '</button></article>';
+      }).join('');
+
+      var vazio = $('.ss-empty');
+      vazio.hidden = n > 0;
+      if (!n) {
+        var btn = $('.ss-empty-btn');
+        if (st.modo === 'favoritos' && !q && st.tipo === 'Todos' && st.formato === 'Todos') {
+          $('.ss-empty-text').textContent = 'Toque no coração de um template para guardar aqui.';
+          btn.textContent = 'Ver todos os templates';
+        } else if (st.modo === 'recentes' && !q && st.tipo === 'Todos' && st.formato === 'Todos') {
+          $('.ss-empty-text').textContent = 'Os templates que você abrir em ' + m.nome + ' aparecem aqui.';
+          btn.textContent = 'Ver todos os templates';
+        } else {
+          $('.ss-empty-text').textContent = q
+            ? 'Nenhum template com “' + st.q.trim() + '” em ' + m.nome + '. Tente outro termo ou limpe os filtros.'
+            : 'Nenhum template com esses filtros em ' + m.nome + '.';
+          btn.textContent = 'Limpar busca e filtros';
+        }
+      }
+    }
+
+    montarChips();
+    render();
+  }
+
+  /* ============================ EDITOR ============================ */
+  function iniciarEditor(t) {
+    var m = marcaPor(t.marca);
+    aplicarCores(m);
+    var sec = $('.ss-editor');
+    sec.hidden = false;
+
+    var rec = ler('ss-recentes').filter(function (id) { return id !== t.id; });
+    rec.unshift(t.id);
+    salvar('ss-recentes', rec.slice(0, 12));
+
+    var dim = FORMATOS[t.formato] || FORMATOS['16:9'];
+    var W = dim[0], H = dim[1];
+    sec.classList.toggle('is-portrait', H > W);
+
+    $('.ss-back').href = urlGaleria(t.marca);
+    $('.ss-brandlabel').textContent = m.nome;
+    $('.ss-piece-title').textContent = t.titulo;
+    $('.ss-when').textContent = t.quando ? 'Quando usar: ' + t.quando : '';
+    try { document.title = t.titulo + ' | SIEG Studio'; } catch (e) {}
+
+    var st = { h1: t.textos.h1 || '', h2: t.textos.h2 || '', h3: t.textos.h3 || '', img: null, layout: t.layout || 0 };
+
+    $$('.ss-field input').forEach(function (inp) {
+      inp.value = st[inp.dataset.field];
+      inp.addEventListener('input', function () { st[inp.dataset.field] = inp.value; agendar(); });
+    });
+
+    var canvas = $('.ss-canvas');
+    canvas.width = W; canvas.height = H;
+    var ctx = canvas.getContext('2d');
+
+    // Variações
+    var box = $('.ss-variants');
+    var escalaMini = 160 / W;
+    box.innerHTML = LAYOUTS.map(function (nome, i) {
+      return '<button type="button" class="ss-variant" data-i="' + i + '" aria-label="' + esc(nome) + '" title="' + esc(nome) + '" aria-pressed="' + (i === st.layout) + '"><canvas width="' + Math.round(W * escalaMini) + '" height="' + Math.round(H * escalaMini) + '"></canvas></button>';
+    }).join('');
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('.ss-variant');
+      if (!b) return;
+      st.layout = +b.dataset.i;
+      $$('.ss-variant').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      agendar();
+    });
+
+    // Imagem
+    var drop = $('.ss-drop'), file = $('input[type=file]', drop), erro = $('.ss-drop-error');
+    function escolher() { file.click(); }
+    drop.addEventListener('click', function (e) {
+      if (e.target.closest('[data-drop="remover"]')) {
+        st.img = null; file.value = '';
+        $('.ss-drop-empty').hidden = false; $('.ss-drop-filled').hidden = true;
+        agendar(); return;
+      }
+      escolher();
+    });
+    drop.addEventListener('keydown', function (e) {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target === drop) { e.preventDefault(); escolher(); }
+    });
+    file.addEventListener('change', function () { if (file.files[0]) carregar(file.files[0]); });
+    ['dragenter', 'dragover'].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('is-over'); });
+    });
+    ['dragleave', 'drop'].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('is-over'); });
+    });
+    drop.addEventListener('drop', function (e) {
+      var f = e.dataTransfer && e.dataTransfer.files[0];
+      if (f) carregar(f);
+    });
+    function carregar(f) {
+      erro.hidden = true;
+      if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { erro.textContent = 'Esse arquivo não é uma imagem. Use PNG, JPG ou WEBP.'; erro.hidden = false; return; }
+      if (f.size > 15 * 1024 * 1024) { erro.textContent = 'A imagem passa de 15 MB. Reduza o tamanho e tente de novo.'; erro.hidden = false; return; }
+      var url = URL.createObjectURL(f);
+      var img = new Image();
+      img.onload = function () {
+        st.img = img;
+        $('.ss-drop-filled img').src = url;
+        $('.ss-drop-empty').hidden = true; $('.ss-drop-filled').hidden = false;
+        agendar();
+      };
+      img.onerror = function () { erro.textContent = 'Não foi possível abrir essa imagem. Tente outro arquivo.'; erro.hidden = false; };
+      img.src = url;
+    }
+
+    // Exportar
+    var btnExp = $('.ss-export-btn');
+    btnExp.addEventListener('click', function () {
+      var fmt = $('.ss-format select').value;
+      var tipo = fmt === 'jpg' ? 'image/jpeg' : 'image/png';
+      desenhar(ctx, W, H, st.layout, st, m);
+      canvas.toBlob(function (blob) {
+        if (!blob) return;
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'sieg-' + t.id + '.' + fmt;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        btnExp.textContent = 'Exportado';
+        setTimeout(function () { btnExp.textContent = 'Exportar'; }, 1800);
+      }, tipo, 0.92);
+    });
+
+    var pendente = false;
+    function agendar() {
+      if (pendente) return;
+      pendente = true;
+      requestAnimationFrame(function () { pendente = false; tudo(); });
+    }
+    function tudo() {
+      desenhar(ctx, W, H, st.layout, st, m);
+      $$('.ss-variant canvas').forEach(function (c, i) {
+        var x = c.getContext('2d');
+        x.setTransform(c.width / W, 0, 0, c.height / H, 0, 0);
+        desenhar(x, W, H, i, st, m);
+      });
+    }
+
+    tudo();
+    if (document.fonts && document.fonts.load) {
+      Promise.all(['400', '500', '600', '800'].map(function (w) { return document.fonts.load(w + ' 40px Figtree'); }))
+        .then(agendar, agendar);
+      document.fonts.ready.then(agendar);
+    }
+  }
+
+  /* ============================ DESENHO ============================ */
+  var FONTE = 'Figtree, system-ui, -apple-system, "Segoe UI", sans-serif';
+
+  function hexRgb(h) { h = h.replace('#', ''); return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)]; }
+  function rgba(h, a) { var c = hexRgb(h); return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
+  function mistura(a, b, p) {
+    var x = hexRgb(a), y = hexRgb(b);
+    return '#' + [0, 1, 2].map(function (i) { return ('0' + Math.round(x[i] + (y[i] - x[i]) * p).toString(16)).slice(-2); }).join('');
+  }
+
+  function caminho(ctx, x, y, w, h, r) {
+    r = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function quebrar(ctx, texto, maxW, maxLinhas) {
+    var palavras = texto.split(/\s+/), linhas = [], atual = '';
+    for (var i = 0; i < palavras.length; i++) {
+      var teste = atual ? atual + ' ' + palavras[i] : palavras[i];
+      if (ctx.measureText(teste).width > maxW && atual) { linhas.push(atual); atual = palavras[i]; }
+      else atual = teste;
+    }
+    if (atual) linhas.push(atual);
+    if (linhas.length > maxLinhas) {
+      linhas = linhas.slice(0, maxLinhas);
+      var ult = linhas[maxLinhas - 1];
+      while (ult.length && ctx.measureText(ult + '…').width > maxW) ult = ult.slice(0, -1);
+      linhas[maxLinhas - 1] = ult.replace(/\s+$/, '') + '…';
+    }
+    return linhas;
+  }
+
+  // Bloco de texto H1/H2/H3. Com seco=true só mede a altura.
+  function bloco(ctx, s, o, seco) {
+    var itens = [
+      [s.h1, 800, o.f1, o.c1, 1.06, 4, -0.015],
+      [s.h2, 600, o.f2, o.c2, 1.2, 3, 0],
+      [s.h3, 400, o.f3, o.c3, 1.4, 4, 0]
+    ];
+    var y = o.y, primeiro = true, anterior = 0;
+    itens.forEach(function (it) {
+      var txt = (it[0] || '').trim();
+      if (!txt) return;
+      if (!primeiro) y += anterior * 0.5;
+      ctx.font = it[1] + ' ' + it[2] + 'px ' + FONTE;
+      var linhas = quebrar(ctx, txt, o.w, it[5]);
+      linhas.forEach(function (ln) {
+        if (!seco) {
+          ctx.fillStyle = it[3];
+          ctx.textAlign = o.align || 'left';
+          ctx.textBaseline = 'top';
+          ctx.fillText(ln, o.align === 'center' ? o.x + o.w / 2 : o.x, y);
+        }
+        y += it[2] * it[4];
+      });
+      anterior = it[2];
+      primeiro = false;
+    });
+    return y - o.y;
+  }
+
+  function logo(ctx, m, x, y, S, cor, align) {
+    var alt = S * 0.045;
+    if (m._logo) {
+      var lw = m._logo.naturalWidth / m._logo.naturalHeight * alt;
+      ctx.drawImage(m._logo, align === 'center' ? x - lw / 2 : x, y, lw, alt);
+      return alt;
+    }
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';
+    ctx.font = '800 ' + alt + 'px ' + FONTE;
+    var w1 = ctx.measureText('SIEG').width;
+    ctx.font = '500 ' + alt * 0.62 + 'px ' + FONTE;
+    var w2 = ctx.measureText(m.rotulo).width;
+    var total = w1 + alt * 0.3 + w2;
+    var x0 = align === 'center' ? x - total / 2 : x;
+    ctx.fillStyle = cor;
+    ctx.font = '800 ' + alt + 'px ' + FONTE;
+    ctx.fillText('SIEG', x0, y);
+    ctx.font = '500 ' + alt * 0.62 + 'px ' + FONTE;
+    ctx.fillText(m.rotulo, x0 + w1 + alt * 0.3, y + alt * 0.3);
+    return alt;
+  }
+
+  function capa(ctx, img, x, y, w, h) {
+    var r = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+    var iw = img.naturalWidth * r, ih = img.naturalHeight * r;
+    ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+  }
+
+  // Arte de marca usada quando ainda não há imagem inserida
+  function arte(ctx, x, y, w, h, fundo, traco) {
+    ctx.fillStyle = fundo;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = traco;
+    var S = Math.min(w, h);
+    ctx.lineWidth = S * 0.05;
+    for (var i = 0; i < 4; i++) {
+      ctx.beginPath();
+      ctx.arc(x + w * 0.92, y + h * 0.95, S * (0.28 + i * 0.26), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+
+  function areaImagem(ctx, s, x, y, w, h, r, fundo, traco) {
+    ctx.save();
+    caminho(ctx, x, y, w, h, r);
+    ctx.clip();
+    if (s.img) capa(ctx, s.img, x, y, w, h);
+    else arte(ctx, x, y, w, h, fundo, traco);
+    ctx.restore();
+  }
+
+  function desenhar(ctx, W, H, layout, s, m) {
+    var S = Math.min(W, H), M = S * 0.075, vert = H >= W;
+    var k = H > W * 1.4 ? 1.22 : 1; // peças bem verticais pedem texto maior
+    var f1 = S * 0.085 * k, f2 = S * 0.042 * k, f3 = S * 0.03 * k;
+    ctx.save();
+    ctx.clearRect(0, 0, W, H);
+
+    if (layout === 0) { // Texto e imagem
+      ctx.fillStyle = m.cor; ctx.fillRect(0, 0, W, H);
+      var lh = logo(ctx, m, M, M, S, '#fff');
+      var fundoImg = rgba('#000000', 0.16), tracoImg = rgba('#ffffff', 0.14);
+      var o = { f1: f1, f2: f2, f3: f3, c1: '#fff', c2: m.clara, c3: rgba('#ffffff', 0.82) };
+      if (!vert) {
+        areaImagem(ctx, s, W * 0.53, M, W * 0.47 - M, H - 2 * M, S * 0.03, fundoImg, tracoImg);
+        o.x = M; o.w = W * 0.53 - M * 1.8;
+        var alt = bloco(ctx, s, Object.assign({ y: 0 }, o), true);
+        o.y = Math.max(M + lh + M, (H - alt) / 2);
+      } else {
+        var topoImg = H * 0.52;
+        areaImagem(ctx, s, M, topoImg, W - 2 * M, H - topoImg - M, S * 0.03, fundoImg, tracoImg);
+        o.x = M; o.w = W - 2 * M; o.y = M + lh + M * 0.9;
+      }
+      bloco(ctx, s, o);
+    }
+
+    else if (layout === 1) { // Centralizado
+      ctx.fillStyle = m.clara; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = rgba(m.suave, 0.55); ctx.lineWidth = S * 0.04;
+      [[0, 0], [W, H]].forEach(function (p) {
+        for (var i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(p[0], p[1], S * (0.22 + i * 0.13), 0, Math.PI * 2); ctx.stroke(); }
+      });
+      var tw = Math.min(W - 2 * M, S * 1.1);
+      var oc = { x: (W - tw) / 2, w: tw, align: 'center', f1: f1, f2: f2, f3: f3, c1: m.cor, c2: m.escura, c3: rgba(m.escura, 0.72), y: 0 };
+      var diam = s.img ? S * 0.26 : 0, gap = s.img ? S * 0.05 : 0;
+      var altT = bloco(ctx, s, oc, true);
+      var total = diam + gap + altT;
+      var y0 = Math.max(M, (H - total) / 2 - S * 0.03);
+      if (s.img) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(W / 2, y0 + diam / 2, diam / 2, 0, Math.PI * 2); ctx.clip();
+        capa(ctx, s.img, W / 2 - diam / 2, y0, diam, diam);
+        ctx.restore();
+        ctx.strokeStyle = m.cor; ctx.lineWidth = S * 0.008;
+        ctx.beginPath(); ctx.arc(W / 2, y0 + diam / 2, diam / 2 + S * 0.012, 0, Math.PI * 2); ctx.stroke();
+      }
+      oc.y = y0 + diam + gap;
+      bloco(ctx, s, oc);
+      logo(ctx, m, W / 2, H - M - S * 0.045, S, m.cor, 'center');
+    }
+
+    else if (layout === 2) { // Imagem de fundo
+      if (s.img) capa(ctx, s.img, 0, 0, W, H);
+      else arte(ctx, 0, 0, W, H, m.cor, rgba('#ffffff', 0.1));
+      var g = ctx.createLinearGradient(0, H * 0.25, 0, H);
+      g.addColorStop(0, rgba(m.escura, 0));
+      g.addColorStop(1, rgba(m.escura, 0.88));
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      logo(ctx, m, M, M, S, '#fff');
+      var ob = { x: M, w: vert ? W - 2 * M : W * 0.62, f1: f1, f2: f2, f3: f3, c1: '#fff', c2: m.suave, c3: rgba('#ffffff', 0.8), y: 0 };
+      var hb = bloco(ctx, s, ob, true);
+      ob.y = H - M - hb;
+      bloco(ctx, s, ob);
+    }
+
+    else if (layout === 3) { // Faixa lateral
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+      var faixa = S * 0.045;
+      var of = { f1: f1, f2: f2, f3: f3, c1: m.cor, c2: m.escura, c3: '#4a5068', y: 0 };
+      if (!vert) {
+        ctx.fillStyle = m.cor; ctx.fillRect(0, 0, faixa, H);
+        areaImagem(ctx, s, W * 0.56, 0, W * 0.44, H, 0, m.cor, rgba('#ffffff', 0.12));
+        var lh3 = logo(ctx, m, faixa + M, M, S, m.cor);
+        of.x = faixa + M; of.w = W * 0.56 - faixa - M * 1.8;
+        var a3 = bloco(ctx, s, of, true);
+        of.y = Math.max(M + lh3 + M, (H - a3) / 2);
+      } else {
+        ctx.fillStyle = m.cor; ctx.fillRect(0, 0, W, faixa);
+        var topo3 = H * 0.55;
+        areaImagem(ctx, s, 0, topo3, W, H - topo3, 0, m.cor, rgba('#ffffff', 0.12));
+        var lh4 = logo(ctx, m, M, faixa + M, S, m.cor);
+        of.x = M; of.w = W - 2 * M; of.y = faixa + M + lh4 + M * 0.9;
+      }
+      bloco(ctx, s, of);
+    }
+
+    else { // Só texto
+      ctx.fillStyle = m.escura; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = rgba(m.cor, 0.55); ctx.lineWidth = S * 0.03;
+      for (var k = 0; k < 4; k++) { ctx.beginPath(); ctx.arc(W, 0, S * (0.3 + k * 0.16), 0, Math.PI * 2); ctx.stroke(); }
+      var ot = { x: M, w: vert ? W - 2 * M : W * 0.72, f1: S * 0.11, f2: f2 * 1.1, f3: f3, c1: '#fff', c2: m.suave, c3: rgba('#ffffff', 0.72), y: 0 };
+      var at = bloco(ctx, s, ot, true);
+      ot.y = Math.max(M * 2, (H - at) / 2);
+      ctx.fillStyle = m.cor;
+      caminho(ctx, M, ot.y - S * 0.06, S * 0.12, S * 0.016, S * 0.008); ctx.fill();
+      bloco(ctx, s, ot);
+      logo(ctx, m, M, H - M - S * 0.045, S, '#fff');
+    }
+
+    ctx.restore();
+  }
+
+  /* ============================ ROTA ============================ */
+  var params = new URLSearchParams(location.search);
+  var tid = params.get('template');
+  if (tid) {
+    var tpl = templatePor(tid);
+    if (tpl && tpl.ativo && tpl.pagina) location.replace(urlEditor(tpl));
+    else if (tpl && tpl.ativo) iniciarEditor(tpl);
+    else {
+      if (tpl) {
+        $('.ss-missing .ss-title').textContent = tpl.titulo + ' chega em breve';
+        $('.ss-missing p').textContent = 'Esse template ainda está em produção. Enquanto isso, use os que já estão disponíveis.';
+      }
+      $('.ss-missing').hidden = false;
+      $('.ss-missing-link').href = urlGaleria();
+    }
+  } else {
+    iniciarGaleria(params.get('marca'));
+  }
+})();
+</script>

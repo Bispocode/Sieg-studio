@@ -1,0 +1,597 @@
+<!--
+  SIEG Studio · Resumo do All Hands (SIEG Endomarketing)
+  Cole este bloco inteiro em um bloco "HTML personalizado" (Gutenberg) ou no widget "HTML" (Elementor),
+  numa página própria do WordPress.
+
+  - data-gallery-url: endereço da página da galeria do SIEG Studio (link "Todos os templates").
+  - As edições e fotos ficam salvas no navegador de cada pessoa até ela clicar em "Restaurar modelo".
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="ss-ah" id="ss-ah" data-gallery-url="sieg-studio.html">
+  <section class="ss-editor">
+    <aside class="ss-panel">
+      <a class="ss-back" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg>
+        Todos os templates
+      </a>
+      <p class="ss-brandlabel">SIEG Endomarketing</p>
+      <h2 class="ss-piece-title">Resumo do All Hands</h2>
+      <p class="ss-when">Quando usar: divulgar a pauta do All Hands com horários e palestrantes.</p>
+
+      <div class="ss-scroll">
+        <fieldset class="ss-group">
+          <legend>Data e horário</legend>
+          <div class="ss-row">
+            <label class="ss-field ss-field-sm"><span>Dia:</span><input type="number" min="1" max="31" data-k="dia"></label>
+            <label class="ss-field"><span>Mês:</span><select data-k="mes"></select></label>
+          </div>
+          <div class="ss-row">
+            <label class="ss-field"><span>Das:</span><input type="time" step="300" data-k="inicio"></label>
+            <label class="ss-field"><span>às:</span><input type="time" step="300" data-k="fim"></label>
+          </div>
+        </fieldset>
+
+        <div class="ss-group-head">
+          <h3>Pautas</h3>
+          <button type="button" class="ss-reset">Restaurar modelo</button>
+        </div>
+        <div class="ss-pautas"></div>
+        <button type="button" class="ss-add-pauta">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Adicionar pauta
+        </button>
+      </div>
+      <div class="ss-undo" role="status" hidden>
+        <span class="ss-undo-text"></span>
+        <button type="button" class="ss-undo-btn">Desfazer</button>
+      </div>
+      <p class="ss-error" role="alert" hidden></p>
+
+      <div class="ss-export">
+        <label class="ss-format">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v12M7 12.5l5 5 5-5"/></svg>
+          <span class="ss-sr">Formato do arquivo</span>
+          <select>
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+          </select>
+        </label>
+        <button type="button" class="ss-export-btn">Exportar</button>
+      </div>
+      <p class="ss-export-hint"></p>
+    </aside>
+
+    <div class="ss-stage">
+      <canvas class="ss-canvas" width="1080" height="1350" aria-label="Pré-visualização do resumo do All Hands"></canvas>
+      <p class="ss-stage-hint">Clique numa foto da peça para trocar.</p>
+    </div>
+  </section>
+  <input type="file" class="ss-file ss-file-hidden" accept="image/png,image/jpeg,image/webp" tabindex="-1" aria-hidden="true">
+</div>
+
+<style>
+.ss-ah{
+  --ss-bg:#f2f4f8;--ss-ink:#040426;--ss-ink-2:#3a3f4b;--ss-muted:#8a8f99;
+  --ss-accent:#6f2abe;
+  --ss-glass:linear-gradient(160deg,#f9fafc 0%,#eceff4 52%,#f7f8fa 100%);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:var(--ss-ink);background:var(--ss-bg);padding:clamp(20px,3vw,48px);line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+}
+.ss-ah *,.ss-ah *::before,.ss-ah *::after{box-sizing:border-box}
+.ss-ah [hidden]{display:none!important}
+.ss-ah svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ss-ah button,.ss-ah input,.ss-ah select,.ss-ah textarea{font:inherit;color:inherit;letter-spacing:normal;text-transform:none;box-shadow:none;margin:0}
+.ss-ah button{cursor:pointer;border:0;background:none;padding:0;border-radius:0;line-height:1.2}
+.ss-ah a{text-decoration:none;color:inherit}
+.ss-ah h2,.ss-ah h3,.ss-ah p{margin:0}
+.ss-ah fieldset{margin:0;padding:0;border:0;min-width:0}
+.ss-ah :focus-visible{outline:3px solid var(--ss-accent);outline-offset:3px}
+.ss-ah .ss-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.ss-ah .ss-editor{display:grid;grid-template-columns:minmax(320px,420px) minmax(0,1fr);gap:clamp(24px,3.5vw,56px);height:min(900px,calc(100vh - 96px));min-height:640px}
+.ss-ah .ss-editor>*{min-width:0;min-height:0}
+
+.ss-ah .ss-panel{display:flex;flex-direction:column;padding:26px 22px 22px;border-radius:18px;background:var(--ss-glass);border:1px solid rgba(255,255,255,.95);box-shadow:inset 0 1px 0 #fff,0 12px 32px rgba(18,28,60,.07)}
+.ss-ah .ss-back{display:inline-flex;align-items:center;gap:4px;font-size:14px;color:var(--ss-ink-2);margin:-6px 0 16px -6px;padding:4px 8px 4px 2px;border-radius:8px;align-self:flex-start}
+.ss-ah .ss-back svg{width:18px;height:18px}
+.ss-ah .ss-back:hover{color:var(--ss-accent)}
+.ss-ah .ss-brandlabel{font-size:15px}
+.ss-ah .ss-piece-title{font-size:clamp(28px,2.4vw,40px);font-weight:400;line-height:1.12;color:var(--ss-accent);margin:6px 0 8px;letter-spacing:-.01em}
+.ss-ah .ss-when{font-size:14px;color:var(--ss-ink-2);margin-bottom:18px}
+
+.ss-ah .ss-scroll{flex:1 1 auto;overflow-y:auto;margin:0 -8px;padding:4px 8px 8px}
+.ss-ah .ss-group legend,.ss-ah .ss-group-head h3{font-size:14px;font-weight:600;color:var(--ss-ink-2);margin-bottom:10px;padding:0}
+.ss-ah .ss-group{margin-bottom:22px}
+.ss-ah .ss-group-head{display:flex;justify-content:space-between;align-items:baseline}
+.ss-ah .ss-reset{font-size:13px;color:var(--ss-muted);text-decoration:underline;text-underline-offset:3px}
+.ss-ah .ss-reset:hover{color:var(--ss-accent)}
+.ss-ah .ss-row{display:flex;gap:8px;margin-bottom:8px}
+.ss-ah .ss-row>*{flex:1}
+.ss-ah .ss-row .ss-field-sm{flex:0 0 112px}
+
+.ss-ah .ss-field{display:flex;align-items:center;gap:8px;min-height:42px;padding:0 14px;border-radius:999px;background:linear-gradient(95deg,#e8eaef 0%,#f6f7f9 60%,#fafbfc 100%);border:1px solid rgba(255,255,255,.95);box-shadow:inset 0 1px 2px rgba(18,28,60,.05);cursor:text}
+.ss-ah .ss-field span{font-size:14px;flex:none}
+.ss-ah .ss-field input,.ss-ah .ss-field select,.ss-ah .ss-field textarea{flex:1;min-width:0;border:0;outline:0;background:transparent;padding:0;font-size:15px;color:var(--ss-ink-2)}
+.ss-ah .ss-field select{cursor:pointer;height:40px}
+.ss-ah .ss-field input{height:40px}
+.ss-ah .ss-field:focus-within{box-shadow:0 0 0 2px var(--ss-accent)}
+.ss-ah .ss-field-area{align-items:flex-start;border-radius:20px;padding:10px 14px}
+.ss-ah .ss-field-area span{line-height:22px}
+.ss-ah .ss-field-area textarea{resize:none;overflow:hidden;line-height:22px;height:22px;display:block}
+
+.ss-ah .ss-pauta{background:rgba(255,255,255,.65);border:1px solid #fff;border-radius:16px;padding:12px;margin-bottom:12px}
+.ss-ah .ss-pauta-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ss-ah .ss-pauta-n{font-size:13px;font-weight:700;color:var(--ss-accent)}
+.ss-ah .ss-pauta-tools{display:flex;gap:2px}
+.ss-ah .ss-icon-btn{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--ss-ink-2)}
+.ss-ah .ss-icon-btn svg{width:17px;height:17px}
+.ss-ah .ss-icon-btn:hover{background:rgba(0,0,0,.06);color:var(--ss-ink)}
+.ss-ah .ss-icon-btn[disabled]{opacity:.3;cursor:default;background:none}
+.ss-ah .ss-icon-btn.is-danger:hover{color:#b42318;background:#fdecea}
+.ss-ah .ss-pauta .ss-field{margin-bottom:8px}
+.ss-ah .ss-people-label{font-size:13px;color:var(--ss-ink-2);margin:4px 0 8px}
+.ss-ah .ss-person{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ss-ah .ss-person .ss-field{flex:1;margin:0}
+.ss-ah .ss-photo{flex:none;width:44px;height:44px;border-radius:50%;border:3px solid var(--ss-accent);background:#e4dcf2 center/cover no-repeat;display:grid;place-items:center;color:var(--ss-accent);overflow:hidden}
+.ss-ah .ss-photo svg{width:18px;height:18px}
+.ss-ah .ss-photo.has-photo svg{display:none}
+.ss-ah .ss-photo:hover{filter:brightness(.95)}
+.ss-ah .ss-add-person{font-size:13px;color:var(--ss-accent);display:inline-flex;align-items:center;gap:4px;padding:4px 2px}
+.ss-ah .ss-add-person svg{width:15px;height:15px}
+.ss-ah .ss-add-person[disabled]{opacity:.4;cursor:default}
+.ss-ah .ss-add-pauta{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;height:44px;border-radius:14px;border:1px dashed #b9bdc8;font-size:15px;color:var(--ss-ink-2)}
+.ss-ah .ss-add-pauta svg{width:18px;height:18px}
+.ss-ah .ss-add-pauta:hover{border-color:var(--ss-accent);color:var(--ss-accent)}
+.ss-ah .ss-add-pauta[disabled]{opacity:.4;cursor:default}
+.ss-ah .ss-error{font-size:13px;color:#b42318;margin-top:8px}
+.ss-ah .ss-file-hidden,.ss-ah .ss-photo input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none}
+.ss-ah .ss-photo{position:relative;cursor:pointer}
+.ss-ah .ss-photo:focus-within{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ss-accent)}
+.ss-ah .ss-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--ss-ink);color:#fff;font-size:14px}
+.ss-ah .ss-undo-btn{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px;font-size:14px}
+.ss-ah .ss-reset.is-confirm{color:#b42318;text-decoration:none;font-weight:600}
+
+.ss-ah .ss-export{display:flex;align-items:center;gap:10px;padding-top:16px;flex:none}
+.ss-ah .ss-format{display:flex;align-items:center;height:40px;padding:0 10px 0 8px;border-radius:999px;background:linear-gradient(95deg,#e8eaef,#f8f9fb);border:1px solid rgba(255,255,255,.95)}
+.ss-ah .ss-format svg{width:16px;height:16px;color:var(--ss-muted);flex:none}
+.ss-ah .ss-format select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:transparent;padding:0 4px;font-size:18px;height:100%;cursor:pointer}
+.ss-ah .ss-format:focus-within{box-shadow:0 0 0 2px var(--ss-accent)}
+.ss-ah .ss-export-btn{height:40px;padding:0 16px;border-radius:999px;background:var(--ss-accent);color:#fff;font-size:18px}
+.ss-ah .ss-export-btn:hover{filter:brightness(1.08)}
+.ss-ah .ss-export-hint{font-size:12px;color:var(--ss-muted);margin-top:8px}
+
+.ss-ah .ss-stage{overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:12px;padding:4px 4px 12px}
+.ss-ah .ss-canvas{display:block;width:min(100%,560px);height:auto;border-radius:10px;box-shadow:0 18px 40px rgba(18,28,60,.12);background:#f2f4f8;cursor:default;flex:none}
+.ss-ah .ss-canvas.is-photo{cursor:pointer}
+.ss-ah .ss-stage-hint{font-size:13px;color:var(--ss-muted)}
+
+@media (max-width:980px){
+  .ss-ah .ss-editor{grid-template-columns:minmax(0,1fr);height:auto;min-height:0}
+  .ss-ah .ss-stage{order:-1;overflow:visible}
+  .ss-ah .ss-scroll{max-height:none;overflow:visible}
+}
+@media (prefers-reduced-motion:reduce){.ss-ah *{transition:none!important}}
+</style>
+
+<script>
+(function () {
+  var root = document.getElementById('ss-ah');
+  if (!root || root.dataset.ready) return;
+  root.dataset.ready = '1';
+
+  /* ---------- Constantes de layout (px na peça de 1080 de largura) ---------- */
+  var W = 1080, MIN_H = 1350;
+  var ROXO = '#6f2abe', TINTA = '#110024', FUNDO = '#f2f4f8';
+  var X0 = 100;
+  var MAX_PAUTAS = 8, MAX_PESSOAS = 3;
+  var MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  var FONTE = '"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif';
+  var CHAVE = 'ss-allhands';
+
+  var SVG_ALLHANDS = '<svg width="1099" height="479" viewBox="0 0 1099 479" fill="none" xmlns="http://www.w3.org/2000/svg"> <g opacity="0.33"> <path d="M0 216.976L83.1202 0H144.84L227.96 216.976H167.171L154.455 182.26H73.5056L60.7894 216.976H0ZM92.1146 131.735H135.846L114.135 71.602L92.1146 131.735Z" fill="url(#paint0_linear_1667_3208)"/> <path d="M248.748 216.976V0H306.125V164.282H395.449V216.976H248.748Z" fill="url(#paint1_linear_1667_3208)"/> <path d="M420.178 216.976V0H477.556V164.282H566.879V216.976H420.178Z" fill="url(#paint2_linear_1667_3208)"/> <path d="M16.438 475.28V257.995H73.8157V338.586H153.834V258.305H211.212V475.28H153.834V391.28H73.8157V475.28H16.438Z" fill="url(#paint3_linear_1667_3208)"/> <path d="M232.007 475.28L315.127 258.305H376.847L459.967 475.28H399.178L386.462 440.564H305.512L292.796 475.28H232.007ZM324.121 390.04H367.853L346.142 329.907L324.121 390.04Z" fill="url(#paint4_linear_1667_3208)"/> <path d="M480.754 475.28V258.305H541.234L625.905 377.641V258.305H683.283V475.28H625.905L538.132 351.604V475.28H480.754Z" fill="url(#paint5_linear_1667_3208)"/> <path d="M720.636 475.28V258.305H793.211C816.99 258.305 837.976 262.954 856.172 272.253C874.574 281.552 888.944 294.364 899.283 310.689C909.621 326.807 914.79 345.508 914.79 366.792C914.79 387.87 909.621 406.571 899.283 422.896C888.944 439.221 874.574 452.033 856.172 461.332C837.976 470.631 816.99 475.28 793.211 475.28H720.636ZM778.014 421.036H793.211C802.309 421.036 810.683 419.693 818.334 417.007C825.984 414.321 832.6 410.601 838.183 405.848C843.766 401.095 848.108 395.413 851.209 388.8C854.311 382.187 855.862 374.852 855.862 366.792C855.862 358.733 854.311 351.398 851.209 344.785C848.108 338.172 843.766 332.49 838.183 327.737C832.6 322.984 825.984 319.264 818.334 316.578C810.683 313.892 802.309 312.549 793.211 312.549H778.014V421.036Z" fill="url(#paint6_linear_1667_3208)"/> <path d="M1017.12 479C1006.99 479 997.064 477.657 987.346 474.97C977.628 472.077 968.737 468.151 960.673 463.192C952.816 458.232 946.303 452.653 941.134 446.454C935.964 440.048 932.863 433.332 931.829 426.306L988.897 410.498C990.758 415.664 993.963 420.107 998.511 423.826C1003.06 427.339 1008.95 429.302 1016.19 429.716C1021.98 429.922 1027.05 428.372 1031.39 425.066C1035.94 421.76 1038.21 417.42 1038.21 412.047C1038.21 408.535 1036.87 405.228 1034.18 402.129C1031.7 398.822 1027.67 396.446 1022.08 394.999L989.517 386.63C978.352 383.737 968.737 379.294 960.673 373.302C952.816 367.309 946.716 359.973 942.374 351.294C938.239 342.615 936.171 332.903 936.171 322.157C936.171 300.873 943.201 284.342 957.261 272.563C971.528 260.578 991.481 254.585 1017.12 254.585C1030.77 254.585 1042.76 256.341 1053.1 259.854C1063.64 263.367 1072.64 268.947 1080.08 276.593C1087.73 284.032 1094.04 293.847 1099 306.039L1042.24 322.467C1041.21 318.335 1038.52 314.202 1034.18 310.069C1030.04 305.936 1024.36 303.869 1017.12 303.869C1010.09 303.869 1004.61 305.419 1000.68 308.519C996.961 311.619 995.1 316.165 995.1 322.157C995.1 325.877 996.65 329.183 999.752 332.076C1002.85 334.763 1007.3 336.829 1013.09 338.276L1045.96 346.645C1062.51 350.778 1075.43 358.94 1084.73 371.132C1094.04 383.117 1098.69 396.859 1098.69 412.357C1098.69 426.616 1095.38 438.704 1088.76 448.623C1082.36 458.542 1073.05 466.085 1060.85 471.251C1048.65 476.417 1034.08 479 1017.12 479Z" fill="url(#paint7_linear_1667_3208)"/> </g> <defs> <linearGradient id="paint0_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint1_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint2_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint3_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint4_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint5_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint6_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint7_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> </defs> </svg>';
+  var SVG_UNION = '<svg width="595" height="603" viewBox="0 0 595 603" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M225.998 574.055L224.7 602.312L191.03 600.743L192.329 572.484L225.998 574.055ZM117.363 383.453C134.951 370.621 159.537 374.576 172.278 392.289L212.956 448.836L231.71 449.71L227.296 545.785C227.817 545.809 325.269 550.351 325.496 550.361C330.145 550.578 334.088 546.96 334.304 542.277C334.519 537.595 330.924 533.631 326.275 533.414C326.246 533.413 278.571 531.202 278.571 531.202C256.878 530.192 240.109 511.641 241.113 489.793C242.118 467.945 260.518 451.052 282.212 452.063L351.471 455.29L363.843 441.067L435.675 504.446L413.464 529.979L359.527 482.391L359.454 483.981C359.318 483.975 281.121 480.353 280.913 480.343L280.912 480.342C274.715 480.054 269.452 484.982 269.165 491.225C268.878 497.467 273.67 502.762 279.869 503.051L330.565 505.413C349.238 507.822 363.246 524.312 362.361 543.584C361.429 563.873 344.343 579.559 324.198 578.62L225.996 574.044L227.293 545.786L193.626 544.218L196.94 472.077L195.659 473.011C195.659 473.011 149.636 409.069 149.514 408.897C145.873 403.836 138.766 402.766 133.741 406.433C128.717 410.099 127.595 417.174 131.235 422.234L131.236 422.235L161.011 463.627C170.783 479.83 166.715 501.143 151.203 512.462C134.871 524.378 112.043 520.704 100.211 504.257L42.5342 424.079L65.2793 407.482C65.2793 407.482 122.939 487.637 122.956 487.661C125.686 491.456 130.955 492.304 134.724 489.555C138.492 486.805 139.327 481.503 136.598 477.708C136.58 477.684 108.572 438.766 108.572 438.766C95.8312 421.053 99.7763 396.285 117.363 383.453ZM539.479 347.998L468.907 360.797L470.097 361.846C470.097 361.846 418.464 421.236 418.303 421.421C414.214 426.122 414.759 433.339 419.427 437.457C424.094 441.575 431.191 441.103 435.28 436.402L468.723 397.957C482.234 384.757 503.77 384.008 518.179 396.721C533.348 410.104 534.872 433.339 521.583 448.615L456.806 523.082L477.931 541.721L455.721 567.254L434.594 548.613L456.8 523.084L435.676 504.445C435.854 504.24 500.437 429.995 500.456 429.974C503.522 426.448 503.171 421.086 499.67 417.998C496.169 414.91 490.851 415.268 487.784 418.794C487.765 418.817 456.424 454.862 456.324 454.977C442.014 471.428 417.16 473.067 400.824 458.653C384.489 444.24 382.847 419.22 397.158 402.768L442.846 350.245L439.52 331.635L533.507 314.591V314.59L539.479 347.998ZM42.5205 424.089L19.7734 440.685L0 413.194L22.7471 396.599L42.5205 424.089ZM241.564 65.3711L272.574 52.0732L300.668 118.519L301.419 117.117C301.565 117.197 370.432 154.617 370.615 154.717C376.075 157.686 382.939 155.544 385.888 150.045C388.835 144.546 386.798 137.681 381.338 134.712L336.681 110.431C320.895 100.101 315.377 79.122 324.478 62.1455C334.058 44.2734 356.21 37.6073 373.956 47.2559L460.462 94.291L447.118 119.184L360.612 72.1484C356.517 69.922 351.405 71.4593 349.194 75.584C346.984 79.7076 348.514 84.8507 352.609 87.0771C352.759 87.1584 394.636 109.916 394.636 109.916C413.745 120.307 420.861 144.347 410.545 163.593C400.228 182.84 376.372 190.019 357.262 179.629L296.252 146.456L278.979 153.864L241.563 65.373C241.144 65.5531 151.287 104.088 151.116 104.162C146.835 105.999 144.841 110.984 146.665 115.296C148.489 119.608 153.434 121.609 157.716 119.772C157.743 119.761 201.648 100.92 201.648 100.92C221.63 92.351 244.729 101.737 253.237 121.86C261.745 141.984 252.445 165.245 232.464 173.813L168.674 201.17L168.675 201.171L163.655 219.391L71.6318 193.678C71.5924 193.821 45.3887 288.947 45.3516 289.083C44.1064 293.6 46.733 298.276 51.2178 299.529C55.7015 300.782 60.339 298.136 61.583 293.619C61.6131 293.509 74.3185 247.347 74.3389 247.272C80.144 226.196 101.832 213.86 122.759 219.707C143.685 225.555 155.944 247.381 150.138 268.457L131.602 335.743L142.616 351.055L65.2793 407.482L45.5049 379.993L103.574 337.623L102.051 337.197C102.051 337.197 122.995 261.091 123.051 260.889C124.709 254.867 121.108 248.604 115.129 246.933C109.15 245.262 102.959 248.789 101.3 254.811L87.7324 304.062C81.2456 321.859 62.1645 331.945 43.7061 326.787H43.709C24.2767 321.357 12.8943 301.091 18.2852 281.521L44.5674 186.115L71.6318 193.677L80.6426 160.968L149.739 180.274L149.12 178.81C149.12 178.81 221.259 147.849 221.451 147.767C227.16 145.318 229.777 138.577 227.347 132.828C224.916 127.078 218.317 124.401 212.607 126.85L165.914 146.875C148.054 152.863 128.327 144.129 120.822 126.378C112.922 107.692 121.558 86.0928 140.112 78.1357L230.562 39.3467L241.564 65.3711ZM594.774 337.949L567.131 342.964L561.156 309.556L588.8 304.542L594.774 337.949ZM476.779 135.31L442.714 198.859L444.27 198.577C444.304 198.772 458.178 276.239 458.225 276.505C459.325 282.656 465.268 286.726 471.374 285.618C477.481 284.511 481.54 278.627 480.44 272.477L471.445 222.174C469.622 203.305 482.468 185.879 501.321 182.46V182.459C521.168 178.861 540.154 192.147 543.728 212.135L561.149 309.575L533.507 314.59C533.507 314.59 516.095 217.203 516.085 217.148C515.26 212.535 510.878 209.469 506.298 210.3C501.719 211.13 498.681 215.541 499.506 220.154C499.51 220.182 507.951 267.331 507.979 267.485C511.828 289.011 497.603 309.603 476.229 313.479C454.856 317.355 434.41 303.047 430.561 281.521L418.272 212.8L401.752 203.817L447.12 119.184L476.779 135.31ZM53.5752 153.418L44.5625 186.127L17.4971 178.562L26.5098 145.854L53.5752 153.418ZM468.444 35.5078L455.103 60.4014L425.442 44.2764L438.784 19.3828L468.444 35.5078ZM261.563 26.0264L230.554 39.3281L219.548 13.3018L250.557 0L261.563 26.0264Z" fill="#A0A0A0" fill-opacity="0.1"/> </svg>';
+
+  var $ = function (s, el) { return (el || root).querySelector(s); };
+  var $$ = function (s, el) { return Array.prototype.slice.call((el || root).querySelectorAll(s)); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+
+  var galeria = root.dataset.galleryUrl || '';
+  $('.ss-back').href = galeria + (galeria.indexOf('?') >= 0 ? '&' : '?') + 'marca=endomarketing';
+  try { document.title = 'Resumo do All Hands | SIEG Studio'; } catch (e) {}
+
+  /* ---------- Estado ---------- */
+  function modelo() {
+    var hoje = new Date();
+    return {
+      dia: String(hoje.getDate()), mes: MESES[hoje.getMonth()], inicio: '08:00', fim: '09:00',
+      pautas: [
+        { titulo: 'Título da primeira pauta', hora: '08:00', pessoas: [{ nome: 'Nome Sobrenome', foto: '' }] },
+        { titulo: 'Título da segunda pauta', hora: '08:15', pessoas: [{ nome: 'Nome Sobrenome', foto: '' }] },
+        { titulo: 'Título da terceira pauta', hora: '08:30', pessoas: [{ nome: 'Nome Sobrenome', foto: '' }] }
+      ]
+    };
+  }
+  var st;
+  try { st = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) {}
+  if (!st || !st.pautas) st = modelo();
+
+  var timerSalvar;
+  function salvar() {
+    clearTimeout(timerSalvar);
+    timerSalvar = setTimeout(function () {
+      try { localStorage.setItem(CHAVE, JSON.stringify(st)); }
+      catch (e) { $('.ss-export-hint').textContent = 'Não foi possível salvar neste navegador. Exporte antes de sair.'; }
+    }, 300);
+  }
+
+  // Cache de imagens das fotos
+  var fotos = {};
+  function imagemDe(url) {
+    if (!url) return null;
+    if (fotos[url]) return fotos[url].complete ? fotos[url] : null;
+    var img = new Image();
+    img.onload = agendar;
+    img.src = url;
+    fotos[url] = img;
+    return null;
+  }
+
+  var artes = {};
+  [['allhands', SVG_ALLHANDS], ['union', SVG_UNION]].forEach(function (p) {
+    var img = new Image();
+    img.onload = function () { artes[p[0]] = img; agendar(); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(p[1]);
+  });
+
+  /* ---------- Formatação ---------- */
+  function faixa(h) { // "08:30" -> "8h30", "09:00" -> "9h"
+    if (!h) return '';
+    var p = h.split(':'), hh = parseInt(p[0], 10), mm = p[1] || '00';
+    return hh + 'h' + (mm === '00' ? '' : mm);
+  }
+  function horaPauta(h) { // "08:00" -> "08h00"
+    if (!h) return '';
+    var p = h.split(':');
+    return ('0' + parseInt(p[0], 10)).slice(-2) + 'h' + (p[1] || '00');
+  }
+
+  /* ---------- Painel ---------- */
+  var selMes = $('select[data-k="mes"]');
+  selMes.innerHTML = MESES.map(function (m) { return '<option>' + m + '</option>'; }).join('');
+  $$('[data-k]').forEach(function (el) {
+    el.value = st[el.dataset.k];
+    el.addEventListener('input', function () { st[el.dataset.k] = el.value; salvar(); agendar(); });
+  });
+
+  var ICON = {
+    up: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>',
+    down: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
+    del: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+    cam: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
+  };
+
+  var lista = $('.ss-pautas');
+  function montarPautas() {
+    var n = st.pautas.length;
+    lista.innerHTML = st.pautas.map(function (p, i) {
+      return '<div class="ss-pauta" data-p="' + i + '">' +
+        '<div class="ss-pauta-head"><span class="ss-pauta-n">Pauta ' + (i + 1) + '</span><div class="ss-pauta-tools">' +
+          '<button type="button" class="ss-icon-btn" data-act="up" aria-label="Subir pauta ' + (i + 1) + '"' + (i === 0 ? ' disabled' : '') + '>' + ICON.up + '</button>' +
+          '<button type="button" class="ss-icon-btn" data-act="down" aria-label="Descer pauta ' + (i + 1) + '"' + (i === n - 1 ? ' disabled' : '') + '>' + ICON.down + '</button>' +
+          '<button type="button" class="ss-icon-btn is-danger" data-act="del" aria-label="Remover pauta ' + (i + 1) + '"' + (n === 1 ? ' disabled' : '') + '>' + ICON.del + '</button>' +
+        '</div></div>' +
+        '<label class="ss-field ss-field-area"><span>Título:</span><textarea rows="1" maxlength="80" data-f="titulo">' + esc(p.titulo) + '</textarea></label>' +
+        '<label class="ss-field"><span>Horário:</span><input type="time" step="300" data-f="hora" value="' + esc(p.hora) + '"></label>' +
+        '<p class="ss-people-label">Palestrantes</p>' +
+        p.pessoas.map(function (pe, k) {
+          return '<div class="ss-person" data-k="' + k + '">' +
+            '<label class="ss-photo' + (pe.foto ? ' has-photo' : '') + '" title="' + (pe.foto ? 'Trocar foto' : 'Inserir foto') + '"' +
+              (pe.foto ? ' style="background-image:url(\'' + pe.foto + '\')"' : '') + '>' + ICON.cam +
+              '<input type="file" accept="image/png,image/jpeg,image/webp" data-foto aria-label="' + (pe.foto ? 'Trocar foto' : 'Inserir foto') + ' de ' + esc(pe.nome || 'palestrante') + '">' +
+            '</label>' +
+            '<label class="ss-field"><span class="ss-sr">Nome</span><input type="text" maxlength="40" data-f="nome" placeholder="Nome do palestrante" value="' + esc(pe.nome) + '"></label>' +
+            '<button type="button" class="ss-icon-btn is-danger" data-act="delp" aria-label="Remover palestrante"' + (p.pessoas.length === 1 ? ' disabled' : '') + '>' + ICON.x + '</button>' +
+          '</div>';
+        }).join('') +
+        '<button type="button" class="ss-add-person" data-act="addp"' + (p.pessoas.length >= MAX_PESSOAS ? ' disabled' : '') + '>' + ICON.plus + 'Palestrante</button>' +
+      '</div>';
+    }).join('');
+    $$('textarea', lista).forEach(crescer);
+    $('.ss-add-pauta').disabled = n >= MAX_PAUTAS;
+  }
+  function crescer(ta) { ta.style.height = '22px'; ta.style.height = ta.scrollHeight + 'px'; }
+
+  lista.addEventListener('input', function (e) {
+    var el = e.target, f = el.dataset.f; if (!f) return;
+    var pi = +el.closest('.ss-pauta').dataset.p;
+    if (f === 'nome') st.pautas[pi].pessoas[+el.closest('.ss-person').dataset.k].nome = el.value;
+    else st.pautas[pi][f] = el.value;
+    if (el.tagName === 'TEXTAREA') crescer(el);
+    salvar(); agendar();
+  });
+  lista.addEventListener('change', function (e) {
+    var inp = e.target.closest('input[data-foto]'); if (!inp) return;
+    var f = inp.files && inp.files[0];
+    var destino = { p: +inp.closest('.ss-pauta').dataset.p, k: +inp.closest('.ss-person').dataset.k };
+    inp.value = '';
+    if (f) processarFoto(f, destino);
+  });
+  lista.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+    var pi = +b.closest('.ss-pauta').dataset.p, ps = st.pautas;
+    var act = b.dataset.act;
+    if (act === 'up' || act === 'down') {
+      var j = act === 'up' ? pi - 1 : pi + 1;
+      var t = ps[pi]; ps[pi] = ps[j]; ps[j] = t;
+    } else if (act === 'del') {
+      var removida = ps.splice(pi, 1)[0];
+      oferecerDesfazer('Pauta "' + (removida.titulo || 'sem título') + '" removida.', function () {
+        st.pautas.splice(Math.min(pi, st.pautas.length), 0, removida);
+      });
+    } else if (act === 'addp') {
+      ps[pi].pessoas.push({ nome: '', foto: '' });
+    } else if (act === 'delp') {
+      ps[pi].pessoas.splice(+b.closest('.ss-person').dataset.k, 1);
+    }
+    montarPautas(); salvar(); agendar();
+    if (act === 'addp') { var ins = $$('.ss-pauta[data-p="' + pi + '"] input[data-f="nome"]'); ins[ins.length - 1].focus(); }
+  });
+
+  $('.ss-add-pauta').addEventListener('click', function () {
+    var ult = st.pautas[st.pautas.length - 1];
+    var hora = ult && ult.hora ? somar(ult.hora, 15) : '08:00';
+    st.pautas.push({ titulo: 'Título da pauta', hora: hora, pessoas: [{ nome: '', foto: '' }] });
+    montarPautas(); salvar(); agendar();
+    var tas = $$('.ss-pauta textarea'); var ta = tas[tas.length - 1];
+    ta.focus(); ta.select();
+  });
+  function somar(h, min) {
+    var p = h.split(':'), t = parseInt(p[0], 10) * 60 + parseInt(p[1], 10) + min;
+    return ('0' + Math.floor(t / 60) % 24).slice(-2) + ':' + ('0' + t % 60).slice(-2);
+  }
+
+  var btnReset = $('.ss-reset'), timerReset;
+  btnReset.addEventListener('click', function () {
+    if (!btnReset.classList.contains('is-confirm')) {
+      btnReset.classList.add('is-confirm');
+      btnReset.textContent = 'Clique de novo para apagar tudo';
+      clearTimeout(timerReset);
+      timerReset = setTimeout(function () { btnReset.classList.remove('is-confirm'); btnReset.textContent = 'Restaurar modelo'; }, 4000);
+      return;
+    }
+    clearTimeout(timerReset);
+    btnReset.classList.remove('is-confirm'); btnReset.textContent = 'Restaurar modelo';
+    var anterior = JSON.parse(JSON.stringify(st));
+    try { localStorage.removeItem(CHAVE); } catch (e) {}
+    oferecerDesfazer('Modelo restaurado.', function () { st = anterior; $$('[data-k]').forEach(function (el) { el.value = st[el.dataset.k]; }); });
+    st = modelo();
+    $$('[data-k]').forEach(function (el) { el.value = st[el.dataset.k]; });
+    montarPautas(); agendar();
+  });
+
+  /* ---------- Fotos ---------- */
+  var arquivo = $('.ss-file'), alvo = null, erro = $('.ss-error');
+  function escolherFoto(p, k) { alvo = { p: p, k: k }; arquivo.click(); }
+  arquivo.addEventListener('change', function () {
+    var f = arquivo.files[0]; arquivo.value = '';
+    if (f && alvo) processarFoto(f, alvo);
+  });
+  function processarFoto(f, destino) {
+    erro.hidden = true;
+    if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { mostrarErro('Esse arquivo não é uma imagem. Use PNG, JPG ou WEBP.'); return; }
+    if (f.size > 20 * 1024 * 1024) { mostrarErro('A foto passa de 20 MB. Reduza o tamanho e tente de novo.'); return; }
+    var url = URL.createObjectURL(f), img = new Image();
+    img.onload = function () {
+      // recorta em quadrado no centro e reduz para 320 px
+      var lado = Math.min(img.naturalWidth, img.naturalHeight), c = document.createElement('canvas');
+      c.width = c.height = 320;
+      c.getContext('2d').drawImage(img, (img.naturalWidth - lado) / 2, (img.naturalHeight - lado) / 2, lado, lado, 0, 0, 320, 320);
+      URL.revokeObjectURL(url);
+      var pe = st.pautas[destino.p] && st.pautas[destino.p].pessoas[destino.k];
+      if (!pe) return;
+      pe.foto = c.toDataURL('image/jpeg', 0.88);
+      montarPautas(); salvar(); agendar();
+    };
+    img.onerror = function () { mostrarErro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
+    img.src = url;
+  }
+  function mostrarErro(t) { erro.textContent = t; erro.hidden = false; }
+
+  var barra = $('.ss-undo'), acaoDesfazer = null, timerDesfazer;
+  function oferecerDesfazer(texto, fn) {
+    acaoDesfazer = fn;
+    $('.ss-undo-text').textContent = texto;
+    barra.hidden = false;
+    clearTimeout(timerDesfazer);
+    timerDesfazer = setTimeout(function () { barra.hidden = true; acaoDesfazer = null; }, 8000);
+  }
+  $('.ss-undo-btn').addEventListener('click', function () {
+    if (acaoDesfazer) { acaoDesfazer(); acaoDesfazer = null; montarPautas(); salvar(); agendar(); }
+    barra.hidden = true;
+  });
+
+  /* ---------- Desenho ---------- */
+  var canvas = $('.ss-canvas'), ctx = canvas.getContext('2d');
+  var alvosFoto = [];
+
+  function quebrar(texto, maxW, maxLinhas) {
+    var palavras = String(texto || '').trim().split(/\s+/).filter(Boolean), linhas = [], atual = '';
+    palavras.forEach(function (p) {
+      var t = atual ? atual + ' ' + p : p;
+      if (ctx.measureText(t).width > maxW && atual) { linhas.push(atual); atual = p; } else atual = t;
+    });
+    if (atual) linhas.push(atual);
+    if (maxLinhas && linhas.length > maxLinhas) {
+      linhas = linhas.slice(0, maxLinhas);
+      var u = linhas[maxLinhas - 1];
+      while (u.length && ctx.measureText(u + '…').width > maxW) u = u.slice(0, -1);
+      linhas[maxLinhas - 1] = u.trim() + '…';
+    }
+    return linhas;
+  }
+  function retRed(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function iniciais(nome) {
+    var p = String(nome || '').trim().split(/\s+/).filter(Boolean);
+    return ((p[0] || '?')[0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase();
+  }
+
+  var FOGUETE = [
+    'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z',
+    'M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z',
+    'M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0',
+    'M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5'
+  ];
+
+  // Mede (seco) e desenha a peça; devolve a altura total
+  function compor(seco, H) {
+    var y = 360;
+    var CARD_W = 435, CARD_H = 146, CARD_GAP = 28;
+    var plano = [];
+    st.pautas.forEach(function (p) {
+      ctx.font = '700 76px ' + FONTE;
+      var linhas = quebrar(p.titulo || ' ', W - X0 - 40, 3);
+      var item = { p: p, linhas: linhas, yTit: y };
+      y += linhas.length * 76 + 22;
+      item.yCards = y;
+      y += p.pessoas.length * CARD_H + (p.pessoas.length - 1) * CARD_GAP;
+      item.yFim = y;
+      y += 62;
+      plano.push(item);
+    });
+    var alturaTotal = Math.max(MIN_H, Math.round(y - 62 + 122));
+    if (seco) return alturaTotal;
+
+    // Fundo
+    ctx.fillStyle = FUNDO; ctx.fillRect(0, 0, W, H);
+    if (artes.allhands) ctx.drawImage(artes.allhands, 0, -47, 1099, 479);
+    if (artes.union) ctx.drawImage(artes.union, 642, H - 411, 595, 603);
+
+    // Cabeçalho: ícone + selo
+    ctx.fillStyle = ROXO;
+    ctx.beginPath(); ctx.arc(124, 256, 25, 0, Math.PI * 2); ctx.fill();
+    ctx.save();
+    ctx.translate(124 - 12.5, 256 - 12.5); ctx.scale(25 / 24, 25 / 24);
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.8; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    FOGUETE.forEach(function (d) { ctx.stroke(new Path2D(d)); });
+    ctx.restore();
+
+    ctx.font = '700 22px ' + FONTE;
+    var selo = 'All hands • SIEG', sw = ctx.measureText(selo).width + 54;
+    ctx.fillStyle = ROXO; retRed(161, 231, sw, 50, 25); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(selo, 161 + sw / 2, 257);
+
+    // Data
+    var dx = Math.max(438, 161 + sw + 46);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = TINTA;
+    var forte = 'Dia ' + (st.dia || '') + ' ';
+    ctx.font = '700 34px ' + FONTE; ctx.fillText(forte, dx, 251);
+    var fw = ctx.measureText(forte).width;
+    ctx.font = '400 34px ' + FONTE; ctx.fillText('de ' + (st.mes || ''), dx + fw, 251);
+    var periodo = st.inicio && st.fim ? 'Das ' + faixa(st.inicio) + ' às ' + faixa(st.fim) : (st.inicio ? 'A partir das ' + faixa(st.inicio) : '');
+    ctx.fillText(periodo, dx, 287);
+
+    // Pautas
+    alvosFoto = [];
+    plano.forEach(function (it, pi) {
+      ctx.fillStyle = ROXO; ctx.font = '700 76px ' + FONTE; ctx.textBaseline = 'alphabetic';
+      it.linhas.forEach(function (ln, k) { ctx.fillText(ln, X0, it.yTit + 60 + k * 76); });
+
+      it.p.pessoas.forEach(function (pe, k) {
+        var cy = it.yCards + k * (CARD_H + CARD_GAP);
+        var g = ctx.createLinearGradient(X0, cy, X0 + CARD_W, cy + CARD_H);
+        g.addColorStop(0, '#d9dade'); g.addColorStop(1, '#e8e9ec');
+        ctx.fillStyle = g; retRed(X0, cy, CARD_W, CARD_H, 40); ctx.fill();
+
+        var fx = X0 + 81, fy = cy + CARD_H / 2;
+        ctx.fillStyle = ROXO; ctx.beginPath(); ctx.arc(fx, fy, 58, 0, Math.PI * 2); ctx.fill();
+        var img = imagemDe(pe.foto);
+        ctx.save(); ctx.beginPath(); ctx.arc(fx, fy, 54, 0, Math.PI * 2); ctx.clip();
+        if (img) ctx.drawImage(img, fx - 54, fy - 54, 108, 108);
+        else {
+          ctx.fillStyle = '#e4dcf2'; ctx.fillRect(fx - 54, fy - 54, 108, 108);
+          ctx.fillStyle = ROXO; ctx.font = '700 38px ' + FONTE; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(iniciais(pe.nome), fx, fy + 2);
+        }
+        ctx.restore();
+        alvosFoto.push({ x: fx, y: fy, r: 58, p: pi, k: k });
+
+        // Nome
+        ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = TINTA;
+        var tam = 36, nomes;
+        do { ctx.font = '700 ' + tam + 'px ' + FONTE; nomes = quebrar(pe.nome || 'Nome do palestrante', 262, 0); tam -= 2; } while (nomes.length > 2 && tam >= 26);
+        if (nomes.length > 2) { ctx.font = '700 ' + (tam + 2) + 'px ' + FONTE; nomes = quebrar(pe.nome, 262, 2); }
+        var lh = (tam + 2) * 1.05, base = fy - (nomes.length - 1) * lh / 2 + (tam + 2) * 0.35;
+        if (!pe.nome) ctx.fillStyle = 'rgba(17,0,36,.35)';
+        nomes.forEach(function (ln, j) { ctx.fillText(ln, X0 + 158, base + j * lh); });
+      });
+
+      // Horário, centralizado no grupo de cards
+      ctx.fillStyle = TINTA; ctx.font = '700 34px ' + FONTE; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText(horaPauta(it.p.hora), X0 + CARD_W + 27, (it.yCards + it.yFim) / 2 + 2);
+    });
+    return H;
+  }
+
+  var pendente = false;
+  function agendar() {
+    if (pendente) return;
+    pendente = true;
+    requestAnimationFrame(function () { pendente = false; desenhar(); });
+  }
+  function desenhar() {
+    var H = compor(true);
+    if (canvas.height !== H) canvas.height = H;
+    compor(false, H);
+    $('.ss-export-hint').textContent = 'Peça em 1080 × ' + H + ' px' + (H > MIN_H ? ', a altura cresce com o número de pautas.' : '.');
+  }
+
+  canvas.addEventListener('mousemove', function (e) { canvas.classList.toggle('is-photo', !!acerto(e)); });
+  canvas.addEventListener('click', function (e) { var a = acerto(e); if (a) escolherFoto(a.p, a.k); });
+  function acerto(e) {
+    var r = canvas.getBoundingClientRect();
+    var x = (e.clientX - r.left) * canvas.width / r.width, y = (e.clientY - r.top) * canvas.height / r.height;
+    for (var i = 0; i < alvosFoto.length; i++) {
+      var a = alvosFoto[i];
+      if ((x - a.x) * (x - a.x) + (y - a.y) * (y - a.y) <= a.r * a.r) return a;
+    }
+    return null;
+  }
+
+  /* ---------- Exportar ---------- */
+  var btnExp = $('.ss-export-btn');
+  btnExp.addEventListener('click', function () {
+    var fmt = $('.ss-format select').value;
+    desenhar();
+    canvas.toBlob(function (blob) {
+      if (!blob) return;
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'sieg-all-hands-' + (st.dia || '') + '-' + String(st.mes || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') + '.' + fmt;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      btnExp.textContent = 'Exportado';
+      setTimeout(function () { btnExp.textContent = 'Exportar'; }, 1800);
+    }, fmt === 'jpg' ? 'image/jpeg' : 'image/png', 0.92);
+  });
+
+  montarPautas();
+  desenhar();
+  if (document.fonts && document.fonts.load) {
+    Promise.all(['400', '700'].map(function (w) { return document.fonts.load(w + ' 40px Figtree'); })).then(agendar, agendar);
+    document.fonts.ready.then(agendar);
+  }
+})();
+</script>
