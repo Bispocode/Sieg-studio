@@ -6,6 +6,7 @@
   - ?marca=institucional | academy | endomarketing escolhe qual apresentação abre.
   - data-gallery-url: endereço da página da galeria do SIEG Studio (para o link "Todos os templates").
   - As edições ficam salvas no navegador de cada pessoa até ela clicar em "Restaurar modelo".
+  - Dá para adicionar, duplicar, reordenar e excluir slides, e mover os elementos no modo "Mover elementos".
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +26,20 @@
       <div class="ss-slidebar">
         <span class="ss-slidecount" aria-live="polite"></span>
         <button type="button" class="ss-reset">Restaurar modelo</button>
+      </div>
+
+      <div class="ss-slidetools" role="toolbar" aria-label="Slides">
+        <button type="button" class="ss-tool is-primary" data-slide="novo" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Novo slide</button>
+        <button type="button" class="ss-tool ss-tool-icon" data-slide="duplicar" aria-label="Duplicar slide" title="Duplicar slide"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+        <span class="ss-tools-sep"></span>
+        <button type="button" class="ss-tool ss-tool-icon" data-slide="subir" aria-label="Mover slide para antes" title="Mover para antes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+        <button type="button" class="ss-tool ss-tool-icon" data-slide="descer" aria-label="Mover slide para depois" title="Mover para depois"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <button type="button" class="ss-tool ss-tool-icon is-danger" data-slide="excluir" aria-label="Excluir slide" title="Excluir slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+        <div class="ss-layouts" role="group" aria-label="Escolha o layout do novo slide" hidden></div>
+      </div>
+      <div class="ss-undo" role="status" hidden>
+        <span class="ss-undo-text"></span>
+        <button type="button" class="ss-undo-btn">Desfazer</button>
       </div>
 
       <div class="ss-fields" aria-label="Textos do slide"></div>
@@ -61,11 +76,19 @@
 
     <div class="ss-stage">
       <div class="ss-frame"><div class="ss-host ss-deck"></div></div>
-      <div class="ss-pager">
-        <button type="button" data-go="-1" aria-label="Slide anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg></button>
-        <span class="ss-pager-n"></span>
-        <button type="button" data-go="1" aria-label="Próximo slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></button>
+      <div class="ss-stagebar">
+        <div class="ss-modes" role="group" aria-label="Modo de edição">
+          <button type="button" data-modo="texto" aria-pressed="true">Editar texto</button>
+          <button type="button" data-modo="mover" aria-pressed="false">Mover elementos</button>
+        </div>
+        <div class="ss-pager">
+          <button type="button" data-go="-1" aria-label="Slide anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg></button>
+          <span class="ss-pager-n"></span>
+          <button type="button" data-go="1" aria-label="Próximo slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></button>
+        </div>
+        <button type="button" class="ss-pos-reset" hidden>Restaurar posições do slide</button>
       </div>
+      <p class="ss-stage-hint">Clique num texto do slide para editar.</p>
     </div>
 
     <nav class="ss-rail" aria-label="Slides">
@@ -129,6 +152,24 @@
 .ss-apres .ss-reset:hover{color:var(--ss-accent)}
 .ss-apres .ss-reset.is-confirm{color:#b42318;text-decoration:none;font-weight:600}
 
+.ss-apres .ss-panel{position:relative}
+.ss-apres .ss-slidetools{position:relative;display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.ss-apres .ss-tool{display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 12px;border-radius:999px;font-size:14px;background:#fff;border:1px solid #dde0e6;color:var(--ss-ink-2)}
+.ss-apres .ss-tool svg{width:16px;height:16px;flex:none}
+.ss-apres .ss-tool:hover{border-color:var(--ss-accent);color:var(--ss-accent)}
+.ss-apres .ss-tool.is-primary{background:var(--ss-accent);border-color:var(--ss-accent);color:#fff}
+.ss-apres .ss-tool.is-primary:hover{filter:brightness(1.08);color:#fff}
+.ss-apres .ss-tool-icon{width:34px;padding:0;justify-content:center}
+.ss-apres .ss-tool.is-danger:hover{color:#b42318;border-color:#f3b8b2;background:#fdecea}
+.ss-apres .ss-tool[disabled]{opacity:.35;cursor:default;border-color:#dde0e6;color:var(--ss-ink-2);background:#fff}
+.ss-apres .ss-tools-sep{flex:1}
+.ss-apres .ss-layouts{position:absolute;z-index:20;top:42px;left:0;right:0;display:grid;grid-template-columns:repeat(2,120px);justify-content:center;gap:8px;max-height:340px;overflow-y:auto;padding:12px;border-radius:14px;background:#fff;border:1px solid #dde0e6;box-shadow:0 18px 40px rgba(18,28,60,.18)}
+.ss-apres .ss-layout{position:relative;display:block;width:120px;height:67.5px;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1px #dde0e6}
+.ss-apres .ss-layout:hover,.ss-apres .ss-layout:focus-visible{box-shadow:0 0 0 2px var(--ss-accent);outline:0}
+.ss-apres .ss-layout .ss-deck{position:absolute;left:0;top:0;width:1920px;height:1080px;transform:scale(calc(120 / 1920));transform-origin:0 0;pointer-events:none}
+.ss-apres .ss-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-4px 0 12px;padding:10px 14px;border-radius:12px;background:var(--ss-ink);color:#fff;font-size:14px;flex:none}
+.ss-apres .ss-undo-btn{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px;font-size:14px}
+
 .ss-apres .ss-fields{flex:1 1 auto;min-height:120px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin:0 -6px 18px;padding:2px 6px 6px}
 .ss-apres .ss-field{
   display:flex;align-items:flex-start;gap:8px;padding:9px 14px;border-radius:20px;
@@ -174,6 +215,14 @@
 .ss-apres .ss-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .ss-apres .ss-frame{position:relative;overflow:hidden;border-radius:10px;box-shadow:0 18px 40px rgba(18,28,60,.14);background:#fff;flex:none}
 .ss-apres .ss-host{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+.ss-apres .ss-stagebar{display:flex;align-items:center;justify-content:center;gap:10px 18px;flex-wrap:wrap}
+.ss-apres .ss-modes{display:flex;padding:3px;border-radius:999px;background:linear-gradient(95deg,#e8eaef,#f8f9fb);border:1px solid rgba(255,255,255,.95)}
+.ss-apres .ss-modes button{height:32px;padding:0 14px;border-radius:999px;font-size:14px;color:var(--ss-ink-2)}
+.ss-apres .ss-modes button[aria-pressed="true"]{background:#fff;color:var(--ss-accent);font-weight:600;box-shadow:0 1px 3px rgba(18,28,60,.14)}
+.ss-apres .ss-pos-reset{font-size:13px;color:var(--ss-muted);text-decoration:underline;text-underline-offset:3px}
+.ss-apres .ss-pos-reset:hover{color:var(--ss-accent)}
+.ss-apres .ss-pos-reset[disabled]{opacity:.5;cursor:default;color:var(--ss-muted)}
+.ss-apres .ss-stage-hint{font-size:13px;color:var(--ss-muted);text-align:center;margin-top:-4px}
 .ss-apres .ss-pager{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ss-ink-2)}
 .ss-apres .ss-pager button{width:32px;height:32px;border-radius:50%;display:grid;place-items:center}
 .ss-apres .ss-pager button:hover{background:rgba(0,0,0,.06)}
@@ -199,6 +248,13 @@
 .ss-deck [data-ss-img]:hover{filter:brightness(.97)}
 .ss-deck [data-ss-img].has-img{border:0!important;background-size:cover!important;background-position:center!important}
 .ss-deck [data-ss-img].has-img>*{visibility:hidden}
+.ss-host.is-move{touch-action:none}
+.ss-host.is-move [data-ss-move]{cursor:move;outline:4px dashed rgba(127,140,170,.5);outline-offset:8px}
+.ss-host.is-move [data-ss-move]:hover{outline-color:var(--ss-accent-edit,#67a0fa)}
+.ss-host.is-move [data-ss-edit]{cursor:move}
+.ss-host.is-move [data-ss-img]:hover{filter:none}
+.ss-host.is-move [data-ss-move].ss-sel{outline:6px solid var(--ss-accent-edit,#67a0fa)}
+.ss-host.is-move,.ss-host.is-move *{user-select:none;-webkit-user-select:none}
 
 @media (max-width:980px){
   .ss-apres .ss-editor{grid-template-columns:minmax(0,1fr);height:auto;min-height:0}
@@ -256,11 +312,27 @@
   try { document.title = 'Apresentação modelo 1 | ' + marca.nome; } catch (e) {}
 
   /* ---------- Slides ---------- */
-  var slides = Array.prototype.slice.call(fonte.content.children).map(function (el) { return el.cloneNode(true); });
-  var N = slides.length;
+  // Cada slide da apresentação vem de um modelo (layout) do <template>. A pessoa pode
+  // adicionar, duplicar, reordenar e excluir slides, e mover os elementos de cada um.
+  var modelos = Array.prototype.slice.call(fonte.content.children);
+  var NM = modelos.length;
   var CHAVE = 'ss-apres-' + marcaId;
 
-  function lerSalvo() { try { return JSON.parse(localStorage.getItem(CHAVE)) || { t: {}, img: {} }; } catch (e) { return { t: {}, img: {} }; } }
+  function uid() { return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function lerSalvo() {
+    var s;
+    try { s = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) {}
+    if (s && s.v === 2 && Array.isArray(s.slides)) {
+      var ok = s.slides.filter(function (d) { return d && d.src >= 0 && d.src < NM; });
+      if (ok.length) {
+        ok.forEach(function (d) { d.t = d.t || {}; d.p = d.p || {}; d.img = d.img || ''; d.id = d.id || uid(); });
+        return { v: 2, slides: ok };
+      }
+    }
+    // Formato antigo ({ t: {i: {...}}, img: {i: url} }, um slide por modelo) ou nada salvo
+    var t = (s && s.t) || {}, img = (s && s.img) || {};
+    return { v: 2, slides: modelos.map(function (_, i) { return { id: 'm' + i, src: i, t: t[i] || {}, img: img[i] || '', p: {} }; }) };
+  }
   var salvo = lerSalvo();
   var timerSalvar;
   function salvar() {
@@ -273,9 +345,11 @@
 
   var suportaPlain = (function () { var d = document.createElement('div'); try { d.contentEditable = 'plaintext-only'; return d.contentEditable === 'plaintext-only'; } catch (e) { return false; } })();
 
-  // Prepara cada slide: marca textos editáveis e a área de imagem
-  var campos = []; // campos[i] = [{el, chave, rotulo}]
-  slides.forEach(function (slide, i) {
+  function ehRodape(el) { var f = el.closest('[data-frame-id]'); return !!f && f.style.bottom === '56px'; }
+
+  // Monta o DOM de um slide a partir do modelo e das edições salvas (d)
+  function montarSlide(d) {
+    var slide = modelos[d.src].cloneNode(true);
     if (FONTE_SLIDES) {
       $$('[style*="font-family"]', slide).forEach(function (el) {
         if (el.style.fontFamily.indexOf('Plus Jakarta Sans') >= 0) el.style.fontFamily = '"' + FONTE_SLIDES + '", Arial, sans-serif';
@@ -283,16 +357,17 @@
     }
     var lista = [];
     $$('[data-text-path]', slide).forEach(function (el) {
-      var frame = el.closest('[data-frame-id]');
-      if (frame && frame.style.bottom === '56px') return; // rodapé fixo (marca e número)
+      if (ehRodape(el)) return; // rodapé fixo (marca e número)
       var txt = el.textContent.trim();
       if (/^\[?Insira uma imagem/i.test(txt)) {
         var area = el.parentElement;
         area.setAttribute('data-ss-img', '');
+        area.setAttribute('data-ss-move', '');
         area.setAttribute('role', 'button');
         area.setAttribute('aria-label', 'Inserir imagem neste slide');
         return;
       }
+      el.setAttribute('data-ss-move', '');
       var ul = el.querySelector('ul');
       if (ul) {
         $$('li', ul).forEach(function (li, k) { lista.push({ el: li, chave: el.dataset.textPath + '.li' + k, rotulo: 'Destaque' }); });
@@ -300,16 +375,31 @@
         lista.push({ el: el, chave: el.dataset.textPath, rotulo: rotuloDe(el, txt) });
       }
     });
+    // Ícones e quadros decorativos (logo, grafismo) também podem ser movidos
+    $$('[data-icon-path]', slide).forEach(function (el) {
+      if (!ehRodape(el) && !el.closest('[data-ss-move]')) el.setAttribute('data-ss-move', '');
+    });
+    Array.prototype.forEach.call(slide.children, function (f) {
+      if (!f.hasAttribute('data-frame-id') || f.style.bottom === '56px' || f.style.inset === '0px' || /inset:\s*0px/.test(f.getAttribute('style') || '')) return;
+      if (f.querySelector('[data-ss-move]')) return;
+      f.setAttribute('data-ss-move', '');
+    });
+    var moveis = $$('[data-ss-move]', slide);
+    moveis.forEach(function (el, k) {
+      el.setAttribute('data-ss-move', 'e' + k);
+      var p = d.p['e' + k];
+      if (p) el.style.translate = p[0] + 'px ' + p[1] + 'px';
+    });
     lista.forEach(function (c) {
       c.el.setAttribute('data-ss-edit', c.chave);
       c.el.contentEditable = suportaPlain ? 'plaintext-only' : 'true';
       c.el.spellcheck = true;
-      var v = salvo.t[i] && salvo.t[i][c.chave];
+      var v = d.t[c.chave];
       if (typeof v === 'string') c.el.textContent = v;
     });
-    if (salvo.img[i]) aplicarImagem(slide, salvo.img[i]);
-    campos.push(lista);
-  });
+    if (d.img) aplicarImagem(slide, d.img);
+    return { d: d, el: slide, campos: lista };
+  }
 
   function rotuloDe(el, txt) {
     var nivel = el.getAttribute('aria-level');
@@ -328,35 +418,49 @@
     else { area.style.backgroundImage = ''; area.classList.remove('has-img'); }
   }
 
+  var deck = salvo.slides.map(montarSlide);
+
+  // Mantém o número do rodapé de cada slide de acordo com a posição atual
+  function renumerar() {
+    deck.forEach(function (s, i) {
+      var nums = $$('[data-text-path]', s.el).filter(function (el) { return ehRodape(el) && /^\d{1,3}$/.test(el.textContent.trim()); });
+      if (nums.length) nums[nums.length - 1].textContent = ('0' + (i + 1)).slice(-2);
+    });
+  }
+  renumerar();
+
   /* ---------- Palco e navegação ---------- */
   var host = $('.ss-host'), frame = $('.ss-frame'), stage = $('.ss-stage');
-  var atual = Math.min(Math.max((parseInt(params.get('slide'), 10) || 1) - 1, 0), N - 1);
+  var atual = Math.min(Math.max((parseInt(params.get('slide'), 10) || 1) - 1, 0), deck.length - 1);
+  var escala = 1;
 
   function ajustar() {
-    var pager = $('.ss-pager').offsetHeight + 14;
-    var w = stage.clientWidth, h = stage.clientHeight - pager;
+    var barra = $('.ss-stagebar').offsetHeight + $('.ss-stage-hint').offsetHeight + 28;
+    var w = stage.clientWidth, h = stage.clientHeight - barra;
     if (window.matchMedia('(max-width:980px)').matches) h = window.innerHeight * 0.6;
-    var s = Math.max(0.1, Math.min(w / 1920, h / 1080));
-    frame.style.width = Math.round(1920 * s) + 'px';
-    frame.style.height = Math.round(1080 * s) + 'px';
-    host.style.transform = 'scale(' + s + ')';
+    escala = Math.max(0.1, Math.min(w / 1920, h / 1080));
+    frame.style.width = Math.round(1920 * escala) + 'px';
+    frame.style.height = Math.round(1080 * escala) + 'px';
+    host.style.transform = 'scale(' + escala + ')';
   }
   if (window.ResizeObserver) new ResizeObserver(ajustar).observe(stage);
   window.addEventListener('resize', ajustar);
 
   // Miniaturas
   var trilho = $('.ss-variants');
-  trilho.innerHTML = slides.map(function (_, i) {
-    return '<button type="button" class="ss-thumb" data-i="' + i + '" aria-label="Slide ' + (i + 1) + '"><div class="ss-deck"></div></button>';
-  }).join('');
+  function montarTrilho() {
+    trilho.innerHTML = deck.map(function (_, i) {
+      return '<button type="button" class="ss-thumb" data-i="' + i + '" aria-label="Slide ' + (i + 1) + '"><div class="ss-deck"></div></button>';
+    }).join('');
+    for (var i = 0; i < deck.length; i++) atualizarMini(i);
+  }
   function atualizarMini(i) {
     var box = $('.ss-thumb[data-i="' + i + '"] .ss-deck');
-    var c = slides[i].cloneNode(true);
-    $$('[contenteditable]', c).forEach(function (e) { e.removeAttribute('contenteditable'); });
+    if (!box || !deck[i]) return;
     box.innerHTML = '';
-    box.appendChild(c);
+    box.appendChild(copiaLimpa(deck[i].el));
   }
-  for (var i = 0; i < N; i++) atualizarMini(i);
+  montarTrilho();
   trilho.addEventListener('click', function (e) {
     var b = e.target.closest('.ss-thumb');
     if (b) irPara(+b.dataset.i);
@@ -369,32 +473,212 @@
   document.addEventListener('keydown', function (e) {
     var a = document.activeElement;
     if (a && (a.isContentEditable || /INPUT|TEXTAREA|SELECT/.test(a.tagName))) return;
+    if (modo === 'mover' && selecionado && /^Arrow/.test(e.key)) {
+      var passo = e.shiftKey ? 40 : 4;
+      var m = { ArrowLeft: [-passo, 0], ArrowRight: [passo, 0], ArrowUp: [0, -passo], ArrowDown: [0, passo] }[e.key];
+      var p = posDe(selecionado);
+      definirPos(selecionado, p[0] + m[0], p[1] + m[1]);
+      gravarPos(selecionado);
+      e.preventDefault();
+      return;
+    }
+    if (e.key === 'Escape' && selecionado) { selecionar(null); return; }
     if (e.key === 'ArrowRight' || e.key === 'PageDown') { irPara(atual + 1); e.preventDefault(); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { irPara(atual - 1); e.preventDefault(); }
   });
 
   function irPara(i) {
-    if (i < 0 || i >= N) return;
+    if (i < 0 || i >= deck.length) return;
     atual = i;
+    selecionar(null);
     host.innerHTML = '';
-    host.appendChild(slides[i]);
+    host.appendChild(deck[i].el);
     $$('.ss-thumb').forEach(function (b) { b.setAttribute('aria-current', String(+b.dataset.i === i)); });
     var cur = $('.ss-thumb[data-i="' + i + '"]');
     if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-    $('.ss-slidecount').textContent = 'Slide ' + (i + 1) + ' de ' + N;
-    $('.ss-pager-n').textContent = (i + 1) + ' / ' + N;
+    $('.ss-slidecount').textContent = 'Slide ' + (i + 1) + ' de ' + deck.length;
+    $('.ss-pager-n').textContent = (i + 1) + ' / ' + deck.length;
     $('[data-go="-1"]').disabled = i === 0;
-    $('[data-go="1"]').disabled = i === N - 1;
+    $('[data-go="1"]').disabled = i === deck.length - 1;
+    $('[data-slide="subir"]').disabled = i === 0;
+    $('[data-slide="descer"]').disabled = i === deck.length - 1;
+    $('[data-slide="excluir"]').disabled = deck.length === 1;
     try { history.replaceState(null, '', '?marca=' + marcaId + '&slide=' + (i + 1)); } catch (e) {}
     montarCampos();
     montarDrop();
+    atualizarBotaoPos();
     if (typeof formato !== 'undefined' && formato) atualizarDica();
   }
+
+  /* ---------- Adicionar, duplicar, reordenar e excluir slides ---------- */
+  function sincronizar() {
+    salvo.slides = deck.map(function (s) { return s.d; });
+    renumerar();
+    montarTrilho();
+    salvar();
+  }
+  function inserir(d, pos) {
+    deck.splice(pos, 0, montarSlide(d));
+    sincronizar();
+    irPara(pos);
+  }
+
+  var btnNovo = $('[data-slide="novo"]'), layouts = $('.ss-layouts');
+  layouts.innerHTML = modelos.map(function (_, i) {
+    return '<button type="button" class="ss-layout" data-src="' + i + '" aria-label="Novo slide com o layout ' + (i + 1) + '"><div class="ss-deck"></div></button>';
+  }).join('');
+  modelos.forEach(function (_, i) {
+    $('.ss-layout[data-src="' + i + '"] .ss-deck', layouts).appendChild(copiaLimpa(montarSlide({ src: i, t: {}, img: '', p: {} }).el));
+  });
+  function abrirLayouts(abrir) {
+    layouts.hidden = !abrir;
+    btnNovo.setAttribute('aria-expanded', String(abrir));
+    if (abrir) { var b = $('.ss-layout', layouts); if (b) b.focus(); }
+  }
+  layouts.addEventListener('click', function (e) {
+    var b = e.target.closest('.ss-layout'); if (!b) return;
+    abrirLayouts(false);
+    inserir({ id: uid(), src: +b.dataset.src, t: {}, img: '', p: {} }, atual + 1);
+  });
+  layouts.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { e.stopPropagation(); abrirLayouts(false); btnNovo.focus(); }
+  });
+  document.addEventListener('click', function (e) {
+    if (!layouts.hidden && !e.target.closest('.ss-layouts') && !e.target.closest('[data-slide="novo"]')) abrirLayouts(false);
+  });
+
+  $('.ss-slidetools').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-slide]'); if (!b || b.disabled) return;
+    var acao = b.dataset.slide;
+    if (acao === 'novo') { abrirLayouts(layouts.hidden); return; }
+    if (acao === 'duplicar') {
+      var copia = JSON.parse(JSON.stringify(deck[atual].d));
+      copia.id = uid();
+      inserir(copia, atual + 1);
+    } else if (acao === 'subir' || acao === 'descer') {
+      var j = acao === 'subir' ? atual - 1 : atual + 1;
+      var t = deck[atual]; deck[atual] = deck[j]; deck[j] = t;
+      sincronizar();
+      irPara(j);
+      var mesmo = $('[data-slide="' + acao + '"]');
+      if (mesmo && !mesmo.disabled) mesmo.focus();
+    } else if (acao === 'excluir') {
+      if (deck.length === 1) return;
+      var pos = atual, removido = deck.splice(pos, 1)[0];
+      sincronizar();
+      irPara(Math.min(pos, deck.length - 1));
+      oferecerDesfazer('Slide ' + (pos + 1) + ' excluído.', function () {
+        deck.splice(Math.min(pos, deck.length), 0, removido);
+        sincronizar();
+        irPara(Math.min(pos, deck.length - 1));
+      });
+    }
+  });
+
+  var barraDesfazer = $('.ss-undo'), acaoDesfazer = null, timerDesfazer;
+  function oferecerDesfazer(texto, fn) {
+    acaoDesfazer = fn;
+    $('.ss-undo-text').textContent = texto;
+    barraDesfazer.hidden = false;
+    clearTimeout(timerDesfazer);
+    timerDesfazer = setTimeout(function () { barraDesfazer.hidden = true; acaoDesfazer = null; }, 8000);
+  }
+  $('.ss-undo-btn').addEventListener('click', function () {
+    if (acaoDesfazer) { acaoDesfazer(); acaoDesfazer = null; }
+    barraDesfazer.hidden = true;
+  });
+
+  /* ---------- Mover elementos ---------- */
+  var modo = 'texto', selecionado = null, arrasto = null;
+  var btnPos = $('.ss-pos-reset');
+
+  function definirModo(m) {
+    modo = m;
+    $$('[data-modo]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.modo === m)); });
+    host.classList.toggle('is-move', m === 'mover');
+    if (m === 'mover' && document.activeElement && document.activeElement.isContentEditable) document.activeElement.blur();
+    if (m !== 'mover') selecionar(null);
+    $('.ss-stage-hint').textContent = m === 'mover'
+      ? 'Arraste um elemento para mudar a posição. Com ele selecionado, as setas ajustam com precisão (Shift anda mais).'
+      : 'Clique num texto do slide para editar.';
+    atualizarBotaoPos();
+  }
+  $('.ss-modes').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-modo]'); if (b) definirModo(b.dataset.modo);
+  });
+
+  function posDe(el) {
+    var p = deck[atual].d.p[el.getAttribute('data-ss-move')];
+    return p ? p.slice() : [0, 0];
+  }
+  function definirPos(el, x, y) {
+    el.style.translate = (x || y) ? Math.round(x) + 'px ' + Math.round(y) + 'px' : '';
+  }
+  function gravarPos(el) {
+    var k = el.getAttribute('data-ss-move'), d = deck[atual].d;
+    var v = (el.style.translate || '').match(/-?[\d.]+/g);
+    if (v && (+v[0] || +(v[1] || 0))) d.p[k] = [Math.round(+v[0]), Math.round(+(v[1] || 0))];
+    else delete d.p[k];
+    salvar();
+    atualizarMini(atual);
+    atualizarBotaoPos();
+  }
+  function selecionar(el) {
+    if (selecionado) selecionado.classList.remove('ss-sel');
+    selecionado = el;
+    if (el) el.classList.add('ss-sel');
+    atualizarBotaoPos();
+  }
+  function atualizarBotaoPos() {
+    var d = deck[atual] && deck[atual].d;
+    var movidos = d ? Object.keys(d.p).length : 0;
+    btnPos.hidden = modo !== 'mover';
+    if (selecionado) {
+      btnPos.textContent = 'Restaurar posição do elemento';
+      btnPos.disabled = !d.p[selecionado.getAttribute('data-ss-move')];
+    } else {
+      btnPos.textContent = 'Restaurar posições do slide';
+      btnPos.disabled = !movidos;
+    }
+  }
+  btnPos.addEventListener('click', function () {
+    var d = deck[atual].d;
+    var alvos = selecionado ? [selecionado] : $$('[data-ss-move]', deck[atual].el);
+    alvos.forEach(function (el) { definirPos(el, 0, 0); delete d.p[el.getAttribute('data-ss-move')]; });
+    salvar();
+    atualizarMini(atual);
+    atualizarBotaoPos();
+  });
+
+  host.addEventListener('pointerdown', function (e) {
+    if (modo !== 'mover' || e.button > 0) return;
+    var el = e.target.closest('[data-ss-move]');
+    e.preventDefault(); // evita foco no texto e seleção durante o arrasto
+    selecionar(el);
+    if (!el) return;
+    var p = posDe(el);
+    arrasto = { el: el, x: e.clientX, y: e.clientY, bx: p[0], by: p[1], moveu: false };
+    host.setPointerCapture(e.pointerId);
+  });
+  host.addEventListener('pointermove', function (e) {
+    if (!arrasto) return;
+    var dx = (e.clientX - arrasto.x) / escala, dy = (e.clientY - arrasto.y) / escala;
+    if (!arrasto.moveu && Math.abs(dx) + Math.abs(dy) < 3) return;
+    arrasto.moveu = true;
+    definirPos(arrasto.el, arrasto.bx + dx, arrasto.by + dy);
+  });
+  ['pointerup', 'pointercancel'].forEach(function (ev) {
+    host.addEventListener(ev, function () {
+      if (!arrasto) return;
+      if (arrasto.moveu) gravarPos(arrasto.el);
+      arrasto = null;
+    });
+  });
 
   /* ---------- Campos do painel ---------- */
   var painel = $('.ss-fields');
   function montarCampos() {
-    var lista = campos[atual];
+    var lista = deck[atual].campos;
     if (!lista.length) { painel.innerHTML = '<p class="ss-fields-empty">Este slide não tem textos editáveis.</p>'; return; }
     painel.innerHTML = lista.map(function (c, k) {
       return '<label class="ss-field"><span>' + c.rotulo + ':</span><textarea rows="1" data-k="' + k + '"></textarea></label>';
@@ -408,24 +692,24 @@
 
   painel.addEventListener('input', function (e) {
     var ta = e.target.closest('textarea'); if (!ta) return;
-    var c = campos[atual][+ta.dataset.k];
+    var c = deck[atual].campos[+ta.dataset.k];
     c.el.textContent = ta.value;
     crescer(ta);
     registrar(c);
   });
   painel.addEventListener('focusin', function (e) {
     var ta = e.target.closest('textarea'); if (!ta) return;
-    campos[atual][+ta.dataset.k].el.classList.add('ss-hl');
+    deck[atual].campos[+ta.dataset.k].el.classList.add('ss-hl');
   });
   painel.addEventListener('focusout', function (e) {
     var ta = e.target.closest('textarea'); if (!ta) return;
-    var c = campos[atual][+ta.dataset.k]; if (c) c.el.classList.remove('ss-hl');
+    var c = deck[atual].campos[+ta.dataset.k]; if (c) c.el.classList.remove('ss-hl');
   });
 
   // Edição direto no slide
   host.addEventListener('input', function (e) {
     var el = e.target.closest('[data-ss-edit]'); if (!el) return;
-    var lista = campos[atual];
+    var lista = deck[atual].campos;
     for (var k = 0; k < lista.length; k++) {
       if (lista[k].el === el) {
         var ta = painel.querySelector('textarea[data-k="' + k + '"]');
@@ -437,6 +721,7 @@
   });
   host.addEventListener('focusin', function (e) {
     var el = e.target.closest('[data-ss-edit]'); if (!el) return;
+    if (modo === 'mover') { el.blur(); return; }
     var t = el.textContent.trim();
     if (/^\[.*\]$/.test(t) && window.getSelection) {
       setTimeout(function () {
@@ -457,8 +742,7 @@
 
   var timerMini;
   function registrar(c) {
-    salvo.t[atual] = salvo.t[atual] || {};
-    salvo.t[atual][c.chave] = c.el.innerText.replace(/\n$/, '');
+    deck[atual].d.t[c.chave] = c.el.innerText.replace(/\n$/, '');
     salvar();
     clearTimeout(timerMini);
     var i = atual;
@@ -475,24 +759,26 @@
       return;
     }
     try { localStorage.removeItem(CHAVE); } catch (e) {}
-    location.reload();
+    location.href = location.pathname + '?marca=' + marcaId;
   });
 
   /* ---------- Imagem ---------- */
   var drop = $('.ss-drop'), file = $('input[type=file]', drop), erro = $('.ss-drop-error');
-  var slideComImagem = slides.map(function (s) { return !!s.querySelector('[data-ss-img]'); }).indexOf(true);
+  function temArea(i) { return !!deck[i] && !!deck[i].el.querySelector('[data-ss-img]'); }
 
   function montarDrop() {
     erro.hidden = true;
-    var tem = !!slides[atual].querySelector('[data-ss-img]');
+    var tem = temArea(atual);
     drop.classList.toggle('is-off', !tem);
     drop.setAttribute('aria-disabled', String(!tem));
     drop.setAttribute('aria-label', tem ? 'Inserir imagem neste slide' : 'Este slide não tem área de imagem');
     var hint = $('.ss-drop-hint');
+    var outro = -1;
+    for (var i = 0; i < deck.length; i++) if (temArea(i)) { outro = i; break; }
     if (tem) hint.textContent = 'Arraste uma imagem ou clique para escolher';
-    else if (slideComImagem >= 0) hint.innerHTML = 'Este slide não tem área de imagem. <button type="button" data-drop="ir">Ir para o slide ' + (slideComImagem + 1) + '</button>';
+    else if (outro >= 0) hint.innerHTML = 'Este slide não tem área de imagem. <button type="button" data-drop="ir" data-i="' + outro + '">Ir para o slide ' + (outro + 1) + '</button>';
     else hint.textContent = 'Esta apresentação não tem área de imagem.';
-    var url = salvo.img[atual];
+    var url = deck[atual].d.img;
     $('.ss-drop-empty').hidden = !!url;
     $('.ss-drop-filled').hidden = !url;
     if (url) $('.ss-drop-filled img').src = url;
@@ -500,7 +786,7 @@
 
   drop.addEventListener('click', function (e) {
     var b = e.target.closest('[data-drop]');
-    if (b && b.dataset.drop === 'ir') { irPara(slideComImagem); return; }
+    if (b && b.dataset.drop === 'ir') { irPara(+b.dataset.i); return; }
     if (drop.classList.contains('is-off')) return;
     if (b && b.dataset.drop === 'remover') { definirImagem(null); return; }
     file.click();
@@ -509,13 +795,14 @@
     if ((e.key === 'Enter' || e.key === ' ') && e.target === drop && !drop.classList.contains('is-off')) { e.preventDefault(); file.click(); }
   });
   host.addEventListener('click', function (e) {
+    if (modo === 'mover') return;
     if (e.target.closest('[data-ss-img]')) file.click();
   });
   file.addEventListener('change', function () { if (file.files[0]) carregar(file.files[0]); file.value = ''; });
   ['dragenter', 'dragover'].forEach(function (ev) {
     [drop, host].forEach(function (alvo) {
       alvo.addEventListener(ev, function (e) {
-        if (!slides[atual].querySelector('[data-ss-img]')) return;
+        if (!temArea(atual)) return;
         e.preventDefault(); drop.classList.add('is-over');
       });
     });
@@ -528,7 +815,7 @@
   [drop, host].forEach(function (alvo) {
     alvo.addEventListener('drop', function (e) {
       var f = e.dataTransfer && e.dataTransfer.files[0];
-      if (f && slides[atual].querySelector('[data-ss-img]')) carregar(f);
+      if (f && temArea(atual)) carregar(f);
     });
   });
 
@@ -536,7 +823,7 @@
     erro.hidden = true;
     if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { mostrarErro('Esse arquivo não é uma imagem. Use PNG, JPG ou WEBP.'); return; }
     if (f.size > 20 * 1024 * 1024) { mostrarErro('A imagem passa de 20 MB. Reduza o tamanho e tente de novo.'); return; }
-    var img = new Image(), url = URL.createObjectURL(f);
+    var img = new Image(), url = URL.createObjectURL(f), i = atual;
     img.onload = function () {
       // reduz para no máximo 1600 px para caber no salvamento do navegador
       var r = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
@@ -544,15 +831,15 @@
       c.width = Math.round(img.naturalWidth * r); c.height = Math.round(img.naturalHeight * r);
       c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
       URL.revokeObjectURL(url);
-      definirImagem(c.toDataURL(f.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.86));
+      if (deck[i] && i === atual) definirImagem(c.toDataURL(f.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.86));
     };
     img.onerror = function () { mostrarErro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
     img.src = url;
   }
   function mostrarErro(t) { erro.textContent = t; erro.hidden = false; }
   function definirImagem(url) {
-    if (url) salvo.img[atual] = url; else delete salvo.img[atual];
-    aplicarImagem(slides[atual], url);
+    deck[atual].d.img = url || '';
+    aplicarImagem(deck[atual].el, url);
     salvar();
     atualizarMini(atual);
     montarDrop();
@@ -562,7 +849,7 @@
   var btnExp = $('.ss-export-btn'), dica = $('.ss-export-hint'), formato = $('.ss-format select');
   function atualizarDica() {
     dica.textContent = formato.value === 'pdf'
-      ? 'PDF com os ' + N + ' slides. Na janela de impressão, escolha "Salvar como PDF".'
+      ? 'PDF com os ' + deck.length + ' slides. Na janela de impressão, escolha "Salvar como PDF".'
       : 'PNG do slide ' + (atual + 1) + ' em 1920 × 1080.';
   }
   formato.addEventListener('change', atualizarDica);
@@ -575,7 +862,7 @@
   function copiaLimpa(slide) {
     var c = slide.cloneNode(true);
     $$('[contenteditable]', c).forEach(function (e) { e.removeAttribute('contenteditable'); e.removeAttribute('spellcheck'); });
-    $$('.ss-hl', c).forEach(function (e) { e.classList.remove('ss-hl'); });
+    $$('.ss-hl, .ss-sel', c).forEach(function (e) { e.classList.remove('ss-hl', 'ss-sel'); });
     return c;
   }
 
@@ -583,10 +870,10 @@
     var box = document.getElementById('ss-print');
     if (!box) { box = document.createElement('div'); box.id = 'ss-print'; document.body.appendChild(box); }
     box.innerHTML = '';
-    slides.forEach(function (s) {
+    deck.forEach(function (s) {
       var p = document.createElement('div');
       p.className = 'ss-page ss-deck';
-      p.appendChild(copiaLimpa(s));
+      p.appendChild(copiaLimpa(s.el));
       box.appendChild(p);
     });
     document.documentElement.classList.add('ss-printing');
@@ -630,7 +917,7 @@
     obterCssFonte().then(gerarPng);
   }
   function gerarPng(cssFontes) {
-    var c = copiaLimpa(slides[atual]);
+    var c = copiaLimpa(deck[atual].el);
     c.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
     var reset = '*{box-sizing:border-box;border:0 solid;margin:0;padding:0}ul{list-style:disc}' +
       '.has-img{border:0!important;background-size:cover!important;background-position:center!important}.has-img>*{visibility:hidden}';

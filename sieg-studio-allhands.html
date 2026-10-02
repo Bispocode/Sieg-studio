@@ -5,6 +5,7 @@
 
   - data-gallery-url: endereço da página da galeria do SIEG Studio (link "Todos os templates").
   - As edições e fotos ficam salvas no navegador de cada pessoa até ela clicar em "Restaurar modelo".
+  - Ao inserir uma foto, abre o ajuste de enquadramento (arrastar para posicionar, zoom pelo controle ou pela roda do mouse).
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,10 +67,31 @@
 
     <div class="ss-stage">
       <canvas class="ss-canvas" width="1080" height="1350" aria-label="Pré-visualização do anúncio All Hands"></canvas>
-      <p class="ss-stage-hint">Clique numa foto da peça para trocar.</p>
+      <p class="ss-stage-hint">Clique numa foto da peça para inserir ou ajustar o enquadramento.</p>
     </div>
   </section>
   <input type="file" class="ss-file ss-file-hidden" accept="image/png,image/jpeg,image/webp" tabindex="-1" aria-hidden="true">
+
+  <div class="ss-crop" role="dialog" aria-modal="true" aria-labelledby="ss-crop-title" hidden>
+    <div class="ss-crop-box">
+      <h3 id="ss-crop-title">Ajustar enquadramento</h3>
+      <p class="ss-crop-hint">Arraste a foto para posicionar. Use o controle ou a roda do mouse para aproximar.</p>
+      <canvas class="ss-crop-canvas" width="720" height="720" tabindex="0" aria-label="Enquadramento da foto. Use as setas para mover e as teclas + e - para aproximar."></canvas>
+      <div class="ss-crop-zoomrow">
+        <button type="button" class="ss-icon-btn" data-crop="menos" aria-label="Afastar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <input type="range" class="ss-crop-zoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom">
+        <button type="button" class="ss-icon-btn" data-crop="mais" aria-label="Aproximar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+      <div class="ss-crop-actions">
+        <div class="ss-crop-left">
+          <button type="button" class="ss-crop-link" data-crop="trocar">Trocar foto</button>
+          <button type="button" class="ss-crop-link is-danger" data-crop="remover">Remover</button>
+        </div>
+        <button type="button" class="ss-crop-btn" data-crop="cancelar">Cancelar</button>
+        <button type="button" class="ss-crop-btn is-primary" data-crop="aplicar">Aplicar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -168,6 +190,23 @@
 .ss-ah .ss-canvas{display:block;width:min(100%,560px);height:auto;border-radius:10px;box-shadow:0 18px 40px rgba(18,28,60,.12);background:#f2f4f8;cursor:default;flex:none}
 .ss-ah .ss-canvas.is-photo{cursor:pointer}
 .ss-ah .ss-stage-hint{font-size:13px;color:var(--ss-muted)}
+
+.ss-ah .ss-crop{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:16px;background:rgba(4,4,38,.55)}
+.ss-ah .ss-crop-box{width:min(420px,100%);max-height:100%;overflow-y:auto;background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(4,4,38,.3)}
+.ss-ah .ss-crop-box h3{font-size:20px;font-weight:700;margin:0 0 4px}
+.ss-ah .ss-crop-hint{font-size:13px;color:var(--ss-ink-2);margin-bottom:14px}
+.ss-ah .ss-crop-canvas{display:block;width:100%;aspect-ratio:1;border-radius:12px;background:#e9ebf0;cursor:grab;touch-action:none}
+.ss-ah .ss-crop-canvas.is-drag{cursor:grabbing}
+.ss-ah .ss-crop-zoomrow{display:flex;align-items:center;gap:8px;margin:14px 0 18px}
+.ss-ah .ss-crop-zoom{flex:1;accent-color:var(--ss-accent);cursor:pointer}
+.ss-ah .ss-crop-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ss-ah .ss-crop-left{display:flex;gap:12px;margin-right:auto}
+.ss-ah .ss-crop-link{font-size:14px;color:var(--ss-accent);text-decoration:underline;text-underline-offset:3px}
+.ss-ah .ss-crop-link.is-danger{color:#b42318}
+.ss-ah .ss-crop-btn{height:38px;padding:0 16px;border-radius:999px;font-size:15px;border:1px solid #dde0e6}
+.ss-ah .ss-crop-btn:hover{border-color:var(--ss-accent);color:var(--ss-accent)}
+.ss-ah .ss-crop-btn.is-primary{background:var(--ss-accent);border-color:var(--ss-accent);color:#fff}
+.ss-ah .ss-crop-btn.is-primary:hover{filter:brightness(1.08);color:#fff}
 
 @media (max-width:980px){
   .ss-ah .ss-editor{grid-template-columns:minmax(0,1fr);height:auto;min-height:0}
@@ -273,7 +312,8 @@
     del: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
     x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
     cam: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
-    plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
+    plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    crop: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2v14a2 2 0 0 0 2 2h14M18 22V8a2 2 0 0 0-2-2H2"/></svg>'
   };
 
   var lista = $('.ss-pautas');
@@ -296,6 +336,7 @@
               '<input type="file" accept="image/png,image/jpeg,image/webp" data-foto aria-label="' + (pe.foto ? 'Trocar foto' : 'Inserir foto') + ' de ' + esc(pe.nome || 'palestrante') + '">' +
             '</label>' +
             '<label class="ss-field"><span class="ss-sr">Nome</span><input type="text" maxlength="40" data-f="nome" placeholder="Nome do palestrante" value="' + esc(pe.nome) + '"></label>' +
+            (pe.foto ? '<button type="button" class="ss-icon-btn" data-act="crop" aria-label="Ajustar enquadramento da foto de ' + esc(pe.nome || 'palestrante') + '" title="Ajustar enquadramento">' + ICON.crop + '</button>' : '') +
             '<button type="button" class="ss-icon-btn is-danger" data-act="delp" aria-label="Remover palestrante"' + (p.pessoas.length === 1 ? ' disabled' : '') + '>' + ICON.x + '</button>' +
           '</div>';
         }).join('') +
@@ -326,6 +367,7 @@
     var b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
     var pi = +b.closest('.ss-pauta').dataset.p, ps = st.pautas;
     var act = b.dataset.act;
+    if (act === 'crop') { abrirAjusteDe(pi, +b.closest('.ss-person').dataset.k); return; }
     if (act === 'up' || act === 'down') {
       var j = act === 'up' ? pi - 1 : pi + 1;
       var t = ps[pi]; ps[pi] = ps[j]; ps[j] = t;
@@ -388,20 +430,143 @@
     if (f.size > 20 * 1024 * 1024) { mostrarErro('A foto passa de 20 MB. Reduza o tamanho e tente de novo.'); return; }
     var url = URL.createObjectURL(f), img = new Image();
     img.onload = function () {
-      // recorta em quadrado no centro e reduz para 320 px
-      var lado = Math.min(img.naturalWidth, img.naturalHeight), c = document.createElement('canvas');
-      c.width = c.height = 320;
-      c.getContext('2d').drawImage(img, (img.naturalWidth - lado) / 2, (img.naturalHeight - lado) / 2, lado, lado, 0, 0, 320, 320);
+      // guarda uma cópia reduzida (até 800 px) para poder reenquadrar depois
+      var r = Math.min(1, 800 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
+      c.width = Math.round(img.naturalWidth * r); c.height = Math.round(img.naturalHeight * r);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
       URL.revokeObjectURL(url);
-      var pe = st.pautas[destino.p] && st.pautas[destino.p].pessoas[destino.k];
-      if (!pe) return;
-      pe.foto = c.toDataURL('image/jpeg', 0.88);
-      montarPautas(); salvar(); agendar();
+      abrirAjuste(destino, c.toDataURL('image/jpeg', 0.86), null);
     };
-    img.onerror = function () { mostrarErro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
+    img.onerror = function () { URL.revokeObjectURL(url); mostrarErro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
     img.src = url;
   }
   function mostrarErro(t) { erro.textContent = t; erro.hidden = false; }
+
+  /* ---------- Ajuste de enquadramento ---------- */
+  var corte = $('.ss-crop'), cvAj = $('.ss-crop-canvas'), ctxAj = cvAj.getContext('2d'), zoom = $('.ss-crop-zoom');
+  var CV = 720, ZMAX = 4, aj = null;
+
+  function pessoaDe(d) { return st.pautas[d.p] && st.pautas[d.p].pessoas[d.k]; }
+  function abrirAjusteDe(p, k) {
+    var pe = pessoaDe({ p: p, k: k });
+    if (!pe || !pe.foto) { escolherFoto(p, k); return; }
+    abrirAjuste({ p: p, k: k }, pe.orig || pe.foto, pe.orig ? pe.corte : null);
+  }
+  // destino: {p, k}; orig: imagem completa (data URL); enq: {x, y, z} salvo ou null
+  function abrirAjuste(destino, orig, enq) {
+    var img = new Image();
+    img.onload = function () {
+      var voltar = aj ? aj.voltar : (corte.hidden ? document.activeElement : null);
+      aj = { destino: destino, img: img, orig: orig, x: enq ? enq.x : 0.5, y: enq ? enq.y : 0.5, z: enq ? enq.z : 1, voltar: voltar };
+      var pe = pessoaDe(destino);
+      $('[data-crop="remover"]', corte).hidden = !(pe && pe.foto);
+      limitar(); pintarAjuste();
+      corte.hidden = false;
+      cvAj.focus();
+    };
+    img.onerror = function () { mostrarErro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
+    img.src = orig;
+  }
+  function escalaAj() { return CV / Math.min(aj.img.naturalWidth, aj.img.naturalHeight) * aj.z; }
+  function limitar() {
+    aj.z = Math.min(ZMAX, Math.max(1, aj.z));
+    var w = aj.img.naturalWidth, h = aj.img.naturalHeight, meio = CV / 2 / escalaAj();
+    aj.x = Math.min(1 - meio / w, Math.max(meio / w, aj.x));
+    aj.y = Math.min(1 - meio / h, Math.max(meio / h, aj.y));
+    zoom.value = aj.z;
+  }
+  function pintarAjuste() {
+    var w = aj.img.naturalWidth, h = aj.img.naturalHeight, s = escalaAj();
+    ctxAj.clearRect(0, 0, CV, CV);
+    ctxAj.drawImage(aj.img, CV / 2 - aj.x * w * s, CV / 2 - aj.y * h * s, w * s, h * s);
+    // escurece o que fica fora do círculo da peça
+    ctxAj.fillStyle = 'rgba(4,4,38,.5)';
+    ctxAj.beginPath(); ctxAj.rect(0, 0, CV, CV); ctxAj.arc(CV / 2, CV / 2, CV / 2 - 6, 0, Math.PI * 2, true); ctxAj.fill();
+    ctxAj.strokeStyle = ROXO; ctxAj.lineWidth = 8;
+    ctxAj.beginPath(); ctxAj.arc(CV / 2, CV / 2, CV / 2 - 6, 0, Math.PI * 2); ctxAj.stroke();
+  }
+  function moverAj(dx, dy) { // dx, dy em px do canvas de ajuste
+    var s = escalaAj();
+    aj.x -= dx / s / aj.img.naturalWidth; aj.y -= dy / s / aj.img.naturalHeight;
+    limitar(); pintarAjuste();
+  }
+  function zoomAj(z) { aj.z = z; limitar(); pintarAjuste(); }
+  function fecharAjuste() {
+    corte.hidden = true;
+    var v = aj && aj.voltar; aj = null;
+    if (v && v.focus && document.contains(v)) v.focus();
+  }
+  function aplicarAjuste() {
+    var pe = pessoaDe(aj.destino);
+    if (pe) {
+      var w = aj.img.naturalWidth, h = aj.img.naturalHeight, lado = Math.min(w, h) / aj.z, c = document.createElement('canvas');
+      c.width = c.height = 320;
+      c.getContext('2d').drawImage(aj.img, aj.x * w - lado / 2, aj.y * h - lado / 2, lado, lado, 0, 0, 320, 320);
+      pe.foto = c.toDataURL('image/jpeg', 0.88);
+      pe.orig = aj.orig;
+      pe.corte = { x: +aj.x.toFixed(4), y: +aj.y.toFixed(4), z: +aj.z.toFixed(3) };
+      montarPautas(); salvar(); agendar();
+    }
+    fecharAjuste();
+  }
+
+  var arrasto = null;
+  cvAj.addEventListener('pointerdown', function (e) {
+    arrasto = { x: e.clientX, y: e.clientY };
+    cvAj.setPointerCapture(e.pointerId); cvAj.classList.add('is-drag');
+  });
+  cvAj.addEventListener('pointermove', function (e) {
+    if (!arrasto || !aj) return;
+    var k = CV / cvAj.getBoundingClientRect().width;
+    moverAj((e.clientX - arrasto.x) * k, (e.clientY - arrasto.y) * k);
+    arrasto = { x: e.clientX, y: e.clientY };
+  });
+  ['pointerup', 'pointercancel'].forEach(function (ev) {
+    cvAj.addEventListener(ev, function () { arrasto = null; cvAj.classList.remove('is-drag'); });
+  });
+  cvAj.addEventListener('wheel', function (e) {
+    if (!aj) return;
+    e.preventDefault();
+    zoomAj(aj.z * Math.exp(-e.deltaY * 0.0015));
+  }, { passive: false });
+  zoom.addEventListener('input', function () { if (aj) zoomAj(+zoom.value); });
+
+  corte.addEventListener('click', function (e) {
+    if (e.target === corte) { fecharAjuste(); return; }
+    var b = e.target.closest('[data-crop]'); if (!b || !aj) return;
+    var acao = b.dataset.crop, d = aj.destino;
+    if (acao === 'mais') zoomAj(aj.z + 0.25);
+    else if (acao === 'menos') zoomAj(aj.z - 0.25);
+    else if (acao === 'aplicar') aplicarAjuste();
+    else if (acao === 'cancelar') fecharAjuste();
+    else if (acao === 'trocar') { fecharAjuste(); escolherFoto(d.p, d.k); }
+    else if (acao === 'remover') {
+      var pe = pessoaDe(d), antes = pe && { foto: pe.foto, orig: pe.orig, corte: pe.corte };
+      fecharAjuste();
+      if (!pe) return;
+      pe.foto = ''; delete pe.orig; delete pe.corte;
+      montarPautas(); salvar(); agendar();
+      oferecerDesfazer('Foto removida.', function () { pe.foto = antes.foto; if (antes.orig) { pe.orig = antes.orig; pe.corte = antes.corte; } });
+    }
+  });
+  corte.addEventListener('keydown', function (e) {
+    if (!aj) return;
+    if (e.key === 'Escape') { e.preventDefault(); fecharAjuste(); return; }
+    if (e.key === 'Tab') { // mantém o foco dentro da janela
+      var foc = $$('button:not([hidden]), input, canvas', corte).filter(function (el) { return el.offsetParent !== null; });
+      var i = foc.indexOf(document.activeElement);
+      if (e.shiftKey && i <= 0) { foc[foc.length - 1].focus(); e.preventDefault(); }
+      else if (!e.shiftKey && i === foc.length - 1) { foc[0].focus(); e.preventDefault(); }
+      return;
+    }
+    if (e.target !== cvAj) return;
+    var passo = e.shiftKey ? 60 : 15;
+    var mov = { ArrowLeft: [passo, 0], ArrowRight: [-passo, 0], ArrowUp: [0, passo], ArrowDown: [0, -passo] }[e.key];
+    if (mov) { e.preventDefault(); moverAj(mov[0], mov[1]); }
+    else if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomAj(aj.z + 0.25); }
+    else if (e.key === '-') { e.preventDefault(); zoomAj(aj.z - 0.25); }
+    else if (e.key === 'Enter') { e.preventDefault(); aplicarAjuste(); }
+  });
 
   var barra = $('.ss-undo'), acaoDesfazer = null, timerDesfazer;
   function oferecerDesfazer(texto, fn) {
@@ -559,7 +724,7 @@
   }
 
   canvas.addEventListener('mousemove', function (e) { canvas.classList.toggle('is-photo', !!acerto(e)); });
-  canvas.addEventListener('click', function (e) { var a = acerto(e); if (a) escolherFoto(a.p, a.k); });
+  canvas.addEventListener('click', function (e) { var a = acerto(e); if (a) abrirAjusteDe(a.p, a.k); });
   function acerto(e) {
     var r = canvas.getBoundingClientRect();
     var x = (e.clientX - r.left) * canvas.width / r.width, y = (e.clientY - r.top) * canvas.height / r.height;
