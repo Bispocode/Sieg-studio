@@ -12,7 +12,7 @@
   Deixando vazios, tudo funciona na mesma página.
 
   data-brandspace-url: página do Brand Space (link "Brand Space" no topo).
-  data-briefing-url: para onde vai o botão "Abrir briefing".
+  data-briefing-url: formulário do ClickUp aberto pelo botão "Abrir briefing" (abre em nova aba).
 
   As apresentações abrem no editor próprio (sieg-studio-apresentacao.html) e o Anúncio All Hands
   no dele (sieg-studio-allhands.html). No WordPress, troque data-apresentacao-url e data-allhands-url
@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<div class="sieg-studio" id="sieg-studio" data-editor-url="" data-gallery-url="" data-apresentacao-url="sieg-studio-apresentacao.html" data-allhands-url="sieg-studio-allhands.html" data-brandspace-url="https://marketing.sieg.com/brandspace/" data-briefing-url="https://marketing.sieg.com/brandspace/#solicitar">
+<div class="sieg-studio" id="sieg-studio" data-editor-url="" data-gallery-url="" data-apresentacao-url="sieg-studio-apresentacao.html" data-allhands-url="sieg-studio-allhands.html" data-brandspace-url="https://marketing.sieg.com/brandspace/" data-briefing-url="https://forms.clickup.com/9013440916/f/8ckwccm-39593/NH4BIRERFMKMNA6DLA">
 
   <!-- ============ GALERIA ============ -->
   <section class="ss-gallery" hidden>
@@ -511,7 +511,7 @@
     var sec = $('.ss-gallery');
     sec.hidden = false;
     $('.ss-crumb-link').href = root.dataset.brandspaceUrl || 'https://marketing.sieg.com/brandspace/';
-    $$('.ss-briefing-link').forEach(function (a) { a.href = root.dataset.briefingUrl || 'https://marketing.sieg.com/brandspace/#solicitar'; });
+    $$('.ss-briefing-link').forEach(function (a) { a.href = root.dataset.briefingUrl || 'https://forms.clickup.com/9013440916/f/8ckwccm-39593/NH4BIRERFMKMNA6DLA'; a.target = '_blank'; a.rel = 'noopener'; });
 
     var tabs = $('.ss-tabs');
     tabs.innerHTML = MARCAS.map(function (m) {
