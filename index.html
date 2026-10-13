@@ -124,7 +124,7 @@
       <div class="ss-drop" tabindex="0" role="button" aria-label="Inserir imagem na peça">
         <input type="file" accept="image/png,image/jpeg,image/webp" hidden>
         <div class="ss-drop-empty">
-          <span class="ss-drop-title">Inserir elemento</span>
+          <span class="ss-drop-title">Inserir imagem</span>
           <span class="ss-drop-hint">Arraste uma imagem ou clique para escolher</span>
         </div>
         <div class="ss-drop-filled" hidden>
@@ -411,6 +411,7 @@
 .sieg-studio .ss-group-head h3{margin:0;font-size:14px;font-weight:600;color:var(--ss-ink-2)}
 .sieg-studio .ss-reset{font-size:13px;color:var(--ss-muted);text-decoration:underline;text-underline-offset:3px}
 .sieg-studio .ss-reset:hover{color:var(--ss-accent)}
+.sieg-studio .ss-reset.is-confirm{color:#b42318;text-decoration:none;font-weight:600}
 .sieg-studio .ss-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--ss-ink);color:#fff;font-size:14px}
 .sieg-studio .ss-undo-btn{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px;font-size:14px}
 .sieg-studio .ss-export-hint{font-size:12px;color:var(--ss-muted);margin-top:8px}
@@ -1479,7 +1480,7 @@
       inp.addEventListener('input', function () { mudar(function () { st[inp.dataset.field] = inp.value; }, 'campo:' + inp.dataset.field); });
     });
 
-    $('.ss-reset').addEventListener('click', function () {
+    confirmarClique($('.ss-editor .ss-reset'), 'Clique de novo para restaurar', function () {
       mudar(function () { st = modeloDe(); });
       preencher();
       avisar('Modelo restaurado.');

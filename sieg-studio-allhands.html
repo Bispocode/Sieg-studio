@@ -120,6 +120,7 @@
 .ss-ah .ss-group-head{display:flex;justify-content:space-between;align-items:baseline}
 .ss-ah .ss-reset{font-size:13px;color:var(--ss-muted);text-decoration:underline;text-underline-offset:3px}
 .ss-ah .ss-reset:hover{color:var(--ss-accent)}
+.ss-ah .ss-reset.is-confirm{color:#b42318;text-decoration:none;font-weight:600}
 .ss-ah .ss-row{display:flex;gap:8px;margin-bottom:8px}
 .ss-ah .ss-row>*{flex:1}
 .ss-ah .ss-row .ss-field-sm{flex:0 0 112px}
@@ -926,7 +927,7 @@
     return ('0' + Math.floor(t / 60) % 24).slice(-2) + ':' + ('0' + t % 60).slice(-2);
   }
 
-  $('.ss-reset').addEventListener('click', function () {
+  confirmarClique($('.ss-reset'), 'Clique de novo para restaurar', function () {
     mudar(function () { st = modelo(); });
     preencherTopo(); montarPautas();
     avisar('Modelo restaurado.');
