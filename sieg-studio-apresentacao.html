@@ -985,7 +985,26 @@
     var t = c ? c.el.innerText.replace(/\s+/g, ' ').trim() : '';
     return t && !temColchetes(t) ? t : '';
   }
-  function miniaturaDoSlide(i, feito) { feito(null); } // trocada pela miniatura real no grupo da galeria
+  // Miniatura (320×180) de um slide para o Histórico da galeria. Se o navegador não deixar gerar, fica sem.
+  function miniaturaDoSlide(i, feito) {
+    if (!deck[i]) { feito(null); return; }
+    var c = copiaLimpa(deck[i].el);
+    c.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+    var css = (typeof CSS_FONTE_SLIDES === 'string' ? CSS_FONTE_SLIDES : '') +
+      '*{box-sizing:border-box;border:0 solid;margin:0;padding:0}ul{list-style:disc}.has-img>*{visibility:hidden}';
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><style>' + css + '</style>' +
+      '<foreignObject x="0" y="0" width="1920" height="1080">' + new XMLSerializer().serializeToString(c) + '</foreignObject></svg>';
+    var img = new Image();
+    img.onload = function () {
+      try {
+        var cv = document.createElement('canvas'); cv.width = 320; cv.height = 180;
+        cv.getContext('2d').drawImage(img, 0, 0, 320, 180);
+        feito(cv.toDataURL('image/jpeg', 0.7));
+      } catch (e) { feito(null); }
+    };
+    img.onerror = function () { feito(null); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
 
   /* ---------- Palco e navegação ---------- */
   var host = $('.ss-host'), frame = $('.ss-frame'), stage = $('.ss-stage');
