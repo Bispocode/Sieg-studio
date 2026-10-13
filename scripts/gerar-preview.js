@@ -7,7 +7,8 @@ var PAGINAS = {
   'index.html': 'SIEG Studio',
   'sieg-studio-apresentacao.html': 'Apresentação | SIEG Studio',
   'sieg-studio-allhands.html': 'Anúncio All Hands | SIEG Studio',
-  'sieg-studio-papel-timbrado.html': 'Papel timbrado | SIEG Studio'
+  'sieg-studio-papel-timbrado.html': 'Papel timbrado | SIEG Studio',
+  'sieg-studio-resumo-semanal.html': 'Resumo semanal | SIEG Studio'
 };
 require('./conferir-base.js'); // falha a geração se a base comum estiver diferente entre os arquivos
 fs.mkdirSync(saida, { recursive: true });

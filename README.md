@@ -10,6 +10,7 @@ Galeria de templates e editores de peças do Brand Space da SIEG.
 | `sieg-studio-apresentacao.html` | Editor de apresentações (Institucional, Academy e Endomarketing) |
 | `sieg-studio-allhands.html` | Editor do Anúncio All Hands |
 | `sieg-studio-papel-timbrado.html` | Papel timbrado (SIEG Institucional): texto nas normas da ABNT com Figtree, exporta PDF, Word (.docx) e PNG |
+| `sieg-studio-resumo-semanal.html` | Resumo semanal de atualizações (SIEG Endomarketing): seções Disponível, Em breve, Comunicado e Release, exporta PNG e JPG |
 
 Cada arquivo é um **fragmento** (HTML + `<style>` + `<script>`, JavaScript puro, sem build) para colar num bloco
 "HTML personalizado" do WordPress. As instruções de configuração estão no comentário do topo de cada arquivo.
