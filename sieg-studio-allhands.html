@@ -4,7 +4,9 @@
   numa página própria do WordPress.
 
   - data-gallery-url: endereço da página da galeria do SIEG Studio (link "Todos os templates").
-  - As edições e fotos ficam salvas no navegador de cada pessoa até ela clicar em "Restaurar modelo".
+  - Cada edição é salva no navegador como um trabalho ("Anúncio All Hands" + data e hora) que aparece
+    no Histórico da galeria; ?trabalho=ID reabre um trabalho. Abrir pelo card começa do modelo.
+  - Desfazer / Refazer pelos botões abaixo da prévia ou por Ctrl+Z / Ctrl+Shift+Z.
   - Ao inserir uma foto, abre o ajuste de enquadramento (arrastar para posicionar, zoom pelo controle ou pela roda do mouse).
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,6 +69,12 @@
 
     <div class="ss-stage">
       <canvas class="ss-canvas" width="1080" height="1350" aria-label="Pré-visualização do anúncio All Hands"></canvas>
+      <div class="ss-stagebar">
+        <div class="ss-hist" role="group" aria-label="Desfazer e refazer">
+          <button type="button" data-hist="desfazer" aria-label="Desfazer" title="Desfazer (Ctrl+Z)" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+          <button type="button" data-hist="refazer" aria-label="Refazer" title="Refazer (Ctrl+Shift+Z)" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg></button>
+        </div>
+      </div>
       <p class="ss-stage-hint">Clique numa foto da peça para inserir ou ajustar o enquadramento.</p>
     </div>
   </section>
@@ -75,8 +83,8 @@
   <div class="ss-crop" role="dialog" aria-modal="true" aria-labelledby="ss-crop-title" hidden>
     <div class="ss-crop-box">
       <h3 id="ss-crop-title">Ajustar enquadramento</h3>
-      <p class="ss-crop-hint">Arraste a foto para posicionar. Use o controle ou a roda do mouse para aproximar.</p>
-      <canvas class="ss-crop-canvas" width="720" height="720" tabindex="0" aria-label="Enquadramento da foto. Use as setas para mover e as teclas + e - para aproximar."></canvas>
+      <p class="ss-crop-hint">Arraste a imagem para posicionar. Use o controle ou a roda do mouse para aproximar.</p>
+      <canvas class="ss-crop-canvas" width="720" height="720" tabindex="0" aria-label="Enquadramento da imagem. Use as setas para mover e as teclas + e - para aproximar."></canvas>
       <div class="ss-crop-zoomrow">
         <button type="button" class="ss-icon-btn" data-crop="menos" aria-label="Afastar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
         <input type="range" class="ss-crop-zoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom">
@@ -84,7 +92,7 @@
       </div>
       <div class="ss-crop-actions">
         <div class="ss-crop-left">
-          <button type="button" class="ss-crop-link" data-crop="trocar">Trocar foto</button>
+          <button type="button" class="ss-crop-link" data-crop="trocar">Trocar imagem</button>
           <button type="button" class="ss-crop-link is-danger" data-crop="remover">Remover</button>
         </div>
         <button type="button" class="ss-crop-btn" data-crop="cancelar">Cancelar</button>
@@ -175,7 +183,6 @@
 .ss-ah .ss-photo:focus-within{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ss-accent)}
 .ss-ah .ss-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--ss-ink);color:#fff;font-size:14px}
 .ss-ah .ss-undo-btn{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px;font-size:14px}
-.ss-ah .ss-reset.is-confirm{color:#b42318;text-decoration:none;font-weight:600}
 
 .ss-ah .ss-export{display:flex;align-items:center;gap:10px;padding-top:16px;flex:none}
 .ss-ah .ss-format{display:flex;align-items:center;height:40px;padding:0 10px 0 8px;border-radius:999px;background:linear-gradient(95deg,#e8eaef,#f8f9fb);border:1px solid rgba(255,255,255,.95)}
@@ -189,13 +196,19 @@
 .ss-ah .ss-stage{overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:12px;padding:4px 4px 12px}
 .ss-ah .ss-canvas{display:block;width:min(100%,560px);height:auto;border-radius:10px;box-shadow:0 18px 40px rgba(18,28,60,.12);background:#f2f4f8;cursor:default;flex:none}
 .ss-ah .ss-canvas.is-photo{cursor:pointer}
-.ss-ah .ss-stage-hint{font-size:13px;color:var(--ss-muted)}
+.ss-ah .ss-stage-hint{font-size:13px;color:var(--ss-muted);text-align:center}
+.ss-ah .ss-stagebar{display:flex;align-items:center;justify-content:center;gap:10px 18px;flex-wrap:wrap}
+.ss-ah .ss-hist{display:flex;gap:2px}
+.ss-ah .ss-hist button{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--ss-ink-2)}
+.ss-ah .ss-hist button:hover{background:rgba(0,0,0,.06);color:var(--ss-ink)}
+.ss-ah .ss-hist button[disabled]{opacity:.3;cursor:default;background:none}
+.ss-ah .ss-hist svg{width:19px;height:19px}
 
 .ss-ah .ss-crop{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:16px;background:rgba(4,4,38,.55)}
 .ss-ah .ss-crop-box{width:min(420px,100%);max-height:100%;overflow-y:auto;background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(4,4,38,.3)}
 .ss-ah .ss-crop-box h3{font-size:20px;font-weight:700;margin:0 0 4px}
 .ss-ah .ss-crop-hint{font-size:13px;color:var(--ss-ink-2);margin-bottom:14px}
-.ss-ah .ss-crop-canvas{display:block;width:100%;aspect-ratio:1;border-radius:12px;background:#e9ebf0;cursor:grab;touch-action:none}
+.ss-ah .ss-crop-canvas{display:block;max-width:100%;max-height:55vh;width:auto;height:auto;margin:0 auto;border-radius:12px;background:#e9ebf0;cursor:grab;touch-action:none}
 .ss-ah .ss-crop-canvas.is-drag{cursor:grabbing}
 .ss-ah .ss-crop-zoomrow{display:flex;align-items:center;gap:8px;margin:14px 0 18px}
 .ss-ah .ss-crop-zoom{flex:1;accent-color:var(--ss-accent);cursor:pointer}
@@ -229,7 +242,6 @@
   var MAX_PAUTAS = 8, MAX_PESSOAS = 3;
   var MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
   var FONTE = '"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif';
-  var CHAVE = 'ss-allhands';
 
   var SVG_ALLHANDS = '<svg width="1099" height="479" viewBox="0 0 1099 479" fill="none" xmlns="http://www.w3.org/2000/svg"> <g opacity="0.33"> <path d="M0 216.976L83.1202 0H144.84L227.96 216.976H167.171L154.455 182.26H73.5056L60.7894 216.976H0ZM92.1146 131.735H135.846L114.135 71.602L92.1146 131.735Z" fill="url(#paint0_linear_1667_3208)"/> <path d="M248.748 216.976V0H306.125V164.282H395.449V216.976H248.748Z" fill="url(#paint1_linear_1667_3208)"/> <path d="M420.178 216.976V0H477.556V164.282H566.879V216.976H420.178Z" fill="url(#paint2_linear_1667_3208)"/> <path d="M16.438 475.28V257.995H73.8157V338.586H153.834V258.305H211.212V475.28H153.834V391.28H73.8157V475.28H16.438Z" fill="url(#paint3_linear_1667_3208)"/> <path d="M232.007 475.28L315.127 258.305H376.847L459.967 475.28H399.178L386.462 440.564H305.512L292.796 475.28H232.007ZM324.121 390.04H367.853L346.142 329.907L324.121 390.04Z" fill="url(#paint4_linear_1667_3208)"/> <path d="M480.754 475.28V258.305H541.234L625.905 377.641V258.305H683.283V475.28H625.905L538.132 351.604V475.28H480.754Z" fill="url(#paint5_linear_1667_3208)"/> <path d="M720.636 475.28V258.305H793.211C816.99 258.305 837.976 262.954 856.172 272.253C874.574 281.552 888.944 294.364 899.283 310.689C909.621 326.807 914.79 345.508 914.79 366.792C914.79 387.87 909.621 406.571 899.283 422.896C888.944 439.221 874.574 452.033 856.172 461.332C837.976 470.631 816.99 475.28 793.211 475.28H720.636ZM778.014 421.036H793.211C802.309 421.036 810.683 419.693 818.334 417.007C825.984 414.321 832.6 410.601 838.183 405.848C843.766 401.095 848.108 395.413 851.209 388.8C854.311 382.187 855.862 374.852 855.862 366.792C855.862 358.733 854.311 351.398 851.209 344.785C848.108 338.172 843.766 332.49 838.183 327.737C832.6 322.984 825.984 319.264 818.334 316.578C810.683 313.892 802.309 312.549 793.211 312.549H778.014V421.036Z" fill="url(#paint6_linear_1667_3208)"/> <path d="M1017.12 479C1006.99 479 997.064 477.657 987.346 474.97C977.628 472.077 968.737 468.151 960.673 463.192C952.816 458.232 946.303 452.653 941.134 446.454C935.964 440.048 932.863 433.332 931.829 426.306L988.897 410.498C990.758 415.664 993.963 420.107 998.511 423.826C1003.06 427.339 1008.95 429.302 1016.19 429.716C1021.98 429.922 1027.05 428.372 1031.39 425.066C1035.94 421.76 1038.21 417.42 1038.21 412.047C1038.21 408.535 1036.87 405.228 1034.18 402.129C1031.7 398.822 1027.67 396.446 1022.08 394.999L989.517 386.63C978.352 383.737 968.737 379.294 960.673 373.302C952.816 367.309 946.716 359.973 942.374 351.294C938.239 342.615 936.171 332.903 936.171 322.157C936.171 300.873 943.201 284.342 957.261 272.563C971.528 260.578 991.481 254.585 1017.12 254.585C1030.77 254.585 1042.76 256.341 1053.1 259.854C1063.64 263.367 1072.64 268.947 1080.08 276.593C1087.73 284.032 1094.04 293.847 1099 306.039L1042.24 322.467C1041.21 318.335 1038.52 314.202 1034.18 310.069C1030.04 305.936 1024.36 303.869 1017.12 303.869C1010.09 303.869 1004.61 305.419 1000.68 308.519C996.961 311.619 995.1 316.165 995.1 322.157C995.1 325.877 996.65 329.183 999.752 332.076C1002.85 334.763 1007.3 336.829 1013.09 338.276L1045.96 346.645C1062.51 350.778 1075.43 358.94 1084.73 371.132C1094.04 383.117 1098.69 396.859 1098.69 412.357C1098.69 426.616 1095.38 438.704 1088.76 448.623C1082.36 458.542 1073.05 466.085 1060.85 471.251C1048.65 476.417 1034.08 479 1017.12 479Z" fill="url(#paint7_linear_1667_3208)"/> </g> <defs> <linearGradient id="paint0_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint1_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint2_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint3_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint4_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint5_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint6_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> <linearGradient id="paint7_linear_1667_3208" x1="502.5" y1="-513" x2="445" y2="549" gradientUnits="userSpaceOnUse"> <stop stop-color="#4B14B9"/> <stop offset="1" stop-color="#F2F4F8"/> </linearGradient> </defs> </svg>';
   var SVG_UNION = '<svg width="595" height="603" viewBox="0 0 595 603" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M225.998 574.055L224.7 602.312L191.03 600.743L192.329 572.484L225.998 574.055ZM117.363 383.453C134.951 370.621 159.537 374.576 172.278 392.289L212.956 448.836L231.71 449.71L227.296 545.785C227.817 545.809 325.269 550.351 325.496 550.361C330.145 550.578 334.088 546.96 334.304 542.277C334.519 537.595 330.924 533.631 326.275 533.414C326.246 533.413 278.571 531.202 278.571 531.202C256.878 530.192 240.109 511.641 241.113 489.793C242.118 467.945 260.518 451.052 282.212 452.063L351.471 455.29L363.843 441.067L435.675 504.446L413.464 529.979L359.527 482.391L359.454 483.981C359.318 483.975 281.121 480.353 280.913 480.343L280.912 480.342C274.715 480.054 269.452 484.982 269.165 491.225C268.878 497.467 273.67 502.762 279.869 503.051L330.565 505.413C349.238 507.822 363.246 524.312 362.361 543.584C361.429 563.873 344.343 579.559 324.198 578.62L225.996 574.044L227.293 545.786L193.626 544.218L196.94 472.077L195.659 473.011C195.659 473.011 149.636 409.069 149.514 408.897C145.873 403.836 138.766 402.766 133.741 406.433C128.717 410.099 127.595 417.174 131.235 422.234L131.236 422.235L161.011 463.627C170.783 479.83 166.715 501.143 151.203 512.462C134.871 524.378 112.043 520.704 100.211 504.257L42.5342 424.079L65.2793 407.482C65.2793 407.482 122.939 487.637 122.956 487.661C125.686 491.456 130.955 492.304 134.724 489.555C138.492 486.805 139.327 481.503 136.598 477.708C136.58 477.684 108.572 438.766 108.572 438.766C95.8312 421.053 99.7763 396.285 117.363 383.453ZM539.479 347.998L468.907 360.797L470.097 361.846C470.097 361.846 418.464 421.236 418.303 421.421C414.214 426.122 414.759 433.339 419.427 437.457C424.094 441.575 431.191 441.103 435.28 436.402L468.723 397.957C482.234 384.757 503.77 384.008 518.179 396.721C533.348 410.104 534.872 433.339 521.583 448.615L456.806 523.082L477.931 541.721L455.721 567.254L434.594 548.613L456.8 523.084L435.676 504.445C435.854 504.24 500.437 429.995 500.456 429.974C503.522 426.448 503.171 421.086 499.67 417.998C496.169 414.91 490.851 415.268 487.784 418.794C487.765 418.817 456.424 454.862 456.324 454.977C442.014 471.428 417.16 473.067 400.824 458.653C384.489 444.24 382.847 419.22 397.158 402.768L442.846 350.245L439.52 331.635L533.507 314.591V314.59L539.479 347.998ZM42.5205 424.089L19.7734 440.685L0 413.194L22.7471 396.599L42.5205 424.089ZM241.564 65.3711L272.574 52.0732L300.668 118.519L301.419 117.117C301.565 117.197 370.432 154.617 370.615 154.717C376.075 157.686 382.939 155.544 385.888 150.045C388.835 144.546 386.798 137.681 381.338 134.712L336.681 110.431C320.895 100.101 315.377 79.122 324.478 62.1455C334.058 44.2734 356.21 37.6073 373.956 47.2559L460.462 94.291L447.118 119.184L360.612 72.1484C356.517 69.922 351.405 71.4593 349.194 75.584C346.984 79.7076 348.514 84.8507 352.609 87.0771C352.759 87.1584 394.636 109.916 394.636 109.916C413.745 120.307 420.861 144.347 410.545 163.593C400.228 182.84 376.372 190.019 357.262 179.629L296.252 146.456L278.979 153.864L241.563 65.373C241.144 65.5531 151.287 104.088 151.116 104.162C146.835 105.999 144.841 110.984 146.665 115.296C148.489 119.608 153.434 121.609 157.716 119.772C157.743 119.761 201.648 100.92 201.648 100.92C221.63 92.351 244.729 101.737 253.237 121.86C261.745 141.984 252.445 165.245 232.464 173.813L168.674 201.17L168.675 201.171L163.655 219.391L71.6318 193.678C71.5924 193.821 45.3887 288.947 45.3516 289.083C44.1064 293.6 46.733 298.276 51.2178 299.529C55.7015 300.782 60.339 298.136 61.583 293.619C61.6131 293.509 74.3185 247.347 74.3389 247.272C80.144 226.196 101.832 213.86 122.759 219.707C143.685 225.555 155.944 247.381 150.138 268.457L131.602 335.743L142.616 351.055L65.2793 407.482L45.5049 379.993L103.574 337.623L102.051 337.197C102.051 337.197 122.995 261.091 123.051 260.889C124.709 254.867 121.108 248.604 115.129 246.933C109.15 245.262 102.959 248.789 101.3 254.811L87.7324 304.062C81.2456 321.859 62.1645 331.945 43.7061 326.787H43.709C24.2767 321.357 12.8943 301.091 18.2852 281.521L44.5674 186.115L71.6318 193.677L80.6426 160.968L149.739 180.274L149.12 178.81C149.12 178.81 221.259 147.849 221.451 147.767C227.16 145.318 229.777 138.577 227.347 132.828C224.916 127.078 218.317 124.401 212.607 126.85L165.914 146.875C148.054 152.863 128.327 144.129 120.822 126.378C112.922 107.692 121.558 86.0928 140.112 78.1357L230.562 39.3467L241.564 65.3711ZM594.774 337.949L567.131 342.964L561.156 309.556L588.8 304.542L594.774 337.949ZM476.779 135.31L442.714 198.859L444.27 198.577C444.304 198.772 458.178 276.239 458.225 276.505C459.325 282.656 465.268 286.726 471.374 285.618C477.481 284.511 481.54 278.627 480.44 272.477L471.445 222.174C469.622 203.305 482.468 185.879 501.321 182.46V182.459C521.168 178.861 540.154 192.147 543.728 212.135L561.149 309.575L533.507 314.59C533.507 314.59 516.095 217.203 516.085 217.148C515.26 212.535 510.878 209.469 506.298 210.3C501.719 211.13 498.681 215.541 499.506 220.154C499.51 220.182 507.951 267.331 507.979 267.485C511.828 289.011 497.603 309.603 476.229 313.479C454.856 317.355 434.41 303.047 430.561 281.521L418.272 212.8L401.752 203.817L447.12 119.184L476.779 135.31ZM53.5752 153.418L44.5625 186.127L17.4971 178.562L26.5098 145.854L53.5752 153.418ZM468.444 35.5078L455.103 60.4014L425.442 44.2764L438.784 19.3828L468.444 35.5078ZM261.563 26.0264L230.554 39.3281L219.548 13.3018L250.557 0L261.563 26.0264Z" fill="#A0A0A0" fill-opacity="0.1"/> </svg>';
@@ -241,6 +253,251 @@
   var galeria = root.dataset.galleryUrl || '';
   $('.ss-back').href = galeria + (galeria.indexOf('?') >= 0 ? '&' : '?') + 'marca=endomarketing';
   try { document.title = 'Anúncio All Hands | SIEG Studio'; } catch (e) {}
+
+  /* =====================================================================
+     BASE COMUM DOS EDITORES (igual na galeria, nas apresentações e no All Hands)
+     - Trabalho: cada edição fica salva no navegador como um trabalho ("Modelo · data e hora"),
+       listado no Histórico da galeria. Abrir o template pelo card começa sempre do modelo limpo.
+     - criarHistorico: Desfazer / Refazer pelos botões e por Ctrl+Z, Ctrl+Shift+Z e Ctrl+Y.
+     - Ajuste: janela de enquadramento de imagem (arrastar, zoom pelo controle, roda ou +/−).
+     ===================================================================== */
+  var Trabalho = (function () {
+    var HIST = 'ss-historico', MAX = 30;
+    function lerHist() { try { var h = JSON.parse(localStorage.getItem(HIST)); return Array.isArray(h) ? h : []; } catch (e) { return []; } }
+    function ler(id) { try { return id ? JSON.parse(localStorage.getItem('ss-trab-' + id)) : null; } catch (e) { return null; } }
+    function novoId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+    function apagar(id) {
+      try { localStorage.removeItem('ss-trab-' + id); localStorage.setItem(HIST, JSON.stringify(lerHist().filter(function (x) { return x.id !== id; }))); } catch (e) {}
+    }
+    // info: { id, template, titulo, marca }. Devolve { ok, apagados } (trabalhos antigos apagados por falta de espaço).
+    function gravar(info, dados) {
+      var txt = JSON.stringify(dados), apagados = 0;
+      for (var tentativa = 0; tentativa < MAX; tentativa++) {
+        try {
+          var h = lerHist().filter(function (x) { return x.id !== info.id; });
+          h.unshift({ id: info.id, template: info.template, titulo: info.titulo, marca: info.marca, atualizado: Date.now() });
+          h.slice(MAX).forEach(function (x) { localStorage.removeItem('ss-trab-' + x.id); });
+          localStorage.setItem('ss-trab-' + info.id, txt);
+          localStorage.setItem(HIST, JSON.stringify(h.slice(0, MAX)));
+          return { ok: true, apagados: apagados };
+        } catch (e) {
+          var outros = lerHist().filter(function (x) { return x.id !== info.id; });
+          if (!outros.length) return { ok: false, apagados: apagados };
+          apagar(outros[outros.length - 1].id); // sem espaço: libera o trabalho mais antigo e tenta de novo
+          apagados++;
+        }
+      }
+      return { ok: false, apagados: apagados };
+    }
+    // Leva para o Histórico o que a versão anterior salvava direto no modelo
+    function migrar(chaveAntiga, info) {
+      try {
+        var v = localStorage.getItem(chaveAntiga);
+        if (v === null) return;
+        localStorage.removeItem(chaveAntiga);
+        var dados = JSON.parse(v);
+        if (dados) gravar({ id: novoId(), template: info.template, titulo: info.titulo, marca: info.marca }, dados);
+      } catch (e) {}
+    }
+    return { lerHist: lerHist, ler: ler, gravar: gravar, apagar: apagar, migrar: migrar, novoId: novoId };
+  })();
+
+  // opcoes: { retrato() -> cópia do estado, aplicar(r), depois() }
+  function criarHistorico(opcoes) {
+    var pilha = [], refeitos = [], ultimaChave = null, ultimoT = 0, MAX_HIST = 100;
+    var bDesfazer = $('[data-hist="desfazer"]'), bRefazer = $('[data-hist="refazer"]');
+    function atualizar() { bDesfazer.disabled = !pilha.length; bRefazer.disabled = !refeitos.length; }
+    // Chame ANTES de mudar o estado. chave agrupa ações seguidas iguais (digitar no mesmo campo,
+    // vários toques de seta no mesmo elemento) num passo só.
+    function registrar(chave) {
+      var agora = Date.now();
+      if (chave && chave === ultimaChave && agora - ultimoT < 1200) { ultimoT = agora; return; }
+      ultimaChave = chave || null; ultimoT = agora;
+      pilha.push(opcoes.retrato());
+      if (pilha.length > MAX_HIST) pilha.shift();
+      refeitos = [];
+      atualizar();
+      if (opcoes.registrou) opcoes.registrou();
+    }
+    function mover(de, para) {
+      if (!de.length) return;
+      para.push(opcoes.retrato());
+      opcoes.aplicar(de.pop());
+      ultimaChave = null;
+      atualizar();
+      if (opcoes.depois) opcoes.depois();
+    }
+    function desfazer() { mover(pilha, refeitos); }
+    function refazer() { mover(refeitos, pilha); }
+    bDesfazer.addEventListener('click', desfazer);
+    bRefazer.addEventListener('click', refazer);
+    document.addEventListener('keydown', function (e) {
+      if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+      var a = document.activeElement;
+      if (a && (/INPUT|TEXTAREA|SELECT/.test(a.tagName) || a.isContentEditable)) return; // nos campos vale o desfazer do próprio texto
+      if (!$('.ss-crop').hidden) return;
+      var k = e.key.toLowerCase();
+      if (k === 'z' && !e.shiftKey) { e.preventDefault(); desfazer(); }
+      else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); refazer(); }
+    });
+    atualizar();
+    return { registrar: registrar, desfazer: desfazer, refazer: refazer };
+  }
+
+  // Cópia rasa de objetos e listas (textos e imagens em data URL são compartilhados, não duplicados)
+  function clonar(v) {
+    if (Array.isArray(v)) return v.map(clonar);
+    if (v && typeof v === 'object') { var o = {}; for (var k in v) if (Object.prototype.hasOwnProperty.call(v, k)) o[k] = clonar(v[k]); return o; }
+    return v;
+  }
+
+  // Lê um arquivo de imagem e devolve uma cópia reduzida (data URL) para guardar e reenquadrar
+  function lerImagem(f, maxLado, ok, falha) {
+    if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { falha('Esse arquivo não é uma imagem. Use PNG, JPG ou WEBP.'); return; }
+    if (f.size > 20 * 1024 * 1024) { falha('A imagem passa de 20 MB. Reduza o tamanho e tente de novo.'); return; }
+    var url = URL.createObjectURL(f), img = new Image();
+    img.onload = function () {
+      var r = Math.min(1, maxLado / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
+      c.width = Math.round(img.naturalWidth * r); c.height = Math.round(img.naturalHeight * r);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      ok(c.toDataURL(f.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.86));
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); falha('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
+    img.src = url;
+  }
+
+  // Retângulo da imagem de origem que cobre uma área w×h com o enquadramento enq {x, y, z}
+  function origemEnq(img, enq, w, h) {
+    var iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    var e = enq || { x: 0.5, y: 0.5, z: 1 };
+    var s = Math.max(w / iw, h / ih) * (e.z || 1), sw = w / s, sh = h / s;
+    var cx = Math.min(iw - sw / 2, Math.max(sw / 2, e.x * iw)), cy = Math.min(ih - sh / 2, Math.max(sh / 2, e.y * ih));
+    return [cx - sw / 2, cy - sh / 2, sw, sh];
+  }
+  function desenharEnq(ctx, img, enq, x, y, w, h) {
+    var o = origemEnq(img, enq, w, h);
+    ctx.drawImage(img, o[0], o[1], o[2], o[3], x, y, w, h);
+  }
+  // Gera a imagem já recortada (data URL) com largura w e altura h
+  function recortar(img, enq, w, h, tipo) {
+    var c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h));
+    desenharEnq(c.getContext('2d'), img, enq, 0, 0, c.width, c.height);
+    return c.toDataURL(tipo || 'image/jpeg', 0.88);
+  }
+
+  // Ajuste.abrir({ src, enq, aspecto, circulo, aplicar(enq, img), trocar(), remover(), erro(msg) })
+  var Ajuste = (function () {
+    var corte = $('.ss-crop'), cv = $('.ss-crop-canvas'), cx = cv.getContext('2d'), zoom = $('.ss-crop-zoom');
+    var LADO = 720, ZMAX = 4, aj = null, arrasto = null;
+    function abrir(o) {
+      var img = new Image();
+      img.onload = function () {
+        var voltar = aj ? aj.voltar : (corte.hidden ? document.activeElement : null);
+        var asp = o.aspecto || 1;
+        cv.width = asp >= 1 ? LADO : Math.round(LADO * asp);
+        cv.height = asp >= 1 ? Math.round(LADO / asp) : LADO;
+        var e = o.enq || {};
+        aj = { o: o, img: img, x: e.x != null ? e.x : 0.5, y: e.y != null ? e.y : 0.5, z: e.z || 1, voltar: voltar };
+        $('[data-crop="remover"]', corte).hidden = !o.remover;
+        $('[data-crop="trocar"]', corte).hidden = !o.trocar;
+        limitar(); pintar();
+        corte.hidden = false;
+        cv.focus();
+      };
+      img.onerror = function () { if (o.erro) o.erro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
+      img.src = o.src;
+    }
+    function escala() { return Math.max(cv.width / aj.img.naturalWidth, cv.height / aj.img.naturalHeight) * aj.z; }
+    function limitar() {
+      aj.z = Math.min(ZMAX, Math.max(1, aj.z));
+      var s = escala(), mx = cv.width / 2 / s / aj.img.naturalWidth, my = cv.height / 2 / s / aj.img.naturalHeight;
+      aj.x = Math.min(1 - mx, Math.max(mx, aj.x));
+      aj.y = Math.min(1 - my, Math.max(my, aj.y));
+      zoom.value = aj.z;
+    }
+    function pintar() {
+      var W = cv.width, H = cv.height, s = escala(), iw = aj.img.naturalWidth, ih = aj.img.naturalHeight;
+      var cor = getComputedStyle(root).getPropertyValue('--ss-accent').trim() || '#6f2abe';
+      cx.clearRect(0, 0, W, H);
+      cx.drawImage(aj.img, W / 2 - aj.x * iw * s, H / 2 - aj.y * ih * s, iw * s, ih * s);
+      cx.strokeStyle = cor; cx.lineWidth = 8;
+      if (aj.o.circulo) { // escurece o que fica fora do círculo da peça
+        var r = Math.min(W, H) / 2 - 6;
+        cx.fillStyle = 'rgba(4,4,38,.5)';
+        cx.beginPath(); cx.rect(0, 0, W, H); cx.arc(W / 2, H / 2, r, 0, Math.PI * 2, true); cx.fill();
+        cx.beginPath(); cx.arc(W / 2, H / 2, r, 0, Math.PI * 2); cx.stroke();
+      } else {
+        cx.strokeRect(4, 4, W - 8, H - 8);
+      }
+    }
+    function mover(dx, dy) { var s = escala(); aj.x -= dx / s / aj.img.naturalWidth; aj.y -= dy / s / aj.img.naturalHeight; limitar(); pintar(); }
+    function definirZoom(z) { aj.z = z; limitar(); pintar(); }
+    function fechar() {
+      corte.hidden = true;
+      var v = aj && aj.voltar; aj = null;
+      if (v && v.focus && document.contains(v)) v.focus();
+    }
+    function aplicar() {
+      var o = aj.o, enq = { x: +aj.x.toFixed(4), y: +aj.y.toFixed(4), z: +aj.z.toFixed(3) }, img = aj.img;
+      fechar();
+      o.aplicar(enq, img);
+    }
+
+    cv.addEventListener('pointerdown', function (e) { arrasto = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); cv.classList.add('is-drag'); });
+    cv.addEventListener('pointermove', function (e) {
+      if (!arrasto || !aj) return;
+      var k = cv.width / cv.getBoundingClientRect().width;
+      mover((e.clientX - arrasto.x) * k, (e.clientY - arrasto.y) * k);
+      arrasto = { x: e.clientX, y: e.clientY };
+    });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { cv.addEventListener(ev, function () { arrasto = null; cv.classList.remove('is-drag'); }); });
+    cv.addEventListener('wheel', function (e) { if (!aj) return; e.preventDefault(); definirZoom(aj.z * Math.exp(-e.deltaY * 0.0015)); }, { passive: false });
+    zoom.addEventListener('input', function () { if (aj) definirZoom(+zoom.value); });
+
+    corte.addEventListener('click', function (e) {
+      if (e.target === corte) { fechar(); return; }
+      var b = e.target.closest('[data-crop]'); if (!b || !aj) return;
+      var acao = b.dataset.crop, o = aj.o;
+      if (acao === 'mais') definirZoom(aj.z + 0.25);
+      else if (acao === 'menos') definirZoom(aj.z - 0.25);
+      else if (acao === 'aplicar') aplicar();
+      else if (acao === 'cancelar') fechar();
+      else if (acao === 'trocar') { fechar(); o.trocar(); }
+      else if (acao === 'remover') { fechar(); o.remover(); }
+    });
+    corte.addEventListener('keydown', function (e) {
+      if (!aj) return;
+      if (e.key === 'Escape') { e.preventDefault(); fechar(); return; }
+      if (e.key === 'Tab') { // mantém o foco dentro da janela
+        var foc = $$('button, input, canvas', corte).filter(function (el) { return !el.hidden && el.offsetParent !== null; });
+        var i = foc.indexOf(document.activeElement);
+        if (e.shiftKey && i <= 0) { foc[foc.length - 1].focus(); e.preventDefault(); }
+        else if (!e.shiftKey && i === foc.length - 1) { foc[0].focus(); e.preventDefault(); }
+        return;
+      }
+      if (e.target !== cv) return;
+      var passo = e.shiftKey ? 60 : 15;
+      var m = { ArrowLeft: [passo, 0], ArrowRight: [-passo, 0], ArrowUp: [0, passo], ArrowDown: [0, -passo] }[e.key];
+      if (m) { e.preventDefault(); mover(m[0], m[1]); }
+      else if (e.key === '+' || e.key === '=') { e.preventDefault(); definirZoom(aj.z + 0.25); }
+      else if (e.key === '-') { e.preventDefault(); definirZoom(aj.z - 0.25); }
+      else if (e.key === 'Enter') { e.preventDefault(); aplicar(); }
+    });
+    return { abrir: abrir };
+  })();
+
+  // Aviso no painel com o botão Desfazer (ex.: "Slide excluído.")
+  var aviso = $('.ss-undo'), timerAviso;
+  function avisar(texto) {
+    $('.ss-undo-text').textContent = texto;
+    aviso.hidden = false;
+    clearTimeout(timerAviso);
+    timerAviso = setTimeout(function () { aviso.hidden = true; }, 8000);
+  }
+  function esconderAviso() { clearTimeout(timerAviso); aviso.hidden = true; }
+  /* ===================== fim da base comum ===================== */
 
   /* ---------- Estado ---------- */
   function modelo() {
@@ -254,16 +511,27 @@
       ]
     };
   }
-  var st;
-  try { st = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) {}
-  if (!st || !st.pautas) st = modelo();
+
+  // Trabalho salvo: ?trabalho=ID reabre um trabalho do Histórico; sem ele, começa do modelo
+  var INFO = { template: 'endo-anuncio-allhands', titulo: 'Anúncio All Hands', marca: 'endomarketing' };
+  Trabalho.migrar('ss-allhands', INFO);
+  var params = new URLSearchParams(location.search);
+  var trabId = params.get('trabalho');
+  var st = Trabalho.ler(trabId);
+  if (!st || !st.pautas) { st = modelo(); trabId = null; }
 
   var timerSalvar;
   function salvar() {
     clearTimeout(timerSalvar);
     timerSalvar = setTimeout(function () {
-      try { localStorage.setItem(CHAVE, JSON.stringify(st)); }
-      catch (e) { $('.ss-export-hint').textContent = 'Não foi possível salvar neste navegador. Exporte antes de sair.'; }
+      if (!trabId) {
+        trabId = Trabalho.novoId();
+        params.set('trabalho', trabId);
+        try { history.replaceState(null, '', '?' + params.toString()); } catch (e) {}
+      }
+      var r = Trabalho.gravar({ id: trabId, template: INFO.template, titulo: INFO.titulo, marca: INFO.marca }, st);
+      if (!r.ok) $('.ss-export-hint').textContent = 'Não foi possível salvar neste navegador. Exporte antes de sair.';
+      else if (r.apagados) $('.ss-export-hint').textContent = 'Faltou espaço no navegador: os trabalhos mais antigos do Histórico foram apagados.';
     }, 300);
   }
 
@@ -298,12 +566,24 @@
     return ('0' + parseInt(p[0], 10)).slice(-2) + 'h' + (p[1] || '00');
   }
 
+  /* ---------- Desfazer / Refazer ---------- */
+  var historico = criarHistorico({
+    retrato: function () { return clonar(st); },
+    aplicar: function (r) { st = r; preencherTopo(); montarPautas(); agendar(); salvar(); },
+    registrou: esconderAviso,
+    depois: esconderAviso
+  });
+  $('.ss-undo-btn').addEventListener('click', function () { historico.desfazer(); });
+  // Registra o estado atual no histórico e aplica a mudança
+  function mudar(fn, chave) { historico.registrar(chave); fn(); salvar(); agendar(); }
+
   /* ---------- Painel ---------- */
   var selMes = $('select[data-k="mes"]');
   selMes.innerHTML = MESES.map(function (m) { return '<option>' + m + '</option>'; }).join('');
+  function preencherTopo() { $$('[data-k]').forEach(function (el) { el.value = st[el.dataset.k]; }); }
+  preencherTopo();
   $$('[data-k]').forEach(function (el) {
-    el.value = st[el.dataset.k];
-    el.addEventListener('input', function () { st[el.dataset.k] = el.value; salvar(); agendar(); });
+    el.addEventListener('input', function () { mudar(function () { st[el.dataset.k] = el.value; }, 'k:' + el.dataset.k); });
   });
 
   var ICON = {
@@ -351,10 +631,13 @@
   lista.addEventListener('input', function (e) {
     var el = e.target, f = el.dataset.f; if (!f) return;
     var pi = +el.closest('.ss-pauta').dataset.p;
-    if (f === 'nome') st.pautas[pi].pessoas[+el.closest('.ss-person').dataset.k].nome = el.value;
-    else st.pautas[pi][f] = el.value;
+    if (f === 'nome') {
+      var k = +el.closest('.ss-person').dataset.k;
+      mudar(function () { st.pautas[pi].pessoas[k].nome = el.value; }, 'nome:' + pi + ':' + k);
+    } else {
+      mudar(function () { st.pautas[pi][f] = el.value; }, f + ':' + pi);
+    }
     if (el.tagName === 'TEXTAREA') crescer(el);
-    salvar(); agendar();
   });
   lista.addEventListener('change', function (e) {
     var inp = e.target.closest('input[data-foto]'); if (!inp) return;
@@ -365,31 +648,35 @@
   });
   lista.addEventListener('click', function (e) {
     var b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
-    var pi = +b.closest('.ss-pauta').dataset.p, ps = st.pautas;
+    var pi = +b.closest('.ss-pauta').dataset.p;
     var act = b.dataset.act;
     if (act === 'crop') { abrirAjusteDe(pi, +b.closest('.ss-person').dataset.k); return; }
-    if (act === 'up' || act === 'down') {
-      var j = act === 'up' ? pi - 1 : pi + 1;
-      var t = ps[pi]; ps[pi] = ps[j]; ps[j] = t;
-    } else if (act === 'del') {
-      var removida = ps.splice(pi, 1)[0];
-      oferecerDesfazer('Pauta "' + (removida.titulo || 'sem título') + '" removida.', function () {
-        st.pautas.splice(Math.min(pi, st.pautas.length), 0, removida);
-      });
-    } else if (act === 'addp') {
-      ps[pi].pessoas.push({ nome: '', foto: '' });
-    } else if (act === 'delp') {
-      ps[pi].pessoas.splice(+b.closest('.ss-person').dataset.k, 1);
-    }
-    montarPautas(); salvar(); agendar();
+    var titulo = st.pautas[pi].titulo;
+    mudar(function () {
+      var ps = st.pautas;
+      if (act === 'up' || act === 'down') {
+        var j = act === 'up' ? pi - 1 : pi + 1;
+        var t = ps[pi]; ps[pi] = ps[j]; ps[j] = t;
+      } else if (act === 'del') {
+        ps.splice(pi, 1);
+      } else if (act === 'addp') {
+        ps[pi].pessoas.push({ nome: '', foto: '' });
+      } else if (act === 'delp') {
+        ps[pi].pessoas.splice(+b.closest('.ss-person').dataset.k, 1);
+      }
+    });
+    montarPautas();
+    if (act === 'del') avisar('Pauta "' + (titulo || 'sem título') + '" removida.');
     if (act === 'addp') { var ins = $$('.ss-pauta[data-p="' + pi + '"] input[data-f="nome"]'); ins[ins.length - 1].focus(); }
   });
 
   $('.ss-add-pauta').addEventListener('click', function () {
-    var ult = st.pautas[st.pautas.length - 1];
-    var hora = ult && ult.hora ? somar(ult.hora, 15) : '08:00';
-    st.pautas.push({ titulo: 'Título da pauta', hora: hora, pessoas: [{ nome: '', foto: '' }] });
-    montarPautas(); salvar(); agendar();
+    mudar(function () {
+      var ult = st.pautas[st.pautas.length - 1];
+      var hora = ult && ult.hora ? somar(ult.hora, 15) : '08:00';
+      st.pautas.push({ titulo: 'Título da pauta', hora: hora, pessoas: [{ nome: '', foto: '' }] });
+    });
+    montarPautas();
     var tas = $$('.ss-pauta textarea'); var ta = tas[tas.length - 1];
     ta.focus(); ta.select();
   });
@@ -398,23 +685,10 @@
     return ('0' + Math.floor(t / 60) % 24).slice(-2) + ':' + ('0' + t % 60).slice(-2);
   }
 
-  var btnReset = $('.ss-reset'), timerReset;
-  btnReset.addEventListener('click', function () {
-    if (!btnReset.classList.contains('is-confirm')) {
-      btnReset.classList.add('is-confirm');
-      btnReset.textContent = 'Clique de novo para apagar tudo';
-      clearTimeout(timerReset);
-      timerReset = setTimeout(function () { btnReset.classList.remove('is-confirm'); btnReset.textContent = 'Restaurar modelo'; }, 4000);
-      return;
-    }
-    clearTimeout(timerReset);
-    btnReset.classList.remove('is-confirm'); btnReset.textContent = 'Restaurar modelo';
-    var anterior = JSON.parse(JSON.stringify(st));
-    try { localStorage.removeItem(CHAVE); } catch (e) {}
-    oferecerDesfazer('Modelo restaurado.', function () { st = anterior; $$('[data-k]').forEach(function (el) { el.value = st[el.dataset.k]; }); });
-    st = modelo();
-    $$('[data-k]').forEach(function (el) { el.value = st[el.dataset.k]; });
-    montarPautas(); agendar();
+  $('.ss-reset').addEventListener('click', function () {
+    mudar(function () { st = modelo(); });
+    preencherTopo(); montarPautas();
+    avisar('Modelo restaurado.');
   });
 
   /* ---------- Fotos ---------- */
@@ -426,160 +700,35 @@
   });
   function processarFoto(f, destino) {
     erro.hidden = true;
-    if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { mostrarErro('Esse arquivo não é uma imagem. Use PNG, JPG ou WEBP.'); return; }
-    if (f.size > 20 * 1024 * 1024) { mostrarErro('A foto passa de 20 MB. Reduza o tamanho e tente de novo.'); return; }
-    var url = URL.createObjectURL(f), img = new Image();
-    img.onload = function () {
-      // guarda uma cópia reduzida (até 800 px) para poder reenquadrar depois
-      var r = Math.min(1, 800 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
-      c.width = Math.round(img.naturalWidth * r); c.height = Math.round(img.naturalHeight * r);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      URL.revokeObjectURL(url);
-      abrirAjuste(destino, c.toDataURL('image/jpeg', 0.86), null);
-    };
-    img.onerror = function () { URL.revokeObjectURL(url); mostrarErro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
-    img.src = url;
+    // guarda uma cópia reduzida (até 800 px) para poder reenquadrar depois
+    lerImagem(f, 800, function (orig) { ajustarFoto(destino, orig, null); }, mostrarErro);
   }
   function mostrarErro(t) { erro.textContent = t; erro.hidden = false; }
-
-  /* ---------- Ajuste de enquadramento ---------- */
-  var corte = $('.ss-crop'), cvAj = $('.ss-crop-canvas'), ctxAj = cvAj.getContext('2d'), zoom = $('.ss-crop-zoom');
-  var CV = 720, ZMAX = 4, aj = null;
 
   function pessoaDe(d) { return st.pautas[d.p] && st.pautas[d.p].pessoas[d.k]; }
   function abrirAjusteDe(p, k) {
     var pe = pessoaDe({ p: p, k: k });
     if (!pe || !pe.foto) { escolherFoto(p, k); return; }
-    abrirAjuste({ p: p, k: k }, pe.orig || pe.foto, pe.orig ? pe.corte : null);
+    ajustarFoto({ p: p, k: k }, pe.orig || pe.foto, pe.orig ? pe.corte : null);
   }
-  // destino: {p, k}; orig: imagem completa (data URL); enq: {x, y, z} salvo ou null
-  function abrirAjuste(destino, orig, enq) {
-    var img = new Image();
-    img.onload = function () {
-      var voltar = aj ? aj.voltar : (corte.hidden ? document.activeElement : null);
-      aj = { destino: destino, img: img, orig: orig, x: enq ? enq.x : 0.5, y: enq ? enq.y : 0.5, z: enq ? enq.z : 1, voltar: voltar };
-      var pe = pessoaDe(destino);
-      $('[data-crop="remover"]', corte).hidden = !(pe && pe.foto);
-      limitar(); pintarAjuste();
-      corte.hidden = false;
-      cvAj.focus();
-    };
-    img.onerror = function () { mostrarErro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
-    img.src = orig;
+  function ajustarFoto(destino, orig, enq) {
+    var pe = pessoaDe(destino);
+    Ajuste.abrir({
+      src: orig, enq: enq, aspecto: 1, circulo: true, erro: mostrarErro,
+      trocar: function () { escolherFoto(destino.p, destino.k); },
+      remover: pe && pe.foto ? function () {
+        mudar(function () { var p = pessoaDe(destino); if (p) { p.foto = ''; delete p.orig; delete p.corte; } });
+        montarPautas();
+        avisar('Foto removida.');
+      } : null,
+      aplicar: function (novo, img) {
+        if (!pessoaDe(destino)) return;
+        var foto = recortar(img, novo, 320, 320);
+        mudar(function () { var p = pessoaDe(destino); p.foto = foto; p.orig = orig; p.corte = novo; });
+        montarPautas();
+      }
+    });
   }
-  function escalaAj() { return CV / Math.min(aj.img.naturalWidth, aj.img.naturalHeight) * aj.z; }
-  function limitar() {
-    aj.z = Math.min(ZMAX, Math.max(1, aj.z));
-    var w = aj.img.naturalWidth, h = aj.img.naturalHeight, meio = CV / 2 / escalaAj();
-    aj.x = Math.min(1 - meio / w, Math.max(meio / w, aj.x));
-    aj.y = Math.min(1 - meio / h, Math.max(meio / h, aj.y));
-    zoom.value = aj.z;
-  }
-  function pintarAjuste() {
-    var w = aj.img.naturalWidth, h = aj.img.naturalHeight, s = escalaAj();
-    ctxAj.clearRect(0, 0, CV, CV);
-    ctxAj.drawImage(aj.img, CV / 2 - aj.x * w * s, CV / 2 - aj.y * h * s, w * s, h * s);
-    // escurece o que fica fora do círculo da peça
-    ctxAj.fillStyle = 'rgba(4,4,38,.5)';
-    ctxAj.beginPath(); ctxAj.rect(0, 0, CV, CV); ctxAj.arc(CV / 2, CV / 2, CV / 2 - 6, 0, Math.PI * 2, true); ctxAj.fill();
-    ctxAj.strokeStyle = ROXO; ctxAj.lineWidth = 8;
-    ctxAj.beginPath(); ctxAj.arc(CV / 2, CV / 2, CV / 2 - 6, 0, Math.PI * 2); ctxAj.stroke();
-  }
-  function moverAj(dx, dy) { // dx, dy em px do canvas de ajuste
-    var s = escalaAj();
-    aj.x -= dx / s / aj.img.naturalWidth; aj.y -= dy / s / aj.img.naturalHeight;
-    limitar(); pintarAjuste();
-  }
-  function zoomAj(z) { aj.z = z; limitar(); pintarAjuste(); }
-  function fecharAjuste() {
-    corte.hidden = true;
-    var v = aj && aj.voltar; aj = null;
-    if (v && v.focus && document.contains(v)) v.focus();
-  }
-  function aplicarAjuste() {
-    var pe = pessoaDe(aj.destino);
-    if (pe) {
-      var w = aj.img.naturalWidth, h = aj.img.naturalHeight, lado = Math.min(w, h) / aj.z, c = document.createElement('canvas');
-      c.width = c.height = 320;
-      c.getContext('2d').drawImage(aj.img, aj.x * w - lado / 2, aj.y * h - lado / 2, lado, lado, 0, 0, 320, 320);
-      pe.foto = c.toDataURL('image/jpeg', 0.88);
-      pe.orig = aj.orig;
-      pe.corte = { x: +aj.x.toFixed(4), y: +aj.y.toFixed(4), z: +aj.z.toFixed(3) };
-      montarPautas(); salvar(); agendar();
-    }
-    fecharAjuste();
-  }
-
-  var arrasto = null;
-  cvAj.addEventListener('pointerdown', function (e) {
-    arrasto = { x: e.clientX, y: e.clientY };
-    cvAj.setPointerCapture(e.pointerId); cvAj.classList.add('is-drag');
-  });
-  cvAj.addEventListener('pointermove', function (e) {
-    if (!arrasto || !aj) return;
-    var k = CV / cvAj.getBoundingClientRect().width;
-    moverAj((e.clientX - arrasto.x) * k, (e.clientY - arrasto.y) * k);
-    arrasto = { x: e.clientX, y: e.clientY };
-  });
-  ['pointerup', 'pointercancel'].forEach(function (ev) {
-    cvAj.addEventListener(ev, function () { arrasto = null; cvAj.classList.remove('is-drag'); });
-  });
-  cvAj.addEventListener('wheel', function (e) {
-    if (!aj) return;
-    e.preventDefault();
-    zoomAj(aj.z * Math.exp(-e.deltaY * 0.0015));
-  }, { passive: false });
-  zoom.addEventListener('input', function () { if (aj) zoomAj(+zoom.value); });
-
-  corte.addEventListener('click', function (e) {
-    if (e.target === corte) { fecharAjuste(); return; }
-    var b = e.target.closest('[data-crop]'); if (!b || !aj) return;
-    var acao = b.dataset.crop, d = aj.destino;
-    if (acao === 'mais') zoomAj(aj.z + 0.25);
-    else if (acao === 'menos') zoomAj(aj.z - 0.25);
-    else if (acao === 'aplicar') aplicarAjuste();
-    else if (acao === 'cancelar') fecharAjuste();
-    else if (acao === 'trocar') { fecharAjuste(); escolherFoto(d.p, d.k); }
-    else if (acao === 'remover') {
-      var pe = pessoaDe(d), antes = pe && { foto: pe.foto, orig: pe.orig, corte: pe.corte };
-      fecharAjuste();
-      if (!pe) return;
-      pe.foto = ''; delete pe.orig; delete pe.corte;
-      montarPautas(); salvar(); agendar();
-      oferecerDesfazer('Foto removida.', function () { pe.foto = antes.foto; if (antes.orig) { pe.orig = antes.orig; pe.corte = antes.corte; } });
-    }
-  });
-  corte.addEventListener('keydown', function (e) {
-    if (!aj) return;
-    if (e.key === 'Escape') { e.preventDefault(); fecharAjuste(); return; }
-    if (e.key === 'Tab') { // mantém o foco dentro da janela
-      var foc = $$('button:not([hidden]), input, canvas', corte).filter(function (el) { return el.offsetParent !== null; });
-      var i = foc.indexOf(document.activeElement);
-      if (e.shiftKey && i <= 0) { foc[foc.length - 1].focus(); e.preventDefault(); }
-      else if (!e.shiftKey && i === foc.length - 1) { foc[0].focus(); e.preventDefault(); }
-      return;
-    }
-    if (e.target !== cvAj) return;
-    var passo = e.shiftKey ? 60 : 15;
-    var mov = { ArrowLeft: [passo, 0], ArrowRight: [-passo, 0], ArrowUp: [0, passo], ArrowDown: [0, -passo] }[e.key];
-    if (mov) { e.preventDefault(); moverAj(mov[0], mov[1]); }
-    else if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomAj(aj.z + 0.25); }
-    else if (e.key === '-') { e.preventDefault(); zoomAj(aj.z - 0.25); }
-    else if (e.key === 'Enter') { e.preventDefault(); aplicarAjuste(); }
-  });
-
-  var barra = $('.ss-undo'), acaoDesfazer = null, timerDesfazer;
-  function oferecerDesfazer(texto, fn) {
-    acaoDesfazer = fn;
-    $('.ss-undo-text').textContent = texto;
-    barra.hidden = false;
-    clearTimeout(timerDesfazer);
-    timerDesfazer = setTimeout(function () { barra.hidden = true; acaoDesfazer = null; }, 8000);
-  }
-  $('.ss-undo-btn').addEventListener('click', function () {
-    if (acaoDesfazer) { acaoDesfazer(); acaoDesfazer = null; montarPautas(); salvar(); agendar(); }
-    barra.hidden = true;
-  });
 
   /* ---------- Desenho ---------- */
   var canvas = $('.ss-canvas'), ctx = canvas.getContext('2d');
