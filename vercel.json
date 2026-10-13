@@ -1,0 +1,5 @@
+{
+  "buildCommand": "node scripts/gerar-preview.js",
+  "outputDirectory": "dist",
+  "cleanUrls": false
+}
