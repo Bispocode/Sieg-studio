@@ -1,5 +1,5 @@
 <!--
-  SIEG Studio · Resumo semanal de atualizações (SIEG Endomarketing)
+  SIEG Studio · Resumo semanal de atualizações (SIEG Institucional)
   Cole este bloco inteiro em um bloco "HTML personalizado" (Gutenberg) ou no widget "HTML" (Elementor),
   numa página própria do WordPress.
 
@@ -21,7 +21,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg>
         Todos os templates
       </a>
-      <p class="ss-brandlabel">SIEG Endomarketing</p>
+      <p class="ss-brandlabel">SIEG Institucional</p>
       <h2 class="ss-piece-title">Resumo semanal</h2>
       <p class="ss-when">Quando usar: contar ao time o que foi lançado, o que vem por aí e os comunicados da semana.</p>
 
@@ -229,7 +229,7 @@
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
 
   var galeria = root.dataset.galleryUrl || '';
-  $('.ss-back').href = galeria + (galeria.indexOf('?') >= 0 ? '&' : '?') + 'marca=endomarketing';
+  $('.ss-back').href = galeria + (galeria.indexOf('?') >= 0 ? '&' : '?') + 'marca=institucional';
   try { document.title = 'Resumo semanal | SIEG Studio'; } catch (e) {}
 
   /* ===== BASE COMUM DOS EDITORES · v2 · INÍCIO =====
@@ -773,7 +773,7 @@
   }
 
   // Trabalho salvo: ?trabalho=ID reabre um trabalho do Histórico; sem ele, começa do modelo
-  var INFO = { template: 'endo-resumo-semanal', titulo: 'Resumo semanal', marca: 'endomarketing' };
+  var INFO = { template: 'inst-resumo-semanal', titulo: 'Resumo semanal', marca: 'institucional' };
   var params = new URLSearchParams(location.search);
   var trabId = params.get('trabalho');
   var st = Trabalho.ler(trabId);
