@@ -158,7 +158,7 @@
 
 .ss-tb .ss-stage{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
 .ss-tb .tb-paginas{flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:24px;padding:4px 4px 16px}
-.ss-tb .tb-moldura{position:relative;flex:none;border-radius:4px;box-shadow:0 18px 40px rgba(18,28,60,.14);overflow:hidden;background:#f4f6fa}
+.ss-tb .tb-moldura{position:relative;flex:none;border-radius:4px;box-shadow:0 18px 40px rgba(18,28,60,.14);overflow:hidden;background:#fff}
 .ss-tb .tb-moldura .tb-pagina{position:absolute;left:0;top:0;transform-origin:0 0}
 .ss-tb .ss-stagebar{display:flex;align-items:center;justify-content:center;gap:10px 18px;flex:none}
 .ss-tb .ss-hist{display:flex;gap:2px}
@@ -168,16 +168,16 @@
 .ss-tb .ss-hist svg{width:19px;height:19px}
 
 /* ---------- Página A4 (794 × 1123 px = 210 × 297 mm a 96 dpi) ---------- */
-.tb-pagina{position:relative;width:794px;height:1123px;overflow:hidden;background:#f4f6fa;color:#1d2433;font-family:"Figtree",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.tb-pagina{position:relative;width:794px;height:1123px;overflow:hidden;background:#fff;color:#1d2433;font-family:"Figtree",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 .tb-pagina *{box-sizing:border-box}
 .tb-arte{position:absolute;inset:0;pointer-events:none}
-.tb-logo{position:absolute;left:37px;top:32px;width:53px;height:53px;display:block}
-.tb-marca{position:absolute;left:105px;top:43px;font-size:10.5px;line-height:1.3;color:#040426;margin:0}
-.tb-marca b{color:#0075df;font-weight:700}
-.tb-dagua{position:absolute;left:0;top:424px;width:794px;height:275px;display:block;max-width:none}
-.tb-rodape{position:absolute;left:0;right:0;bottom:0;height:112px;background:#0b1f45;display:flex;align-items:center;gap:28px;padding:0 37px}
-.tb-rodape-logo{width:104px;height:36px;flex:none;display:block}
-.tb-rodape p{margin:0;font-size:10.5px;line-height:1.15;color:#fff}
+.tb-logo{position:absolute;left:44px;top:30px;width:39px;height:37px;display:block;max-width:none}
+.tb-rodape{position:absolute;left:0;right:0;bottom:0;height:93px;background:#005fe9}
+.tb-rodape-logo{position:absolute;left:52px;top:29px;width:100px;height:35px;display:block;max-width:none}
+.tb-end{position:absolute;top:19px;margin:0;font-size:6.8px;line-height:9px;color:#fff;white-space:nowrap}
+.tb-end b{display:block;font-size:8.5px;line-height:12px;font-weight:700;margin-bottom:1px}
+.tb-end-1{left:574px}
+.tb-end-2{left:669px}
 .tb-corpo{position:absolute;left:113px;right:76px;top:113px;bottom:142px;overflow:hidden;outline:none;font-size:16px;line-height:1.5;text-align:justify;color:#1d2433;caret-color:#005fe9;word-wrap:break-word}
 .tb-corpo:focus{box-shadow:0 0 0 1px rgba(0,95,233,.25)}
 .tb-corpo p,.tb-corpo h1,.tb-corpo h2,.tb-corpo h3,.tb-corpo blockquote,.tb-corpo ul{margin:0;padding:0;font-size:16px;line-height:1.5;color:#1d2433;letter-spacing:normal;font-family:inherit}
@@ -735,7 +735,7 @@
   try { document.title = 'Papel timbrado | SIEG Studio'; } catch (e) {}
 
   /* ---------- Arte do papel timbrado ---------- */
-  var SVG_SI = '<svg width="53" height="53" viewBox="0 0 40 40"><rect width="39.8645" height="39.8645" rx="1.5" fill="#0075DF"/><path d="M34.4748 16.9004H28.7798L28.7798 33.9682H34.4748V16.9004Z" fill="#fff"/><path d="M34.4748 6.86328L28.7798 6.86328V11.8833L34.4748 11.8833V6.86328Z" fill="#fff"/><path d="M28.7798 16.9009V11.8809L12.1695 11.8809C8.76211 11.8809 6 14.8026 6 18.4068C6 22.0111 8.49237 24.6381 11.6625 24.9107L20.2374 24.9107C21.2858 24.9107 22.1358 25.8098 22.1358 26.9189C22.1358 28.0279 21.2858 28.9451 20.2374 28.9451C20.202 28.9451 6.95292 28.949 6.95292 28.949V33.969L20.2374 33.969C23.9068 33.969 26.8813 30.8226 26.8813 26.9409C26.8813 23.0592 23.9074 19.9097 20.238 19.9097C20.238 19.9097 12.1743 19.9115 12.1695 19.9115C11.3831 19.9115 10.7458 19.2387 10.7458 18.4068C10.7458 17.575 11.3834 16.9009 12.1695 16.9009L28.7798 16.9009Z" fill="#fff"/></svg>';
+  var SVG_SI = '<svg width="39" height="37" viewBox="6 6.86 28.48 27.11"><g fill="#005fe9"><path d="M34.4748 16.9004H28.7798L28.7798 33.9682H34.4748V16.9004Z"/><path d="M34.4748 6.86328L28.7798 6.86328V11.8833L34.4748 11.8833V6.86328Z"/><path d="M28.7798 16.9009V11.8809L12.1695 11.8809C8.76211 11.8809 6 14.8026 6 18.4068C6 22.0111 8.49237 24.6381 11.6625 24.9107L20.2374 24.9107C21.2858 24.9107 22.1358 25.8098 22.1358 26.9189C22.1358 28.0279 21.2858 28.9451 20.2374 28.9451C20.202 28.9451 6.95292 28.949 6.95292 28.949V33.969L20.2374 33.969C23.9068 33.969 26.8813 30.8226 26.8813 26.9409C26.8813 23.0592 23.9074 19.9097 20.238 19.9097C20.238 19.9097 12.1743 19.9115 12.1695 19.9115C11.3831 19.9115 10.7458 19.2387 10.7458 18.4068C10.7458 17.575 11.3834 16.9009 12.1695 16.9009L28.7798 16.9009Z"/></g></svg>';
   var PATHS_SIEG = '<path d="M228.845 76.2969L183.075 76.2969L183.075 206H228.845L228.845 76.2969Z"/><path d="M228.845 0L183.075 0V38.1484L228.845 38.1484V0Z"/><path d="M411.92 76.2968V38.1484L251.669 38.1484L251.669 206L411.92 206V167.852L297.438 167.852V137.15L396.603 137.15V99.185L297.438 99.185V76.2968L411.92 76.2968Z"/><path d="M489.059 76.2968L594.995 76.2968V38.1484L489.157 38.1484C454.926 38.1484 427.177 65.9025 427.177 100.141V143.74C427.177 178.127 455.047 206.002 489.428 206.002L556.857 206.002V167.854L489.072 167.838C475.962 167.836 465.336 157.205 465.332 144.093L465.323 100.04C465.728 86.6041 476.483 75.8728 489.061 76.2968H489.059Z"/><path d="M594.993 99.1621L526.34 99.1621V137.267H556.855V167.852H595L594.993 99.1621Z"/><path d="M183.075 76.2968V38.1484L49.5826 38.1484C22.1984 38.1484 0 60.3512 0 87.7409C0 115.131 20.0306 135.094 45.5082 137.166H114.422C122.848 137.166 129.68 143.999 129.68 152.426C129.68 160.854 122.848 167.824 114.422 167.824C114.138 167.824 7.65841 167.854 7.65841 167.854L7.65841 206.002L114.422 206.002C143.913 206.002 167.818 182.092 167.818 152.594C167.818 123.095 143.917 99.1621 114.427 99.1621C114.427 99.1621 49.6215 99.1758 49.5826 99.1758C43.2624 99.1758 38.1408 94.0623 38.1408 87.7409C38.1408 81.4195 43.2647 76.2968 49.5826 76.2968L183.075 76.2968Z"/>';
   // As artes entram como <img> (SVG em data URI): assim saem iguais na tela e na exportação
   function imgSvg(svg, cls) {
@@ -743,11 +743,9 @@
     return '<img class="' + cls + '" alt="" src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg).replace(/'/g, '%27') + '">';
   }
   var ARTE = imgSvg(SVG_SI, 'tb-logo') +
-    '<p class="tb-marca">SIEG Soluções Fiscais<br>Tornando você <b>indispensável</b></p>' +
-    imgSvg('<svg width="794" height="275" viewBox="0 0 595 206"><g fill="#2F8CFF" opacity="0.08">' + PATHS_SIEG + '</g></svg>', 'tb-dagua') +
-    '<div class="tb-rodape">' + imgSvg('<svg width="104" height="36" viewBox="0 0 595 206"><g fill="#fff">' + PATHS_SIEG + '</g></svg>', 'tb-rodape-logo') +
-    '<p>Av. Dr. Cardoso de Melo, 1450, Conj. 501 - Vila Olímpia | São Paulo, SP | CEP: 04548-005<br>' +
-    'Rua Padre Carapuceiro, 910, sala 1602 - Boa Viagem | Recife, PE | CEP: 51020-280</p></div>';
+    '<div class="tb-rodape">' + imgSvg('<svg width="100" height="35" viewBox="0 0 595 206"><g fill="#fff">' + PATHS_SIEG + '</g></svg>', 'tb-rodape-logo') +
+    '<p class="tb-end tb-end-1"><b>Recife</b>Rua Padre Carapuseiro<br>910 Sala 1602<br>Boa Viagem, Recife - PE<br>CEP: 51021-110</p>' +
+    '<p class="tb-end tb-end-2"><b>São Paulo</b>Av. Dr Cardoso de Melo<br>1450 Conj. 501<br>Vila Olímpia, São Paulo-SP<br>CEP: 04548-005</p></div>';
 
   /* ---------- Texto de exemplo (já nas normas) ---------- */
   function modeloPaginas() {
@@ -1139,7 +1137,7 @@
     document.body.appendChild(palco);
     var pronto = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
     return pronto.then(function () {
-      return window.html2canvas(c, { width: 794, height: 1123, scale: escalaExp || 2, backgroundColor: '#f4f6fa', logging: false });
+      return window.html2canvas(c, { width: 794, height: 1123, scale: escalaExp || 2, backgroundColor: '#ffffff', logging: false });
     }).then(function (cv) { palco.remove(); return cv; }, function (e) { palco.remove(); throw e; });
   }
   function emBlob(cv, tipo, q) { return new Promise(function (ok) { cv.toBlob(ok, tipo, q); }); }
