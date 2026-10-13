@@ -1,9 +1,9 @@
-// Confere se a BASE COMUM está idêntica nos quatro arquivos e em scripts/base-comum.js.
+// Confere se a BASE COMUM está idêntica em todos os arquivos e em scripts/base-comum.js.
 // Uso: node scripts/conferir-base.js   (sai com erro se alguma cópia estiver diferente)
 var fs = require('fs'), path = require('path');
 var raiz = path.join(__dirname, '..');
 var base = fs.readFileSync(path.join(__dirname, 'base-comum.js'), 'utf8');
-var ARQUIVOS = ['index.html', 'sieg-studio-apresentacao.html', 'sieg-studio-allhands.html', 'sieg-studio-papel-timbrado.html'];
+var ARQUIVOS = ['index.html', 'sieg-studio-apresentacao.html', 'sieg-studio-allhands.html', 'sieg-studio-papel-timbrado.html', 'sieg-studio-resumo-semanal.html'];
 var BLOCO = /  \/\* ===== BASE COMUM DOS EDITORES · v\d+ · INÍCIO =====[\s\S]*?\/\* ===== BASE COMUM DOS EDITORES · v\d+ · FIM ===== \*\/\n/;
 var ok = true;
 ARQUIVOS.forEach(function (nome) {
@@ -13,4 +13,4 @@ ARQUIVOS.forEach(function (nome) {
   console.log('✓ ' + nome);
 });
 if (!ok) process.exit(1);
-console.log('Base comum idêntica nos quatro arquivos.');
+console.log('Base comum idêntica em todos os arquivos.');
