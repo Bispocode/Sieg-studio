@@ -33,15 +33,21 @@
             <label class="ss-field"><span>Mês:</span><select data-k="mes"></select></label>
           </div>
           <div class="ss-row">
+            <label class="ss-field ss-field-sm"><span>Ano:</span><select data-k="ano"></select></label>
+            <p class="ss-semana" aria-live="polite"></p>
+          </div>
+          <div class="ss-row">
             <label class="ss-field"><span>Das:</span><input type="time" step="300" data-k="inicio"></label>
             <label class="ss-field"><span>às:</span><input type="time" step="300" data-k="fim"></label>
           </div>
+          <ul class="ss-validacao" aria-live="polite" hidden></ul>
         </fieldset>
 
         <div class="ss-group-head">
           <h3>Pautas</h3>
           <button type="button" class="ss-reset">Restaurar modelo</button>
         </div>
+        <p class="ss-pautas-dica">As pautas ficam sempre em ordem de horário.</p>
         <div class="ss-pautas"></div>
         <button type="button" class="ss-add-pauta">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -135,6 +141,11 @@
 .ss-ah .ss-field-area span{line-height:22px}
 .ss-ah .ss-field-area textarea{resize:none;overflow:hidden;line-height:22px;height:22px;display:block}
 
+.ss-ah .ss-semana{flex:1;align-self:center;margin:0;font-size:14px;color:var(--ss-ink-2)}
+.ss-ah .ss-validacao{list-style:none;margin:2px 0 0;padding:10px 12px;border-radius:12px;background:#fffaeb;border:1px solid #fedf89;color:#7a2e0e;font-size:13px}
+.ss-ah .ss-validacao li+li{margin-top:4px}
+.ss-ah .ss-validacao li::before{content:"⚠ "}
+.ss-ah .ss-pautas-dica{font-size:12px;color:var(--ss-muted);margin:-4px 0 10px}
 .ss-ah .ss-pauta{background:rgba(255,255,255,.65);border:1px solid #fff;border-radius:16px;padding:12px;margin-bottom:12px}
 .ss-ah .ss-pauta-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .ss-ah .ss-pauta-n{font-size:13px;font-weight:700;color:var(--ss-accent)}
@@ -735,7 +746,7 @@
   function modelo() {
     var hoje = new Date();
     return {
-      dia: String(hoje.getDate()), mes: MESES[hoje.getMonth()], inicio: '08:00', fim: '09:00',
+      dia: String(hoje.getDate()), mes: MESES[hoje.getMonth()], ano: String(hoje.getFullYear()), inicio: '08:00', fim: '09:00',
       pautas: [
         { titulo: '', hora: '08:00', pessoas: [{ nome: '', foto: '' }] },
         { titulo: '', hora: '08:15', pessoas: [{ nome: '', foto: '' }] },
@@ -751,6 +762,7 @@
   var trabId = params.get('trabalho');
   var st = Trabalho.ler(trabId);
   if (!st || !st.pautas) { st = modelo(); trabId = null; }
+  if (!st.ano) st.ano = String(new Date().getFullYear()); // trabalhos de antes não tinham o ano
   // Trabalhos antigos guardavam os textos de exemplo como valor: eles voltam a ser só dica
   var EXEMPLOS = /^(Título da (primeira |segunda |terceira )?pauta|Nome Sobrenome)$/;
   st.pautas.forEach(function (p) {
@@ -803,10 +815,41 @@
     var p = h.split(':'), hh = parseInt(p[0], 10), mm = p[1] || '00';
     return hh + 'h' + (mm === '00' ? '' : mm);
   }
-  function horaPauta(h) { // "08:00" -> "08h00"
-    if (!h) return '';
-    var p = h.split(':');
-    return ('0' + parseInt(p[0], 10)).slice(-2) + 'h' + (p[1] || '00');
+  function minutos(h) { if (!h) return null; var p = h.split(':'); return parseInt(p[0], 10) * 60 + parseInt(p[1] || '0', 10); }
+  var SEMANA = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+  // Dia da semana da data escolhida, ou '' se a data não existir (ex.: 31 de fevereiro)
+  function diaDaSemana() {
+    var d = parseInt(st.dia, 10), m = MESES.indexOf(st.mes), a = parseInt(st.ano, 10);
+    if (!d || m < 0 || !a) return '';
+    var dt = new Date(a, m, d);
+    return dt.getMonth() === m ? SEMANA[dt.getDay()] : '';
+  }
+  // 28: pautas sempre em ordem de horário (as sem horário ficam no fim)
+  function ordenar() {
+    st.pautas = st.pautas.map(function (p, i) { return { p: p, i: i, m: minutos(p.hora) }; })
+      .sort(function (a, b) { return (a.m === null) - (b.m === null) || (a.m || 0) - (b.m || 0) || a.i - b.i; })
+      .map(function (x) { return x.p; });
+  }
+  // 29: avisos de data e horário (não bloqueiam)
+  function validar() {
+    var av = [], d = parseInt(st.dia, 10), m = MESES.indexOf(st.mes), a = parseInt(st.ano, 10) || new Date().getFullYear();
+    var diasNoMes = m >= 0 ? new Date(a, m + 1, 0).getDate() : 31;
+    if (!String(st.dia || '').trim()) av.push('Informe o dia.');
+    else if (!d || d < 1 || d > diasNoMes) av.push(st.mes + ' de ' + a + ' tem ' + diasNoMes + ' dias. Confira o dia.');
+    var ini = minutos(st.inicio), fim = minutos(st.fim);
+    if (ini !== null && fim !== null && fim <= ini) av.push('O horário final precisa ser depois do inicial.');
+    st.pautas.forEach(function (p, i) {
+      var h = minutos(p.hora);
+      if (h === null) av.push('Pauta ' + (i + 1) + ' está sem horário.');
+      else if ((ini !== null && h < ini) || (fim !== null && fim > (ini || 0) && h >= fim)) {
+        av.push('Pauta ' + (i + 1) + ' (' + faixa(p.hora) + ') fica fora do horário do evento' + (ini !== null && fim !== null ? ' (' + faixa(st.inicio) + ' às ' + faixa(st.fim) + ')' : '') + '.');
+      }
+    });
+    var caixa = $('.ss-validacao');
+    caixa.innerHTML = av.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
+    caixa.hidden = !av.length;
+    var sem = diaDaSemana();
+    $('.ss-semana').textContent = sem ? 'Cai numa ' + sem.toLowerCase() + '.' : '';
   }
 
   /* ---------- Desfazer / Refazer ---------- */
@@ -823,15 +866,16 @@
   /* ---------- Painel ---------- */
   var selMes = $('select[data-k="mes"]');
   selMes.innerHTML = MESES.map(function (m) { return '<option>' + m + '</option>'; }).join('');
+  var anoAtual = new Date().getFullYear(), anos = [anoAtual, anoAtual + 1];
+  if (st.ano && anos.indexOf(+st.ano) < 0) anos.unshift(+st.ano);
+  $('select[data-k="ano"]').innerHTML = anos.map(function (a) { return '<option>' + a + '</option>'; }).join('');
   function preencherTopo() { $$('[data-k]').forEach(function (el) { el.value = st[el.dataset.k]; }); }
   preencherTopo();
   $$('[data-k]').forEach(function (el) {
-    el.addEventListener('input', function () { mudar(function () { st[el.dataset.k] = el.value; }, 'k:' + el.dataset.k); });
+    el.addEventListener('input', function () { mudar(function () { st[el.dataset.k] = el.value; }, 'k:' + el.dataset.k); validar(); });
   });
 
   var ICON = {
-    up: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>',
-    down: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>',
     del: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
     x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
     cam: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
@@ -845,8 +889,6 @@
     lista.innerHTML = st.pautas.map(function (p, i) {
       return '<div class="ss-pauta" data-p="' + i + '">' +
         '<div class="ss-pauta-head"><span class="ss-pauta-n">Pauta ' + (i + 1) + '</span><div class="ss-pauta-tools">' +
-          '<button type="button" class="ss-icon-btn" data-act="up" aria-label="Subir pauta ' + (i + 1) + '"' + (i === 0 ? ' disabled' : '') + '>' + ICON.up + '</button>' +
-          '<button type="button" class="ss-icon-btn" data-act="down" aria-label="Descer pauta ' + (i + 1) + '"' + (i === n - 1 ? ' disabled' : '') + '>' + ICON.down + '</button>' +
           '<button type="button" class="ss-icon-btn is-danger" data-act="del" aria-label="Remover pauta ' + (i + 1) + '"' + (n === 1 ? ' disabled' : '') + '>' + ICON.del + '</button>' +
         '</div></div>' +
         '<label class="ss-field ss-field-area"><span>Título:</span><textarea rows="1" maxlength="80" data-f="titulo" placeholder="Título da pauta">' + esc(p.titulo) + '</textarea></label>' +
@@ -868,6 +910,7 @@
     }).join('');
     $$('textarea', lista).forEach(crescer);
     $('.ss-add-pauta').disabled = n >= MAX_PAUTAS;
+    validar();
   }
   function crescer(ta) { ta.style.height = '22px'; ta.style.height = ta.scrollHeight + 'px'; }
 
@@ -881,6 +924,14 @@
       mudar(function () { st.pautas[pi][f] = el.value; }, f + ':' + pi);
     }
     if (el.tagName === 'TEXTAREA') crescer(el);
+    if (f === 'hora') validar();
+  });
+  // Ao sair do campo de horário, a pauta vai para o lugar certo na ordem
+  lista.addEventListener('focusout', function (e) {
+    if (!e.target.matches || !e.target.matches('input[data-f="hora"]')) return;
+    var antes = st.pautas.slice();
+    ordenar();
+    if (st.pautas.some(function (p, i) { return p !== antes[i]; })) { montarPautas(); salvar(); agendar(); }
   });
   lista.addEventListener('change', function (e) {
     var inp = e.target.closest('input[data-foto]'); if (!inp) return;
@@ -897,10 +948,7 @@
     var titulo = st.pautas[pi].titulo;
     mudar(function () {
       var ps = st.pautas;
-      if (act === 'up' || act === 'down') {
-        var j = act === 'up' ? pi - 1 : pi + 1;
-        var t = ps[pi]; ps[pi] = ps[j]; ps[j] = t;
-      } else if (act === 'del') {
+      if (act === 'del') {
         ps.splice(pi, 1);
       } else if (act === 'addp') {
         ps[pi].pessoas.push({ nome: '', foto: '' });
@@ -1047,7 +1095,7 @@
     ctx.restore();
 
     ctx.font = '700 22px ' + FONTE;
-    var selo = 'All hands • SIEG', sw = ctx.measureText(selo).width + 54;
+    var selo = 'All Hands • SIEG', sw = ctx.measureText(selo).width + 54;
     ctx.fillStyle = ROXO; retRed(161, 231, sw, 50, 25); ctx.fill();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(selo, 161 + sw / 2, 257);
@@ -1059,7 +1107,9 @@
     ctx.font = '700 34px ' + FONTE; ctx.fillText(forte, dx, 251);
     var fw = ctx.measureText(forte).width;
     ctx.font = '400 34px ' + FONTE; ctx.fillText('de ' + (st.mes || ''), dx + fw, 251);
-    var periodo = st.inicio && st.fim ? 'Das ' + faixa(st.inicio) + ' às ' + faixa(st.fim) : (st.inicio ? 'A partir das ' + faixa(st.inicio) : '');
+    var periodo = st.inicio && st.fim ? 'das ' + faixa(st.inicio) + ' às ' + faixa(st.fim) : (st.inicio ? 'a partir das ' + faixa(st.inicio) : '');
+    var sem = diaDaSemana();
+    periodo = sem ? sem + (periodo ? ', ' + periodo : '') : periodo.charAt(0).toUpperCase() + periodo.slice(1);
     ctx.fillText(periodo, dx, 287);
 
     // Pautas
@@ -1101,7 +1151,7 @@
 
       // Horário, centralizado no grupo de cards
       ctx.fillStyle = TINTA; ctx.font = '700 34px ' + FONTE; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-      ctx.fillText(horaPauta(it.p.hora), X0 + CARD_W + 27, (it.yCards + it.yFim) / 2 + 2);
+      ctx.fillText(faixa(it.p.hora), X0 + CARD_W + 27, (it.yCards + it.yFim) / 2 + 2);
     });
     return H;
   }
