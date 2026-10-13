@@ -3,7 +3,7 @@
   Cole este bloco inteiro em um bloco "HTML personalizado" (Gutenberg) ou no widget "HTML" (Elementor).
 
   Como funciona a navegação:
-  - Sem parâmetros na URL, mostra a galeria (abas de marca, busca, filtros, recentes, favoritos).
+  - Sem parâmetros na URL, mostra a galeria (abas de marca, busca, filtros, histórico, favoritos).
   - Com ?template=ID, mostra o editor daquele template.
   - ?marca=institucional|academy|endomarketing abre a galeria já na marca certa.
 
@@ -12,7 +12,10 @@
   Deixando vazios, tudo funciona na mesma página.
 
   data-brandspace-url: página do Brand Space (link "Brand Space" no topo).
-  data-briefing-url: para onde vai o botão "Abrir briefing".
+  data-briefing-url: formulário do ClickUp aberto pelo botão "Abrir briefing" (abre em nova aba).
+
+  Trabalhos salvos: abrir um template pelo card sempre começa do modelo. As edições ficam salvas no
+  navegador como trabalhos (nome do modelo + data e hora) e aparecem no botão Histórico da galeria.
 
   As apresentações abrem no editor próprio (sieg-studio-apresentacao.html) e o Anúncio All Hands
   no dele (sieg-studio-allhands.html). No WordPress, troque data-apresentacao-url e data-allhands-url
@@ -22,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<div class="sieg-studio" id="sieg-studio" data-editor-url="" data-gallery-url="" data-apresentacao-url="sieg-studio-apresentacao.html" data-allhands-url="sieg-studio-allhands.html" data-brandspace-url="https://marketing.sieg.com/brandspace/" data-briefing-url="https://marketing.sieg.com/brandspace/#solicitar">
+<div class="sieg-studio" id="sieg-studio" data-editor-url="" data-gallery-url="" data-apresentacao-url="sieg-studio-apresentacao.html" data-allhands-url="sieg-studio-allhands.html" data-brandspace-url="https://marketing.sieg.com/brandspace/" data-briefing-url="https://forms.clickup.com/9013440916/f/8ckwccm-39593/NH4BIRERFMKMNA6DLA">
 
   <!-- ============ GALERIA ============ -->
   <section class="ss-gallery" hidden>
@@ -46,7 +49,7 @@
         <button type="button" class="ss-tool" data-tool="filtros" aria-pressed="false" aria-expanded="false" aria-controls="ss-filters" aria-label="Filtros" title="Filtros">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 17h18"/><path d="M15 4.5v5M9 14.5v5"/></svg>
         </button>
-        <button type="button" class="ss-tool" data-tool="recentes" aria-pressed="false" aria-label="Abertos recentemente" title="Abertos recentemente">
+        <button type="button" class="ss-tool" data-tool="recentes" aria-pressed="false" aria-label="Histórico de trabalhos salvos" title="Histórico">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3 3.5V8h4.5"/><path d="M12 7.5V12l3.2 2"/></svg>
         </button>
         <button type="button" class="ss-tool ss-tool-fav" data-tool="favoritos" aria-pressed="false" aria-label="Favoritos" title="Favoritos">
@@ -100,6 +103,10 @@
       <h2 class="ss-piece-title"></h2>
       <p class="ss-when"></p>
 
+      <div class="ss-group-head">
+        <h3>Textos</h3>
+        <button type="button" class="ss-reset">Restaurar modelo</button>
+      </div>
       <div class="ss-fields">
         <label class="ss-field"><span>Título:</span><input type="text" data-field="h1" maxlength="70"></label>
         <label class="ss-field"><span>Subtítulo:</span><input type="text" data-field="h2" maxlength="100"></label>
@@ -115,12 +122,17 @@
         <div class="ss-drop-filled" hidden>
           <img alt="Imagem inserida na peça">
           <div class="ss-drop-actions">
+            <button type="button" data-drop="ajustar">Ajustar</button>
             <button type="button" data-drop="trocar">Trocar</button>
             <button type="button" data-drop="remover">Remover</button>
           </div>
         </div>
       </div>
       <p class="ss-drop-error" role="alert" hidden></p>
+      <div class="ss-undo" role="status" hidden>
+        <span class="ss-undo-text"></span>
+        <button type="button" class="ss-undo-btn">Desfazer</button>
+      </div>
 
       <div class="ss-export">
         <label class="ss-format">
@@ -133,10 +145,18 @@
         </label>
         <button type="button" class="ss-export-btn">Exportar</button>
       </div>
+      <p class="ss-export-hint"></p>
     </aside>
 
     <div class="ss-stage">
       <canvas class="ss-canvas" aria-label="Pré-visualização da peça"></canvas>
+      <div class="ss-stagebar">
+        <div class="ss-hist" role="group" aria-label="Desfazer e refazer">
+          <button type="button" data-hist="desfazer" aria-label="Desfazer" title="Desfazer (Ctrl+Z)" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+          <button type="button" data-hist="refazer" aria-label="Refazer" title="Refazer (Ctrl+Shift+Z)" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg></button>
+        </div>
+      </div>
+      <p class="ss-stage-hint">Clique na imagem da peça para inserir ou ajustar o enquadramento.</p>
     </div>
 
     <nav class="ss-rail" aria-label="Variações de layout">
@@ -149,6 +169,27 @@
     <p>Esse template não existe mais ou o link está incompleto.</p>
     <a class="ss-missing-link" href="#">Ver todos os templates</a>
   </section>
+
+  <div class="ss-crop" role="dialog" aria-modal="true" aria-labelledby="ss-crop-title" hidden>
+    <div class="ss-crop-box">
+      <h3 id="ss-crop-title">Ajustar enquadramento</h3>
+      <p class="ss-crop-hint">Arraste a imagem para posicionar. Use o controle ou a roda do mouse para aproximar.</p>
+      <canvas class="ss-crop-canvas" width="720" height="720" tabindex="0" aria-label="Enquadramento da imagem. Use as setas para mover e as teclas + e - para aproximar."></canvas>
+      <div class="ss-crop-zoomrow">
+        <button type="button" class="ss-icon-btn" data-crop="menos" aria-label="Afastar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <input type="range" class="ss-crop-zoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom">
+        <button type="button" class="ss-icon-btn" data-crop="mais" aria-label="Aproximar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+      <div class="ss-crop-actions">
+        <div class="ss-crop-left">
+          <button type="button" class="ss-crop-link" data-crop="trocar">Trocar imagem</button>
+          <button type="button" class="ss-crop-link is-danger" data-crop="remover">Remover</button>
+        </div>
+        <button type="button" class="ss-crop-btn" data-crop="cancelar">Cancelar</button>
+        <button type="button" class="ss-crop-btn is-primary" data-crop="aplicar">Aplicar</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -268,6 +309,16 @@
 .sieg-studio .ss-card.is-soon{filter:saturate(.45);opacity:.6}
 .sieg-studio .ss-card.is-soon .ss-card-link{cursor:default}
 .sieg-studio .ss-card.is-soon:hover .ss-card-link::before{opacity:.55}
+.sieg-studio .ss-del{
+  position:absolute;top:10px;right:10px;height:36px;min-width:36px;padding:0 9px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:6px;
+  color:#fff;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-size:13px;font-weight:600;
+  opacity:0;transition:opacity .15s,background-color .15s;
+}
+.sieg-studio .ss-del svg{width:18px;height:18px}
+.sieg-studio .ss-card:hover .ss-del,.sieg-studio .ss-del:focus-visible,.sieg-studio .ss-del.is-confirm{opacity:1}
+.sieg-studio .ss-del:hover{background:rgba(255,255,255,.3)}
+.sieg-studio .ss-del.is-confirm{background:#b42318}
+@media (hover:none){.sieg-studio .ss-del{opacity:1}}
 .sieg-studio .ss-soon{position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;color:var(--ss-accent-dark);background:rgba(255,255,255,.9)}
 
 .sieg-studio .ss-empty{padding:48px 0;max-width:520px}
@@ -339,8 +390,44 @@
 .sieg-studio .ss-export-btn{height:40px;padding:0 16px;border-radius:999px;background:var(--ss-accent);color:#fff;font-size:18px;transition:filter .15s}
 .sieg-studio .ss-export-btn:hover{filter:brightness(1.08)}
 
-.sieg-studio .ss-stage{display:grid;place-items:center;min-width:0}
-.sieg-studio .ss-canvas{display:block;width:auto;height:auto;max-width:100%;max-height:min(760px,80vh);border-radius:10px;box-shadow:0 18px 40px rgba(18,28,60,.12);background:#fff}
+.sieg-studio .ss-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-width:0}
+.sieg-studio .ss-canvas{display:block;width:auto;height:auto;max-width:100%;max-height:min(700px,74vh);border-radius:10px;box-shadow:0 18px 40px rgba(18,28,60,.12);background:#fff}
+
+.sieg-studio .ss-canvas.is-photo{cursor:pointer}
+.sieg-studio .ss-stagebar{display:flex;align-items:center;justify-content:center;gap:10px 18px;flex-wrap:wrap}
+.sieg-studio .ss-hist{display:flex;gap:2px}
+.sieg-studio .ss-hist button{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:var(--ss-ink-2)}
+.sieg-studio .ss-hist button:hover{background:rgba(0,0,0,.06);color:var(--ss-ink)}
+.sieg-studio .ss-hist button[disabled]{opacity:.3;cursor:default;background:none}
+.sieg-studio .ss-hist svg{width:19px;height:19px}
+.sieg-studio .ss-stage-hint{font-size:13px;color:var(--ss-muted);text-align:center}
+.sieg-studio .ss-group-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.sieg-studio .ss-group-head h3{margin:0;font-size:14px;font-weight:600;color:var(--ss-ink-2)}
+.sieg-studio .ss-reset{font-size:13px;color:var(--ss-muted);text-decoration:underline;text-underline-offset:3px}
+.sieg-studio .ss-reset:hover{color:var(--ss-accent)}
+.sieg-studio .ss-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 14px;border-radius:12px;background:var(--ss-ink);color:#fff;font-size:14px}
+.sieg-studio .ss-undo-btn{color:#fff;font-weight:600;text-decoration:underline;text-underline-offset:3px;font-size:14px}
+.sieg-studio .ss-export-hint{font-size:12px;color:var(--ss-muted);margin-top:8px}
+.sieg-studio .ss-export-hint:empty{display:none}
+.sieg-studio .ss-crop{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:16px;background:rgba(4,4,38,.55)}
+.sieg-studio .ss-crop-box{width:min(420px,100%);max-height:100%;overflow-y:auto;background:#fff;border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(4,4,38,.3)}
+.sieg-studio .ss-crop-box h3{font-size:20px;font-weight:700;margin:0 0 4px}
+.sieg-studio .ss-crop-hint{font-size:13px;color:var(--ss-ink-2);margin-bottom:14px}
+.sieg-studio .ss-crop-canvas{display:block;max-width:100%;max-height:55vh;width:auto;height:auto;margin:0 auto;border-radius:12px;background:#e9ebf0;cursor:grab;touch-action:none}
+.sieg-studio .ss-crop-canvas.is-drag{cursor:grabbing}
+.sieg-studio .ss-crop-zoomrow{display:flex;align-items:center;gap:8px;margin:14px 0 18px}
+.sieg-studio .ss-crop-zoom{flex:1;accent-color:var(--ss-accent);cursor:pointer}
+.sieg-studio .ss-crop-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sieg-studio .ss-crop-left{display:flex;gap:12px;margin-right:auto}
+.sieg-studio .ss-crop-link{font-size:14px;color:var(--ss-accent);text-decoration:underline;text-underline-offset:3px}
+.sieg-studio .ss-crop-link.is-danger{color:#b42318}
+.sieg-studio .ss-crop-btn{height:38px;padding:0 16px;border-radius:999px;font-size:15px;border:1px solid #dde0e6}
+.sieg-studio .ss-crop-btn:hover{border-color:var(--ss-accent);color:var(--ss-accent)}
+.sieg-studio .ss-crop-btn.is-primary{background:var(--ss-accent);border-color:var(--ss-accent);color:#fff}
+.sieg-studio .ss-crop-btn.is-primary:hover{filter:brightness(1.08);color:#fff}
+.sieg-studio .ss-crop .ss-icon-btn{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--ss-ink-2)}
+.sieg-studio .ss-crop .ss-icon-btn:hover{background:rgba(0,0,0,.06);color:var(--ss-ink)}
+.sieg-studio .ss-crop .ss-icon-btn svg{width:17px;height:17px}
 
 .sieg-studio .ss-rail{position:relative;border-radius:16px;background:var(--ss-glass);border:1px solid rgba(255,255,255,.95);box-shadow:inset 0 1px 0 #fff,0 12px 32px rgba(18,28,60,.06)}
 .sieg-studio .ss-variants{position:absolute;top:50%;left:-38px;transform:translateY(-50%);display:flex;flex-direction:column;gap:3px}
@@ -474,6 +561,253 @@
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
 
   function ler(chave) { try { return JSON.parse(localStorage.getItem(chave)) || []; } catch (e) { return []; } }
+  /* =====================================================================
+     BASE COMUM DOS EDITORES (igual na galeria, nas apresentações e no All Hands)
+     - Trabalho: cada edição fica salva no navegador como um trabalho ("Modelo · data e hora"),
+       listado no Histórico da galeria. Abrir o template pelo card começa sempre do modelo limpo.
+     - criarHistorico: Desfazer / Refazer pelos botões e por Ctrl+Z, Ctrl+Shift+Z e Ctrl+Y.
+     - Ajuste: janela de enquadramento de imagem (arrastar, zoom pelo controle, roda ou +/−).
+     ===================================================================== */
+  var Trabalho = (function () {
+    var HIST = 'ss-historico', MAX = 30;
+    function lerHist() { try { var h = JSON.parse(localStorage.getItem(HIST)); return Array.isArray(h) ? h : []; } catch (e) { return []; } }
+    function ler(id) { try { return id ? JSON.parse(localStorage.getItem('ss-trab-' + id)) : null; } catch (e) { return null; } }
+    function novoId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+    function apagar(id) {
+      try { localStorage.removeItem('ss-trab-' + id); localStorage.setItem(HIST, JSON.stringify(lerHist().filter(function (x) { return x.id !== id; }))); } catch (e) {}
+    }
+    // info: { id, template, titulo, marca }. Devolve { ok, apagados } (trabalhos antigos apagados por falta de espaço).
+    function gravar(info, dados) {
+      var txt = JSON.stringify(dados), apagados = 0;
+      for (var tentativa = 0; tentativa < MAX; tentativa++) {
+        try {
+          var h = lerHist().filter(function (x) { return x.id !== info.id; });
+          h.unshift({ id: info.id, template: info.template, titulo: info.titulo, marca: info.marca, atualizado: Date.now() });
+          h.slice(MAX).forEach(function (x) { localStorage.removeItem('ss-trab-' + x.id); });
+          localStorage.setItem('ss-trab-' + info.id, txt);
+          localStorage.setItem(HIST, JSON.stringify(h.slice(0, MAX)));
+          return { ok: true, apagados: apagados };
+        } catch (e) {
+          var outros = lerHist().filter(function (x) { return x.id !== info.id; });
+          if (!outros.length) return { ok: false, apagados: apagados };
+          apagar(outros[outros.length - 1].id); // sem espaço: libera o trabalho mais antigo e tenta de novo
+          apagados++;
+        }
+      }
+      return { ok: false, apagados: apagados };
+    }
+    // Leva para o Histórico o que a versão anterior salvava direto no modelo
+    function migrar(chaveAntiga, info) {
+      try {
+        var v = localStorage.getItem(chaveAntiga);
+        if (v === null) return;
+        localStorage.removeItem(chaveAntiga);
+        var dados = JSON.parse(v);
+        if (dados) gravar({ id: novoId(), template: info.template, titulo: info.titulo, marca: info.marca }, dados);
+      } catch (e) {}
+    }
+    return { lerHist: lerHist, ler: ler, gravar: gravar, apagar: apagar, migrar: migrar, novoId: novoId };
+  })();
+
+  // opcoes: { retrato() -> cópia do estado, aplicar(r), depois() }
+  function criarHistorico(opcoes) {
+    var pilha = [], refeitos = [], ultimaChave = null, ultimoT = 0, MAX_HIST = 100;
+    var bDesfazer = $('[data-hist="desfazer"]'), bRefazer = $('[data-hist="refazer"]');
+    function atualizar() { bDesfazer.disabled = !pilha.length; bRefazer.disabled = !refeitos.length; }
+    // Chame ANTES de mudar o estado. chave agrupa ações seguidas iguais (digitar no mesmo campo,
+    // vários toques de seta no mesmo elemento) num passo só.
+    function registrar(chave) {
+      var agora = Date.now();
+      if (chave && chave === ultimaChave && agora - ultimoT < 1200) { ultimoT = agora; return; }
+      ultimaChave = chave || null; ultimoT = agora;
+      pilha.push(opcoes.retrato());
+      if (pilha.length > MAX_HIST) pilha.shift();
+      refeitos = [];
+      atualizar();
+      if (opcoes.registrou) opcoes.registrou();
+    }
+    function mover(de, para) {
+      if (!de.length) return;
+      para.push(opcoes.retrato());
+      opcoes.aplicar(de.pop());
+      ultimaChave = null;
+      atualizar();
+      if (opcoes.depois) opcoes.depois();
+    }
+    function desfazer() { mover(pilha, refeitos); }
+    function refazer() { mover(refeitos, pilha); }
+    bDesfazer.addEventListener('click', desfazer);
+    bRefazer.addEventListener('click', refazer);
+    document.addEventListener('keydown', function (e) {
+      if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+      var a = document.activeElement;
+      if (a && (/INPUT|TEXTAREA|SELECT/.test(a.tagName) || a.isContentEditable)) return; // nos campos vale o desfazer do próprio texto
+      if (!$('.ss-crop').hidden) return;
+      var k = e.key.toLowerCase();
+      if (k === 'z' && !e.shiftKey) { e.preventDefault(); desfazer(); }
+      else if ((k === 'z' && e.shiftKey) || k === 'y') { e.preventDefault(); refazer(); }
+    });
+    atualizar();
+    return { registrar: registrar, desfazer: desfazer, refazer: refazer };
+  }
+
+  // Cópia rasa de objetos e listas (textos e imagens em data URL são compartilhados, não duplicados)
+  function clonar(v) {
+    if (Array.isArray(v)) return v.map(clonar);
+    if (v && typeof v === 'object') { var o = {}; for (var k in v) if (Object.prototype.hasOwnProperty.call(v, k)) o[k] = clonar(v[k]); return o; }
+    return v;
+  }
+
+  // Lê um arquivo de imagem e devolve uma cópia reduzida (data URL) para guardar e reenquadrar
+  function lerImagem(f, maxLado, ok, falha) {
+    if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { falha('Esse arquivo não é uma imagem. Use PNG, JPG ou WEBP.'); return; }
+    if (f.size > 20 * 1024 * 1024) { falha('A imagem passa de 20 MB. Reduza o tamanho e tente de novo.'); return; }
+    var url = URL.createObjectURL(f), img = new Image();
+    img.onload = function () {
+      var r = Math.min(1, maxLado / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
+      c.width = Math.round(img.naturalWidth * r); c.height = Math.round(img.naturalHeight * r);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      ok(c.toDataURL(f.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.86));
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); falha('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
+    img.src = url;
+  }
+
+  // Retângulo da imagem de origem que cobre uma área w×h com o enquadramento enq {x, y, z}
+  function origemEnq(img, enq, w, h) {
+    var iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    var e = enq || { x: 0.5, y: 0.5, z: 1 };
+    var s = Math.max(w / iw, h / ih) * (e.z || 1), sw = w / s, sh = h / s;
+    var cx = Math.min(iw - sw / 2, Math.max(sw / 2, e.x * iw)), cy = Math.min(ih - sh / 2, Math.max(sh / 2, e.y * ih));
+    return [cx - sw / 2, cy - sh / 2, sw, sh];
+  }
+  function desenharEnq(ctx, img, enq, x, y, w, h) {
+    var o = origemEnq(img, enq, w, h);
+    ctx.drawImage(img, o[0], o[1], o[2], o[3], x, y, w, h);
+  }
+  // Gera a imagem já recortada (data URL) com largura w e altura h
+  function recortar(img, enq, w, h, tipo) {
+    var c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h));
+    desenharEnq(c.getContext('2d'), img, enq, 0, 0, c.width, c.height);
+    return c.toDataURL(tipo || 'image/jpeg', 0.88);
+  }
+
+  // Ajuste.abrir({ src, enq, aspecto, circulo, aplicar(enq, img), trocar(), remover(), erro(msg) })
+  var Ajuste = (function () {
+    var corte = $('.ss-crop'), cv = $('.ss-crop-canvas'), cx = cv.getContext('2d'), zoom = $('.ss-crop-zoom');
+    var LADO = 720, ZMAX = 4, aj = null, arrasto = null;
+    function abrir(o) {
+      var img = new Image();
+      img.onload = function () {
+        var voltar = aj ? aj.voltar : (corte.hidden ? document.activeElement : null);
+        var asp = o.aspecto || 1;
+        cv.width = asp >= 1 ? LADO : Math.round(LADO * asp);
+        cv.height = asp >= 1 ? Math.round(LADO / asp) : LADO;
+        var e = o.enq || {};
+        aj = { o: o, img: img, x: e.x != null ? e.x : 0.5, y: e.y != null ? e.y : 0.5, z: e.z || 1, voltar: voltar };
+        $('[data-crop="remover"]', corte).hidden = !o.remover;
+        $('[data-crop="trocar"]', corte).hidden = !o.trocar;
+        limitar(); pintar();
+        corte.hidden = false;
+        cv.focus();
+      };
+      img.onerror = function () { if (o.erro) o.erro('Não foi possível abrir essa imagem. Tente outro arquivo.'); };
+      img.src = o.src;
+    }
+    function escala() { return Math.max(cv.width / aj.img.naturalWidth, cv.height / aj.img.naturalHeight) * aj.z; }
+    function limitar() {
+      aj.z = Math.min(ZMAX, Math.max(1, aj.z));
+      var s = escala(), mx = cv.width / 2 / s / aj.img.naturalWidth, my = cv.height / 2 / s / aj.img.naturalHeight;
+      aj.x = Math.min(1 - mx, Math.max(mx, aj.x));
+      aj.y = Math.min(1 - my, Math.max(my, aj.y));
+      zoom.value = aj.z;
+    }
+    function pintar() {
+      var W = cv.width, H = cv.height, s = escala(), iw = aj.img.naturalWidth, ih = aj.img.naturalHeight;
+      var cor = getComputedStyle(root).getPropertyValue('--ss-accent').trim() || '#6f2abe';
+      cx.clearRect(0, 0, W, H);
+      cx.drawImage(aj.img, W / 2 - aj.x * iw * s, H / 2 - aj.y * ih * s, iw * s, ih * s);
+      cx.strokeStyle = cor; cx.lineWidth = 8;
+      if (aj.o.circulo) { // escurece o que fica fora do círculo da peça
+        var r = Math.min(W, H) / 2 - 6;
+        cx.fillStyle = 'rgba(4,4,38,.5)';
+        cx.beginPath(); cx.rect(0, 0, W, H); cx.arc(W / 2, H / 2, r, 0, Math.PI * 2, true); cx.fill();
+        cx.beginPath(); cx.arc(W / 2, H / 2, r, 0, Math.PI * 2); cx.stroke();
+      } else {
+        cx.strokeRect(4, 4, W - 8, H - 8);
+      }
+    }
+    function mover(dx, dy) { var s = escala(); aj.x -= dx / s / aj.img.naturalWidth; aj.y -= dy / s / aj.img.naturalHeight; limitar(); pintar(); }
+    function definirZoom(z) { aj.z = z; limitar(); pintar(); }
+    function fechar() {
+      corte.hidden = true;
+      var v = aj && aj.voltar; aj = null;
+      if (v && v.focus && document.contains(v)) v.focus();
+    }
+    function aplicar() {
+      var o = aj.o, enq = { x: +aj.x.toFixed(4), y: +aj.y.toFixed(4), z: +aj.z.toFixed(3) }, img = aj.img;
+      fechar();
+      o.aplicar(enq, img);
+    }
+
+    cv.addEventListener('pointerdown', function (e) { arrasto = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); cv.classList.add('is-drag'); });
+    cv.addEventListener('pointermove', function (e) {
+      if (!arrasto || !aj) return;
+      var k = cv.width / cv.getBoundingClientRect().width;
+      mover((e.clientX - arrasto.x) * k, (e.clientY - arrasto.y) * k);
+      arrasto = { x: e.clientX, y: e.clientY };
+    });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { cv.addEventListener(ev, function () { arrasto = null; cv.classList.remove('is-drag'); }); });
+    cv.addEventListener('wheel', function (e) { if (!aj) return; e.preventDefault(); definirZoom(aj.z * Math.exp(-e.deltaY * 0.0015)); }, { passive: false });
+    zoom.addEventListener('input', function () { if (aj) definirZoom(+zoom.value); });
+
+    corte.addEventListener('click', function (e) {
+      if (e.target === corte) { fechar(); return; }
+      var b = e.target.closest('[data-crop]'); if (!b || !aj) return;
+      var acao = b.dataset.crop, o = aj.o;
+      if (acao === 'mais') definirZoom(aj.z + 0.25);
+      else if (acao === 'menos') definirZoom(aj.z - 0.25);
+      else if (acao === 'aplicar') aplicar();
+      else if (acao === 'cancelar') fechar();
+      else if (acao === 'trocar') { fechar(); o.trocar(); }
+      else if (acao === 'remover') { fechar(); o.remover(); }
+    });
+    corte.addEventListener('keydown', function (e) {
+      if (!aj) return;
+      if (e.key === 'Escape') { e.preventDefault(); fechar(); return; }
+      if (e.key === 'Tab') { // mantém o foco dentro da janela
+        var foc = $$('button, input, canvas', corte).filter(function (el) { return !el.hidden && el.offsetParent !== null; });
+        var i = foc.indexOf(document.activeElement);
+        if (e.shiftKey && i <= 0) { foc[foc.length - 1].focus(); e.preventDefault(); }
+        else if (!e.shiftKey && i === foc.length - 1) { foc[0].focus(); e.preventDefault(); }
+        return;
+      }
+      if (e.target !== cv) return;
+      var passo = e.shiftKey ? 60 : 15;
+      var m = { ArrowLeft: [passo, 0], ArrowRight: [-passo, 0], ArrowUp: [0, passo], ArrowDown: [0, -passo] }[e.key];
+      if (m) { e.preventDefault(); mover(m[0], m[1]); }
+      else if (e.key === '+' || e.key === '=') { e.preventDefault(); definirZoom(aj.z + 0.25); }
+      else if (e.key === '-') { e.preventDefault(); definirZoom(aj.z - 0.25); }
+      else if (e.key === 'Enter') { e.preventDefault(); aplicar(); }
+    });
+    return { abrir: abrir };
+  })();
+
+  // Aviso no painel com o botão Desfazer (ex.: "Slide excluído.")
+  var aviso = $('.ss-undo'), timerAviso;
+  function avisar(texto) {
+    $('.ss-undo-text').textContent = texto;
+    aviso.hidden = false;
+    clearTimeout(timerAviso);
+    timerAviso = setTimeout(function () { aviso.hidden = true; }, 8000);
+  }
+  function esconderAviso() { clearTimeout(timerAviso); aviso.hidden = true; }
+  /* ===================== fim da base comum ===================== */
+
+  var ctxPrincipal = null, areaFoto = null; // área da imagem na prévia do editor (para o clique e o enquadramento)
+
   function salvar(chave, v) { try { localStorage.setItem(chave, JSON.stringify(v)); } catch (e) {} }
 
   function aplicarCores(m) {
@@ -510,8 +844,14 @@
     };
     var sec = $('.ss-gallery');
     sec.hidden = false;
+
+    // Leva para o Histórico o que a versão anterior salvava direto nos modelos
+    Trabalho.migrar('ss-allhands', { template: 'endo-anuncio-allhands', titulo: 'Anúncio All Hands', marca: 'endomarketing' });
+    [['institucional', 'inst'], ['academy', 'acad'], ['endomarketing', 'endo']].forEach(function (x) {
+      Trabalho.migrar('ss-apres-' + x[0], { template: x[1] + '-apresentacao-modelo-1', titulo: 'Apresentação modelo 1', marca: x[0] });
+    });
     $('.ss-crumb-link').href = root.dataset.brandspaceUrl || 'https://marketing.sieg.com/brandspace/';
-    $$('.ss-briefing-link').forEach(function (a) { a.href = root.dataset.briefingUrl || 'https://marketing.sieg.com/brandspace/#solicitar'; });
+    $$('.ss-briefing-link').forEach(function (a) { a.href = root.dataset.briefingUrl || 'https://forms.clickup.com/9013440916/f/8ckwccm-39593/NH4BIRERFMKMNA6DLA'; a.target = '_blank'; a.rel = 'noopener'; });
 
     var tabs = $('.ss-tabs');
     tabs.innerHTML = MARCAS.map(function (m) {
@@ -581,6 +921,18 @@
 
     var grid = $('.ss-grid');
     grid.addEventListener('click', function (e) {
+      var del = e.target.closest('.ss-del');
+      if (del) { // primeiro clique pede confirmação, o segundo exclui
+        if (!del.classList.contains('is-confirm')) {
+          $$('.ss-del.is-confirm', grid).forEach(function (x) { x.classList.remove('is-confirm'); x.lastChild.textContent = ''; });
+          del.classList.add('is-confirm');
+          del.lastChild.textContent = 'Excluir?';
+          return;
+        }
+        Trabalho.apagar(del.dataset.trab);
+        render();
+        return;
+      }
       var b = e.target.closest('.ss-fav');
       if (!b) return;
       var favs = ler('ss-favoritos');
@@ -610,23 +962,19 @@
         if (b.dataset.tool !== 'filtros') b.setAttribute('aria-pressed', String(st.modo === b.dataset.tool));
       });
 
+      var q = norm(st.q.trim());
+      if (st.modo === 'recentes') { renderHistorico(m, q); return; }
+
       var favs = ler('ss-favoritos');
-      var recentes = ler('ss-recentes');
       var lista = TEMPLATES.filter(function (t) { return t.marca === st.marca; });
       if (st.modo === 'favoritos') lista = lista.filter(function (t) { return favs.indexOf(t.id) >= 0; });
-      if (st.modo === 'recentes') {
-        lista = lista.filter(function (t) { return recentes.indexOf(t.id) >= 0; })
-          .sort(function (a, b) { return recentes.indexOf(a.id) - recentes.indexOf(b.id); });
-      }
-      if (st.modo !== 'recentes') lista = lista.filter(function (t) { return t.ativo; }).concat(lista.filter(function (t) { return !t.ativo; }));
-      var q = norm(st.q.trim());
+      lista = lista.filter(function (t) { return t.ativo; }).concat(lista.filter(function (t) { return !t.ativo; }));
       if (q) lista = lista.filter(function (t) { return norm([t.titulo, t.quando, t.tags, t.tipo, t.formato].join(' ')).indexOf(q) >= 0; });
       if (st.tipo !== 'Todos') lista = lista.filter(function (t) { return t.tipo === st.tipo; });
       if (st.formato !== 'Todos') lista = lista.filter(function (t) { return t.formato === st.formato; });
 
       var n = lista.length;
       var rotulo = st.modo === 'favoritos' ? (n === 1 ? '1 favorito' : n + ' favoritos')
-        : st.modo === 'recentes' ? (n === 1 ? '1 aberto recentemente' : n + ' abertos recentemente')
         : (n === 1 ? '1 template' : n + ' templates');
       var nAtivos = lista.filter(function (t) { return t.ativo; }).length;
       if (st.modo === 'todos' && n) rotulo += ', ' + (nAtivos === 1 ? '1 disponível agora' : nAtivos + ' disponíveis agora');
@@ -662,9 +1010,6 @@
         if (st.modo === 'favoritos' && !q && st.tipo === 'Todos' && st.formato === 'Todos') {
           $('.ss-empty-text').textContent = 'Toque no coração de um template para guardar aqui.';
           btn.textContent = 'Ver todos os templates';
-        } else if (st.modo === 'recentes' && !q && st.tipo === 'Todos' && st.formato === 'Todos') {
-          $('.ss-empty-text').textContent = 'Os templates que você abrir em ' + m.nome + ' aparecem aqui.';
-          btn.textContent = 'Ver todos os templates';
         } else {
           $('.ss-empty-text').textContent = q
             ? 'Nenhum template com “' + st.q.trim() + '” em ' + m.nome + '. Tente outro termo ou limpe os filtros.'
@@ -672,6 +1017,51 @@
           btn.textContent = 'Limpar busca e filtros';
         }
       }
+    }
+
+    // Histórico: trabalhos salvos neste navegador, com o nome do modelo, a data e o horário
+    function renderHistorico(m, q) {
+      var itens = Trabalho.lerHist().filter(function (h) {
+        var t = templatePor(h.template);
+        if (!t || h.marca !== st.marca) return false;
+        if (q && norm(h.titulo).indexOf(q) < 0) return false;
+        if (st.tipo !== 'Todos' && t.tipo !== st.tipo) return false;
+        if (st.formato !== 'Todos' && t.formato !== st.formato) return false;
+        return true;
+      });
+      var n = itens.length;
+      $('.ss-count').textContent = n === 1 ? '1 trabalho salvo' : n + ' trabalhos salvos';
+      grid.innerHTML = itens.map(function (h) {
+        var t = templatePor(h.template), url = urlEditor(t);
+        url += (url.indexOf('?') >= 0 ? '&' : '?') + 'trabalho=' + encodeURIComponent(h.id);
+        var quando = dataHora(h.atualizado);
+        return '<article class="ss-card" style="--c1:' + m.cor + ';--c2:' + mistura(m.cor, '#ffffff', .3) + ';">' +
+          '<a class="ss-card-link" href="' + esc(url) + '">' +
+            '<span class="ss-card-meta">' + esc(t.tipo) + ' • ' + esc(t.formato) + '</span>' +
+            '<span class="ss-card-bottom"><span class="ss-card-title">' + esc(h.titulo) + '</span>' +
+            '<span class="ss-card-when">' + esc(quando) + '</span></span>' +
+          '</a>' +
+          '<button type="button" class="ss-del" data-trab="' + esc(h.id) + '" aria-label="Excluir ' + esc(h.titulo + ', ' + quando) + ' do histórico">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg><span></span>' +
+          '</button></article>';
+      }).join('');
+      var vazio = $('.ss-empty');
+      vazio.hidden = n > 0;
+      if (!n) {
+        var btn = $('.ss-empty-btn');
+        if (!q && st.tipo === 'Todos' && st.formato === 'Todos') {
+          $('.ss-empty-text').textContent = 'Os trabalhos que você editar em ' + m.nome + ' ficam salvos aqui, com o nome do modelo, a data e o horário.';
+          btn.textContent = 'Ver todos os templates';
+        } else {
+          $('.ss-empty-text').textContent = 'Nenhum trabalho salvo com essa busca ou filtros em ' + m.nome + '.';
+          btn.textContent = 'Limpar busca e filtros';
+        }
+      }
+    }
+    function dataHora(ms) {
+      var d = new Date(ms || Date.now());
+      var dois = function (v) { return ('0' + v).slice(-2); };
+      return dois(d.getDate()) + '/' + dois(d.getMonth() + 1) + '/' + d.getFullYear() + ' às ' + dois(d.getHours()) + ':' + dois(d.getMinutes());
     }
 
     montarChips();
@@ -685,10 +1075,6 @@
     var sec = $('.ss-editor');
     sec.hidden = false;
 
-    var rec = ler('ss-recentes').filter(function (id) { return id !== t.id; });
-    rec.unshift(t.id);
-    salvar('ss-recentes', rec.slice(0, 12));
-
     var dim = FORMATOS[t.formato] || FORMATOS['16:9'];
     var W = dim[0], H = dim[1];
     sec.classList.toggle('is-portrait', H > W);
@@ -699,16 +1085,60 @@
     $('.ss-when').textContent = t.quando ? 'Quando usar: ' + t.quando : '';
     try { document.title = t.titulo + ' | SIEG Studio'; } catch (e) {}
 
-    var st = { h1: t.textos.h1 || '', h2: t.textos.h2 || '', h3: t.textos.h3 || '', img: null, layout: t.layout || 0 };
+    // Trabalho salvo: ?trabalho=ID reabre um trabalho do Histórico; sem ele, começa do modelo
+    var INFO = { template: t.id, titulo: t.titulo, marca: t.marca };
+    var q = new URLSearchParams(location.search);
+    var trabId = q.get('trabalho');
+    function modeloDe() { return { h1: t.textos.h1 || '', h2: t.textos.h2 || '', h3: t.textos.h3 || '', layout: t.layout || 0, foto: '', enq: null }; }
+    var st = Trabalho.ler(trabId);
+    if (!st || typeof st.h1 !== 'string') { st = modeloDe(); trabId = null; }
+
+    var timerSalvar;
+    function salvar() {
+      clearTimeout(timerSalvar);
+      timerSalvar = setTimeout(function () {
+        if (!trabId) {
+          trabId = Trabalho.novoId();
+          q.set('trabalho', trabId);
+          try { history.replaceState(null, '', '?' + q.toString()); } catch (e) {}
+        }
+        var r = Trabalho.gravar({ id: trabId, template: INFO.template, titulo: INFO.titulo, marca: INFO.marca }, st);
+        var dica = $('.ss-export-hint');
+        dica.textContent = !r.ok ? 'Não foi possível salvar neste navegador. Exporte antes de sair.'
+          : r.apagados ? 'Faltou espaço no navegador: os trabalhos mais antigos do Histórico foram apagados.' : '';
+      }, 300);
+    }
+
+    // Desfazer / Refazer
+    var historico = criarHistorico({
+      retrato: function () { return clonar(st); },
+      aplicar: function (r) { st = r; preencher(); agendar(); salvar(); },
+      registrou: esconderAviso,
+      depois: esconderAviso
+    });
+    $('.ss-undo-btn').addEventListener('click', function () { historico.desfazer(); });
+    function mudar(fn, chave) { historico.registrar(chave); fn(); salvar(); agendar(); }
+
+    function preencher() {
+      $$('.ss-field input').forEach(function (inp) { inp.value = st[inp.dataset.field]; });
+      $$('.ss-variant').forEach(function (x) { x.setAttribute('aria-pressed', String(+x.dataset.i === st.layout)); });
+      montarDrop();
+    }
 
     $$('.ss-field input').forEach(function (inp) {
-      inp.value = st[inp.dataset.field];
-      inp.addEventListener('input', function () { st[inp.dataset.field] = inp.value; agendar(); });
+      inp.addEventListener('input', function () { mudar(function () { st[inp.dataset.field] = inp.value; }, 'campo:' + inp.dataset.field); });
+    });
+
+    $('.ss-reset').addEventListener('click', function () {
+      mudar(function () { st = modeloDe(); });
+      preencher();
+      avisar('Modelo restaurado.');
     });
 
     var canvas = $('.ss-canvas');
     canvas.width = W; canvas.height = H;
     var ctx = canvas.getContext('2d');
+    ctxPrincipal = ctx;
 
     // Variações
     var box = $('.ss-variants');
@@ -718,27 +1148,58 @@
     }).join('');
     box.addEventListener('click', function (e) {
       var b = e.target.closest('.ss-variant');
-      if (!b) return;
-      st.layout = +b.dataset.i;
-      $$('.ss-variant').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-      agendar();
+      if (!b || +b.dataset.i === st.layout) return;
+      mudar(function () { st.layout = +b.dataset.i; });
+      preencher();
     });
 
-    // Imagem
+    // Imagem (guarda a original reduzida + o enquadramento, aplicado na hora de desenhar)
     var drop = $('.ss-drop'), file = $('input[type=file]', drop), erro = $('.ss-drop-error');
-    function escolher() { file.click(); }
-    drop.addEventListener('click', function (e) {
-      if (e.target.closest('[data-drop="remover"]')) {
-        st.img = null; file.value = '';
-        $('.ss-drop-empty').hidden = false; $('.ss-drop-filled').hidden = true;
-        agendar(); return;
+    var foto = { url: '', img: null };
+    function imagemAtual() {
+      if (!st.foto) return null;
+      if (foto.url !== st.foto) {
+        foto.url = st.foto; foto.img = new Image();
+        foto.img.onload = agendar;
+        foto.img.src = st.foto;
       }
+      return foto.img.complete && foto.img.naturalWidth ? foto.img : null;
+    }
+    function vista() { return { h1: st.h1, h2: st.h2, h3: st.h3, img: imagemAtual(), enq: st.enq }; }
+    function montarDrop() {
+      $('.ss-drop-empty').hidden = !!st.foto;
+      $('.ss-drop-filled').hidden = !st.foto;
+      if (st.foto) $('.ss-drop-filled img').src = st.foto;
+    }
+    function escolher() { file.click(); }
+    function mostrarErro(t) { erro.textContent = t; erro.hidden = false; }
+    function ajustar(orig, enq) {
+      var a = areaFoto || { w: W, h: H };
+      Ajuste.abrir({
+        src: orig, enq: enq, aspecto: a.w / a.h, circulo: st.layout === 1, erro: mostrarErro,
+        trocar: escolher,
+        remover: st.foto ? remover : null,
+        aplicar: function (novo) {
+          mudar(function () { st.foto = orig; st.enq = novo; });
+          montarDrop();
+        }
+      });
+    }
+    function remover() {
+      mudar(function () { st.foto = ''; st.enq = null; });
+      montarDrop();
+      avisar('Imagem removida.');
+    }
+    drop.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-drop]');
+      if (b && b.dataset.drop === 'remover') { remover(); return; }
+      if (b && b.dataset.drop === 'ajustar') { ajustar(st.foto, st.enq); return; }
       escolher();
     });
     drop.addEventListener('keydown', function (e) {
       if ((e.key === 'Enter' || e.key === ' ') && e.target === drop) { e.preventDefault(); escolher(); }
     });
-    file.addEventListener('change', function () { if (file.files[0]) carregar(file.files[0]); });
+    file.addEventListener('change', function () { if (file.files[0]) carregar(file.files[0]); file.value = ''; });
     ['dragenter', 'dragover'].forEach(function (ev) {
       drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('is-over'); });
     });
@@ -751,26 +1212,28 @@
     });
     function carregar(f) {
       erro.hidden = true;
-      if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { erro.textContent = 'Esse arquivo não é uma imagem. Use PNG, JPG ou WEBP.'; erro.hidden = false; return; }
-      if (f.size > 15 * 1024 * 1024) { erro.textContent = 'A imagem passa de 15 MB. Reduza o tamanho e tente de novo.'; erro.hidden = false; return; }
-      var url = URL.createObjectURL(f);
-      var img = new Image();
-      img.onload = function () {
-        st.img = img;
-        $('.ss-drop-filled img').src = url;
-        $('.ss-drop-empty').hidden = true; $('.ss-drop-filled').hidden = false;
-        agendar();
-      };
-      img.onerror = function () { erro.textContent = 'Não foi possível abrir essa imagem. Tente outro arquivo.'; erro.hidden = false; };
-      img.src = url;
+      // guarda uma cópia reduzida (até 1600 px) para poder reenquadrar depois
+      lerImagem(f, 1600, function (orig) { ajustar(orig, null); }, mostrarErro);
     }
+    // Clique na imagem da prévia: ajusta o enquadramento (ou escolhe uma imagem, se ainda não houver)
+    function naArea(e) {
+      if (!areaFoto) return false;
+      var r = canvas.getBoundingClientRect();
+      var x = (e.clientX - r.left) * W / r.width, y = (e.clientY - r.top) * H / r.height;
+      return x >= areaFoto.x && x <= areaFoto.x + areaFoto.w && y >= areaFoto.y && y <= areaFoto.y + areaFoto.h;
+    }
+    canvas.addEventListener('mousemove', function (e) { canvas.classList.toggle('is-photo', naArea(e)); });
+    canvas.addEventListener('click', function (e) {
+      if (!naArea(e)) return;
+      if (st.foto) ajustar(st.foto, st.enq); else escolher();
+    });
 
     // Exportar
     var btnExp = $('.ss-export-btn');
     btnExp.addEventListener('click', function () {
       var fmt = $('.ss-format select').value;
       var tipo = fmt === 'jpg' ? 'image/jpeg' : 'image/png';
-      desenhar(ctx, W, H, st.layout, st, m);
+      tudo();
       canvas.toBlob(function (blob) {
         if (!blob) return;
         var a = document.createElement('a');
@@ -790,14 +1253,17 @@
       requestAnimationFrame(function () { pendente = false; tudo(); });
     }
     function tudo() {
-      desenhar(ctx, W, H, st.layout, st, m);
+      var v = vista();
+      areaFoto = null;
+      desenhar(ctx, W, H, st.layout, v, m);
       $$('.ss-variant canvas').forEach(function (c, i) {
         var x = c.getContext('2d');
         x.setTransform(c.width / W, 0, 0, c.height / H, 0, 0);
-        desenhar(x, W, H, i, st, m);
+        desenhar(x, W, H, i, v, m);
       });
     }
 
+    preencher();
     tudo();
     if (document.fonts && document.fonts.load) {
       Promise.all(['400', '500', '600', '800'].map(function (w) { return document.fonts.load(w + ' 40px Figtree'); }))
@@ -896,14 +1362,15 @@
     return alt;
   }
 
-  function capa(ctx, img, x, y, w, h) {
-    var r = Math.max(w / img.naturalWidth, h / img.naturalHeight);
-    var iw = img.naturalWidth * r, ih = img.naturalHeight * r;
-    ctx.drawImage(img, x + (w - iw) / 2, y + (h - ih) / 2, iw, ih);
+  function marcarArea(ctx, x, y, w, h) { if (ctx === ctxPrincipal) areaFoto = { x: x, y: y, w: w, h: h }; }
+  function capa(ctx, s, x, y, w, h) {
+    marcarArea(ctx, x, y, w, h);
+    desenharEnq(ctx, s.img, s.enq, x, y, w, h);
   }
 
   // Arte de marca usada quando ainda não há imagem inserida
   function arte(ctx, x, y, w, h, fundo, traco) {
+    marcarArea(ctx, x, y, w, h);
     ctx.fillStyle = fundo;
     ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = traco;
@@ -920,7 +1387,7 @@
     ctx.save();
     caminho(ctx, x, y, w, h, r);
     ctx.clip();
-    if (s.img) capa(ctx, s.img, x, y, w, h);
+    if (s.img) capa(ctx, s, x, y, w, h);
     else arte(ctx, x, y, w, h, fundo, traco);
     ctx.restore();
   }
@@ -965,7 +1432,7 @@
       if (s.img) {
         ctx.save();
         ctx.beginPath(); ctx.arc(W / 2, y0 + diam / 2, diam / 2, 0, Math.PI * 2); ctx.clip();
-        capa(ctx, s.img, W / 2 - diam / 2, y0, diam, diam);
+        capa(ctx, s, W / 2 - diam / 2, y0, diam, diam);
         ctx.restore();
         ctx.strokeStyle = m.cor; ctx.lineWidth = S * 0.008;
         ctx.beginPath(); ctx.arc(W / 2, y0 + diam / 2, diam / 2 + S * 0.012, 0, Math.PI * 2); ctx.stroke();
@@ -976,7 +1443,7 @@
     }
 
     else if (layout === 2) { // Imagem de fundo
-      if (s.img) capa(ctx, s.img, 0, 0, W, H);
+      if (s.img) capa(ctx, s, 0, 0, W, H);
       else arte(ctx, 0, 0, W, H, m.cor, rgba('#ffffff', 0.1));
       var g = ctx.createLinearGradient(0, H * 0.25, 0, H);
       g.addColorStop(0, rgba(m.escura, 0));
